@@ -1,9 +1,9 @@
 ---
-title: database storage structure
+title: database storage Structure
 date: 2022-05-09 20:09:26
 tags: database
 ---
-# Database Storage structure
+# Database Storage Structure
 本文介绍数据库在磁盘上的存储格式与层次:Table->Block->Record
 
 ## Record Structure
@@ -32,8 +32,12 @@ tags: database
 <center>
 <B>| T | M | x | x | x | x | x | x |</B>
 </center>  
-其中T为tombstone标志，用来说明这条record是否存活，M为最小记录，x均为保留位供其他使用。在使用过程中需要掩码参与进行操作。
-特别说明:上图虽然header放在offset数组后面，但在代码实际实现中，header仍然位于record的最前方，而其他 相对位置不变。
+其中T为tombstone标志，用来说明这条record是否存活，M为最小记录，x均为保留位供其他使用。在使用过程中需要掩码参与进行操作。  
+
+**特别说明:**
+
+- 上图虽然header放在offset数组后面，但在代码实际实现中，header仍然位于record的最前方，而其他相对位置不变。
+- 当Record删除时，其占据的空间不会立刻被回收，而是仅仅把Record的Header中tombstone标记为死亡，当空间不足时，才会被回收。
 
 ## Block Structure
 &emsp;&emsp;Block是数据库的基本IO单位，当进程需要调用数据库中的record的时，至少需要调入一整个Block而无法仅仅访问一个record。
@@ -51,14 +55,39 @@ tags: database
 &emsp;&emsp;由上图可以看见，Block的结构为：Block Header + Data Header + Data + Free Space + Slots + Trailer。其中Slots和Trailer共同作为tail。  
 &emsp;&emsp;因为Block存在不同的类型，在实现时采用了基类和派生类的方法来进行不同Block的实现，uml图如下:
 ![Class Structure](block_implement.png)
-其中Block作为基类，派生出了SuperBlock和MetaBlock类，而DataBlock为MetaBlock的直接派生。
+&emsp;&emsp;其中Block作为基类，派生出了SuperBlock和MetaBlock类，而DataBlock为MetaBlock的直接派生。至于为什么要设置SuperBlock和MetaBlock具体原因可以参考下面对Table的设计。而不同类型Block的主要区别在于Header部分的不同，也就是上面图My Block中Data/Index Header与Data/Index部分体现出的不同。其中Common Header实现如下所示:
 ``` c++
-struct CommonHeader
-{
+struct CommonHeader {
     unsigned int magic;       // magic number(4B)
     unsigned int spaceid;     // 表空间id(4B)
     unsigned short type;      // block类型(2B)
     unsigned short freespace; // 空闲记录链表(2B)
 };
 ```
-其中magic为魔数，编码为小端时```0x31306264```，大端时为```0x64623031```，用来判断Block是否损坏和防止缓冲区攻击。
+- magic为魔数，编码为小端时```0x31306264```，大端时为```0x64623031```，可用来判断Block是否损坏和防止缓冲区攻击。
+- spaceid用以标记该Block属于的表空间。
+- type用来说明当前Block的类型，可选项有:IdleBlock,SuperBlock,DataBlock,IndexBlock,MetaBlock以及LogBlock，其中MetaBlock与DataBlock的Header部分完全相同(DataBlock是MetaBlock的子类)。
+- freespace是空闲链表开始位置的偏移量，当有新的Record插入时，会根据freespace当前位置到slots数组之间的空间来分配空间，如果空间足够则将Record插入到freespace下需要的空间内，freespace下移;若freespace下到slots数组之间的空间不足并且freesize大于需要的空间，Block需要去将已经被删除了的Record空间回收回来并将freespace上部空闲空间进行挤压，然后重新确定freespace的偏移量。注意:因为回收死亡Record空间是开销很大的操作，因此当freespace还没有到达slots数组或者无法为新的Record分配空间时，不会进行回收。
+
+&emsp;&emsp;tail的实现则更为简单。每一个Block的tail由两部分组成:slots数组和Trailer，slots数组在下面会详细介绍，而Trailer中仅有checksum一个变量类型为```unsigned int```作为校验和来保证Block的安全性。
+
+&emsp;&emsp;以下将仅介绍最重要和最常见的Block类型:DataBlock，其他Block暂时并不重要。其中SuperBlock作为Table管理Block的工具将会在Table的结构中介绍。
+``` c++
+struct DataHeader : CommonHeader {
+    unsigned int next;       // 下一个数据块(4B)
+    long long stamp;         // 时戳(8B)
+    unsigned short slots;    // slots[]长度(2B)
+    unsigned short freesize; // 空闲空间大小(2B)
+    unsigned int self;       // 本块id(4B)
+};
+```
+- 因为目前没有说到Table是如何组织不同Block间的关系，这里简单的提一下:在一个Table中一个是由一个单向链表来组织所有的Block，而SuperBlock则是链表的表头，每一个Block都是一个Node，Block中的next为下一个Block的id。  
+- DataHeader中的slots为当前Block中slots数组的长度而不是指向slots数组的指针，因为在Block结构图中可以看到，slots数组一定在Block的尾部，只需要根据Block的大小定位到最后一位然后向前移动一个```unsigned int```的大小即可找到slots数组，而头部只需要提供当前Block中有多少个slots也就是当前Block中有多少个Record来方便使用。
+&emsp;&emsp;因为上面一直在讲slots数组但没有具体说明Slot到底是个啥，接下来先将Slot的概念叙述清楚。  
+``` c++
+struct Slot {
+    unsigned short offset; // 记录偏移量
+    unsigned short length; // 记录大小
+};
+```
+&emsp;&emsp;slots数组是对应Block中的每一个Record在Block中的位置。Slot为Record在Block中的一个定位信息，而slots数组则是将所有Record的Slot放在一起并根据主键的大小进行排序，当需要在Block中定位Record时，只需要通过二分查找或者遍历的方法在slots数组中寻找到对应的Slot即可定位到目标Record的位置。Slot的定位方法还是通过Record相对于Block开始位置的偏移量来实现的，不过在Slot中还包含了Record的大小，这个可以为其他很多功能提供一个快速工具。
