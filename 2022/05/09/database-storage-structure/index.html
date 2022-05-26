@@ -18,7 +18,7 @@
   
     <meta name="description" content="Database Storage Structure 本文介绍数据库在磁盘上的存储格式与层次:Table-&gt;Block-&gt;Record  Record Structure 数据在磁盘上布局的基本单位:record;对关系型数据库而言，一条record就是对应关系中的一行，而对NoSQL数据库而言，record并不是数据存储的唯一方式。  定长record   如果一条record的长">
 <meta property="og:type" content="article">
-<meta property="og:title" content="database storage Structure">
+<meta property="og:title" content="Database Storage Structure">
 <meta property="og:url" content="http://example.com/2022/05/09/database-storage-structure/index.html">
 <meta property="og:site_name" content="Thm&#39;s blog">
 <meta property="og:description" content="Database Storage Structure 本文介绍数据库在磁盘上的存储格式与层次:Table-&gt;Block-&gt;Record  Record Structure 数据在磁盘上布局的基本单位:record;对关系型数据库而言，一条record就是对应关系中的一行，而对NoSQL数据库而言，record并不是数据存储的唯一方式。  定长record   如果一条record的长">
@@ -32,14 +32,14 @@
 <meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/my_block.png">
 <meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/block_implement.png">
 <meta property="article:published_time" content="2022-05-09T12:09:26.000Z">
-<meta property="article:modified_time" content="2022-05-23T13:55:01.946Z">
+<meta property="article:modified_time" content="2022-05-24T07:09:51.745Z">
 <meta property="article:author" content="Thm">
-<meta property="article:tag" content="database">
+<meta property="article:tag" content="Database">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/2022/05/09/database-storage-structure/fixed_length_record.png">
   
   
-  <title>database storage Structure - Thm&#39;s blog</title>
+  <title>Database Storage Structure - Thm&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -185,7 +185,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="database storage Structure">
+            <span class="h2" id="subtitle" title="Database Storage Structure">
               
             </span>
 
@@ -244,11 +244,11 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">database storage Structure</h1>
+            <h1 style="display: none">Database Storage Structure</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：May 23, 2022 pm
+                  本文最后更新于：May 24, 2022 pm
                 
               </p>
             
@@ -292,8 +292,8 @@
   上图是Block的另一种可行的Block实现方案，前部分与简单Block相同，都是有着header和record区，但是在record区域后方，这里相比简单Block，添加了一个tail来为record的数组进行排序，具体排序实现在My Block Implementation中进行详细说明。在record数组和tail之间存在free space，当有新record插入时，record数组向后延伸，而tail则向前延伸，从而压缩free space空间。</p>
 <h3 id="my-block-implementation"><a class="markdownIt-Anchor" href="#my-block-implementation"></a> My Block Implementation</h3>
 <p><img src="my_block.png" srcset="/img/loading.gif" lazyload alt="My Block" /><br />
-  由上图可以看见，Block的结构为：Block Header + Data Header + Data + Free Space + Slots + Trailer。其中Slots和Trailer共同作为tail。<br />
-  因为Block存在不同的类型，在实现时采用了基类和派生类的方法来进行不同Block的实现，uml图如下:<br />
+  由上图可以看见，Block的结构为：Block Header + Data Header + Data + Free Space + Slots + Trailer。其中Slots和Trailer共同作为tail。</p>
+<p>  因为Block存在不同的类型，在实现时采用了基类和派生类的方法来进行不同Block的实现，uml图如下:<br />
 <img src="block_implement.png" srcset="/img/loading.gif" lazyload alt="Class Structure" /><br />
   其中Block作为基类，派生出了SuperBlock和MetaBlock类，而DataBlock为MetaBlock的直接派生。至于为什么要设置SuperBlock和MetaBlock具体原因可以参考下面对Table的设计。而不同类型Block的主要区别在于Header部分的不同，也就是上面图My Block中Data/Index Header与Data/Index部分体现出的不同。其中Common Header实现如下所示:</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">CommonHeader</span> &#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> magic;       <span class="hljs-comment">// magic number(4B)</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> spaceid;     <span class="hljs-comment">// 表空间id(4B)</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> type;      <span class="hljs-comment">// block类型(2B)</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> freespace; <span class="hljs-comment">// 空闲记录链表(2B)</span><br>&#125;;<br></code></pre></td></tr></table></figure>
@@ -323,7 +323,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/database/">database</a>
+                      <a class="hover-with-bg" href="/tags/Database/">Database</a>
                     
                   </div>
                 
@@ -339,6 +339,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2022/05/24/Computer-Network-Chapter-1/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Computer Network Chapter 1</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
