@@ -1,7 +1,7 @@
 ---
-title: database storage Structure
+title: Database Storage Structure
 date: 2022-05-09 20:09:26
-tags: database
+tags: Database
 ---
 # Database Storage Structure
 本文介绍数据库在磁盘上的存储格式与层次:Table->Block->Record
@@ -53,6 +53,7 @@ tags: database
 ### My Block Implementation
 ![My Block](my_block.png)
 &emsp;&emsp;由上图可以看见，Block的结构为：Block Header + Data Header + Data + Free Space + Slots + Trailer。其中Slots和Trailer共同作为tail。  
+
 &emsp;&emsp;因为Block存在不同的类型，在实现时采用了基类和派生类的方法来进行不同Block的实现，uml图如下:
 ![Class Structure](block_implement.png)
 &emsp;&emsp;其中Block作为基类，派生出了SuperBlock和MetaBlock类，而DataBlock为MetaBlock的直接派生。至于为什么要设置SuperBlock和MetaBlock具体原因可以参考下面对Table的设计。而不同类型Block的主要区别在于Header部分的不同，也就是上面图My Block中Data/Index Header与Data/Index部分体现出的不同。其中Common Header实现如下所示:
