@@ -3,6 +3,7 @@ title: Computer Network Chapter 4
 date: 2022-05-28 14:54:43
 tags: Computer Network
 math: true
+katex: true
 ---
 
 # Chapter 4: Network Layer

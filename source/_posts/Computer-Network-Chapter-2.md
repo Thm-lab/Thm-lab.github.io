@@ -3,6 +3,7 @@ title: Computer Network Chapter 2
 date: 2022-05-25 15:09:37
 tags: Computer Network
 math: true
+katex: true
 ---
 
 # Chapter 2: Application Layer

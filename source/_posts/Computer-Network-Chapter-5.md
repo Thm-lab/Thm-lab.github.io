@@ -3,6 +3,7 @@ title: Computer Network Chapter 5
 date: 2022-05-29 09:06:52
 tags: Computer Network
 math: true
+katex: true
 ---
 
 # Chapter 5: Link Layer

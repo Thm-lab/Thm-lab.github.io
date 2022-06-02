@@ -3,6 +3,7 @@ title: Computer Network Chapter 3
 date: 2022-05-26 13:31:31
 tags: Computer Network
 math: true
+katex: true
 ---
 
 # Chapter 3: Transport Layer

@@ -2,6 +2,8 @@
 title: Database Storage Structure
 date: 2022-05-09 20:09:26
 tags: Database
+math: true
+katex: true
 ---
 # Database Storage Structure
 本文介绍数据库在磁盘上的存储格式与层次:Table->Block->Record

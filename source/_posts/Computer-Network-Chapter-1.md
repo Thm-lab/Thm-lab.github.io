@@ -3,6 +3,7 @@ title: Computer Network Chapter 1
 date: 2022-05-24 15:04:09
 tags: Computer Network
 math: true
+katex: true
 ---
 
 # Chapter 1: Computer Network and the Internet
@@ -98,10 +99,10 @@ Then: traffic intensity(流量强度) = $\pmb{\frac{L*a}{R}}$
 ### Protocol Layers(网络协议层)
 ![网络协议栈模型(五层模型)](protocol_layer.svg)
 **每层的主要任务:** 
-- 应用层: 应用层负责传输端系统中应用程序的数据报文信息，并且是网络应用程序及它们的应用层协议存留的地方。
-- 传输层: 传输层负责传输数据段，在应用程序端点之间传输数据段。
-- 网络层: 网络层负责将数据报从一台主机移动到另一条主机。
-- 链路层: 链路层负责将数据帧从一个网络节点移动到另一个网络节点。
+- 应用层: 应用层负责传输端系统中应用程序的数据报文信息，并且是网络应用程序及它们的应用层协议存留的地方。典型协议: HTTP;FTP;SMTP;
+- 传输层: 传输层负责传输数据段，在应用程序端点之间传输数据段。典型协议: TCP;UDP;
+- 网络层: 网络层负责将数据报从一台主机移动到另一条主机。典型协议: IP;OSPF;BGP;
+- 链路层: 链路层负责将数据帧从一个网络节点移动到另一个网络节点。典型协议: PPPoE;Ethernet;
 - 物理层: 物理层负责将比特从一个网络元素移动到邻近的网络元素。
 ![ISO/OSI模型(七层模型)](ISO_OSI.svg)
 
