@@ -39,7 +39,7 @@
 <meta property="og:image" content="http://example.com/2022/06/12/%E5%AD%98%E5%82%A8%E5%99%A8%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/tlb.png">
 <meta property="og:image" content="http://example.com/2022/06/12/%E5%AD%98%E5%82%A8%E5%99%A8%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/overall_process.png">
 <meta property="article:published_time" content="2022-06-12T06:03:50.000Z">
-<meta property="article:modified_time" content="2022-06-13T06:17:11.472Z">
+<meta property="article:modified_time" content="2022-06-13T14:48:43.970Z">
 <meta property="article:author" content="Thm">
 <meta property="article:tag" content="Computer Organization and Architecture">
 <meta name="twitter:card" content="summary_large_image">
@@ -562,7 +562,6 @@ graph TD
 <table>
 <thead>
 <tr>
-<th style="text-align:center">虚页号</th>
 <th style="text-align:center">装入位</th>
 <th style="text-align:center">修改位</th>
 <th style="text-align:center">替换控制位</th>
@@ -572,7 +571,6 @@ graph TD
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">0</td>
 <td style="text-align:center">1</td>
 <td style="text-align:center">0</td>
 <td style="text-align:center">0</td>
@@ -581,7 +579,6 @@ graph TD
 </tr>
 <tr>
 <td style="text-align:center">1</td>
-<td style="text-align:center">1</td>
 <td style="text-align:center">0</td>
 <td style="text-align:center">1</td>
 <td style="text-align:center">···</td>
@@ -589,7 +586,8 @@ graph TD
 </tr>
 </tbody>
 </table>
-<p><strong>页表的项数理论上由虚拟地址空间大小决定，即理论上每个进程都可以占据全部虚拟地址空间。</strong><br />
+<p>虚页号是页表从上到下的行数，从0开始计算。<br />
+<strong>页表的项数理论上由虚拟地址空间大小决定，即理论上每个进程都可以占据全部虚拟地址空间。</strong><br />
 <img src="page_example.png" srcset="/img/loading.gif" lazyload alt="页表" /></p>
 <ul>
 <li>未分配页: 进程的虚拟地址空间中&quot;空洞&quot;对应页(VP0、VP4)</li>
@@ -699,6 +697,12 @@ flowchart TD
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">互连及输入输出组织</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
