@@ -1,0 +1,645 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="8259A 8259A是专门为了对8085A和8086&#x2F;8088进行中断控制而设计的芯片，它是可以用程序控制的中断控制器。  8259A的功能与结构  功能 8259A的主要功能:   记录8个中断源的中断请求 从有请求的中断源中找出高优先级的中断源，并向CPU发出中断请求 CPU响应中断时向CPU发送中断类型号  其主要作用是控制并发的中断请求，由8259A先进行判优再代替中断源向CPU发出中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8259A">
+<meta property="og:url" content="http://example.com/2022/12/08/8259A/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="8259A 8259A是专门为了对8085A和8086&#x2F;8088进行中断控制而设计的芯片，它是可以用程序控制的中断控制器。  8259A的功能与结构  功能 8259A的主要功能:   记录8个中断源的中断请求 从有请求的中断源中找出高优先级的中断源，并向CPU发出中断请求 CPU响应中断时向CPU发送中断类型号  其主要作用是控制并发的中断请求，由8259A先进行判优再代替中断源向CPU发出中">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/8259a_structure.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/cascade.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/in_out.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/icw1.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/icw2.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/icw3.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/icw4.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/initial.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/ocw1.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/ocw2.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8259A/ocw3.png">
+<meta property="article:published_time" content="2022-12-08T08:54:22.000Z">
+<meta property="article:modified_time" content="2023-01-01T09:44:12.220Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Hardware Interface">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/12/08/8259A/8259a_structure.png">
+  
+  
+  <title>8259A - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="8259A">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-12-08 16:54" pubdate>
+        December 8, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      19 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">8259A</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：January 1, 2023 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="8259a"><a class="markdownIt-Anchor" href="#8259a"></a> 8259A</h1>
+<p>8259A是专门为了对8085A和8086/8088进行中断控制而设计的芯片，它是可以用程序控制的<strong>中断控制器</strong>。</p>
+<h2 id="8259a的功能与结构"><a class="markdownIt-Anchor" href="#8259a的功能与结构"></a> 8259A的功能与结构</h2>
+<h3 id="功能"><a class="markdownIt-Anchor" href="#功能"></a> 功能</h3>
+<p><strong>8259A的主要功能</strong>:<br />
+<b></p>
+<ul>
+<li>记录8个中断源的中断请求</li>
+<li>从有请求的中断源中找出高优先级的中断源，并向CPU发出中断请求</li>
+<li>CPU响应中断时向CPU发送中断类型号</li>
+</ul>
+<p>其主要作用是控制并发的中断请求，由8259A先进行判优再代替中断源向CPU发出中断请求，以实现对中断的处理<br />
+</b></p>
+<h3 id="结构"><a class="markdownIt-Anchor" href="#结构"></a> 结构</h3>
+<p><img src="8259a_structure.png" srcset="/img/loading.gif" lazyload alt="8259A内部逻辑图" /><br />
+如图所示，8259A由以下几个模块构成:</p>
+<ul>
+<li>数据总线缓冲器: 内部为三态双向8位缓冲器，接数据总线低8位D7~D0，也可通过总线驱动器与总线连接</li>
+<li>读写控制逻辑: 实现对8259A的读写和端口译码
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>R</mi><mi>D</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{RD}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 读信号</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>W</mi><mi>R</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{WR}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 写信号</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>C</mi><mi>S</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{CS}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 片选信号，一般通过多级门电路进行译码，低位直接接入芯片作为端口选择信号</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>A</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">A_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: 端内部寄存器选择信号，1: 奇地址;0: 偶地址</li>
+</ul>
+</li>
+<li>级联缓冲/比较器: 当中断源多于8个时需要将8259A进行级联，主片的CAS2~CAS0做输出，从片的CAS2~CAS0做输入，从片的INT接主片的IRi</li>
+<li><strong>中断请求寄存器IRR</strong>: 共8位，分别对应IR7~IR0，<strong>当有中断请求出现时，对应位置位，中断响应后复位，允许同时多位为1</strong></li>
+<li><strong>中断屏蔽寄存器IMR</strong>: 共8位，同样对应IR7~IR0，<strong>当置位时中断请求不会进入判优器中，复位时无影响</strong></li>
+<li><strong>优先级判别器PR</strong>: <strong>对未被屏蔽的中断请求寄存器中为1的请求进行优先级判断，将优先级最高的请求发出INTR信号，待收到第一个<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>I</mi><mi>N</mi><mi>T</mi><mi>A</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{INTA}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord mathdefault">A</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>信号后将ISR对应位置位，对IRR对应位复位</strong></li>
+<li><strong>中断服务寄存器ISR</strong>: 共8位，<strong>如果某中断被执行，对应位置位，直到中断服务完成(执行EOI操作)复位</strong></li>
+<li>控制电路: 根据信号来控制各寄存器的交互(收到第一个<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>I</mi><mi>N</mi><mi>T</mi><mi>A</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{INTA}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord mathdefault">A</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>对IRR复位和ISR置位，<strong>收到第二个<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>I</mi><mi>N</mi><mi>T</mi><mi>A</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{INTA}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord mathdefault">A</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>送出中断类型号</strong>)</li>
+</ul>
+<p><img src="cascade.png" srcset="/img/loading.gif" lazyload alt="非缓存级联" /></p>
+<p>8259A工作原理流程</p>
+
+<pre>
+<code class="mermaid" >
+flowchart TD
+    SRC["中断源"]
+    CPU["CPU"]
+    BUS["总线"]
+
+    subgraph "8259A"
+        IRR["IRR"]
+        IMR["IMR"]
+        ISR["ISR"]
+        PR["PR"]
+        Control["控制电路"]
+
+        IRR-->|"中断判优"|PR-->|"优先级最高中断"|Control
+        Control-->|"复位对应位"|IRR
+        PR<-->|"屏蔽判断"|IMR
+    end
+
+    SRC-->|"中断请求"|IRR
+    Control-->|"INTR、中断类型号"|BUS
+    BUS<-->CPU
+    BUS-->|"INTA1、INTA2、EOI"|Control
+    Control-->|"置位对应位"|ISR
+    Control-->|"复位对应位"|ISR
+</code>
+</pre>
+<h2 id="8259a的工作方式"><a class="markdownIt-Anchor" href="#8259a的工作方式"></a> 8259A的工作方式</h2>
+<p>在6个方面有不同工作方式可以选择:</p>
+<ul>
+<li>中断嵌套方式:
+<ol>
+<li>普通全嵌套: 当一个中断正被处理时，<strong>只有比它优先级更高的中断请求才会被响应</strong></li>
+<li>特殊全嵌套: <strong>允许同级</strong>中断进行嵌套，<strong>只允许主片使用</strong></li>
+</ol>
+</li>
+<li>优先级变化方式:
+<ol>
+<li>固定方式: <strong>各中断请求的优先级固定不变，8259A加电后IR0最高，IR7最低</strong></li>
+<li>循环方式: 一个中断源得到中断服务后，它的优先级自动降为最低
+<ol>
+<li>自动循环: 按照加电时的初始优先级顺序进行优先级循环</li>
+<li>特殊循环: 改变初始优先级顺序后的循环</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>中断源屏蔽方式:
+<ol>
+<li>常规屏蔽方式: <strong>IMR置位代表屏蔽</strong></li>
+<li>特殊屏蔽方式: <strong>使正在处理的中断所对应的IMR位置1，并使对应的ISR位清零，这样任何优先级的中断都可得到响应</strong></li>
+</ol>
+</li>
+<li>中断结束方式:<br />
+<strong>多片级联时EOI需要两条，分别用于主片与从片</strong>
+<ol>
+<li>自动结束方式: 在第二个INTA脉冲的后沿，8259A将当前处理的中断所对应的ISR位清零。<strong>当系统正在为某外设进行中断服务，但在8259A的ISR中却没有对应位指示，故该方式只能用于非嵌套方式处理</strong></li>
+<li>正常结束方式: 向8259A的<strong>偶地址</strong>端口输出一个<strong>操作命令字OCW2</strong>来发<strong>EOI命令</strong></li>
+<li>特殊结束方式: 向8259A的<strong>偶地址</strong>端口输出一个<strong>操作命令字OCW2</strong>，其中的L2、L1、L0这三位指出了对ISR中的哪一位进行清除</li>
+</ol>
+</li>
+<li>连接系统总线方式:
+<ol>
+<li>缓存方式: 在很多片8259A级联的大系统中，8259A需要通过总线驱动器和数据总线相连</li>
+<li>非缓存方式: 当系统中只有单片8259A或有少量几片8259A级联时，一般将8259A直接与数据总线相连</li>
+</ol>
+</li>
+<li>中断触发方式:
+<ol>
+<li><strong>电平触发</strong></li>
+<li><strong>边沿触发</strong></li>
+</ol>
+</li>
+</ul>
+<h2 id="8259a的初始化命令字"><a class="markdownIt-Anchor" href="#8259a的初始化命令字"></a> 8259A的初始化命令字</h2>
+<p>首先需要了解如何将控制字写入8259A:<br />
+<img src="in_out.png" srcset="/img/loading.gif" lazyload alt="8259A读写" /><br />
+如上图所示: 通过A0与D4、D3配合进行寻址，从而实现控制字的写入。<br />
+<strong>注意: ICW2、ICW3、ICW4、OCW1地址相同，因此必须按顺序写入</strong></p>
+<h3 id="icw1"><a class="markdownIt-Anchor" href="#icw1"></a> ICW1</h3>
+<p><img src="icw1.png" srcset="/img/loading.gif" lazyload alt="ICW1格式" /></p>
+<h3 id="icw2"><a class="markdownIt-Anchor" href="#icw2"></a> ICW2</h3>
+<p><img src="icw2.png" srcset="/img/loading.gif" lazyload alt="ICW2格式" /></p>
+<h3 id="icw3"><a class="markdownIt-Anchor" href="#icw3"></a> ICW3</h3>
+<p><img src="icw3.png" srcset="/img/loading.gif" lazyload alt="ICW3格式" /></p>
+<h3 id="icw4"><a class="markdownIt-Anchor" href="#icw4"></a> ICW4</h3>
+<p><img src="icw4.png" srcset="/img/loading.gif" lazyload alt="ICW4格式" /></p>
+<h3 id="8259a的初始化"><a class="markdownIt-Anchor" href="#8259a的初始化"></a> 8259A的初始化</h3>
+<p><img src="initial.png" srcset="/img/loading.gif" lazyload alt="初始化流程" /><br />
+如上图所示: 初始化中<strong>ICW1和ICW2必须写入</strong>进行通用性的配置，<strong>为单片时ICW3无需写入</strong>，<strong>根据ICW1内的设置来选择是否写入ICW4。</strong></p>
+<h2 id="8259a的操作命令字"><a class="markdownIt-Anchor" href="#8259a的操作命令字"></a> 8259A的操作命令字</h2>
+<p>在8259A工作期间，可通过<strong>操作命令字(OCW)来使它按不同的方式操作</strong>，<strong>没有写入顺序和时间要求，可独立使用</strong>。</p>
+<h3 id="ocw1"><a class="markdownIt-Anchor" href="#ocw1"></a> OCW1</h3>
+<p><img src="ocw1.png" srcset="/img/loading.gif" lazyload alt="OCW1格式" /></p>
+<h3 id="ocw2"><a class="markdownIt-Anchor" href="#ocw2"></a> OCW2</h3>
+<p><img src="ocw2.png" srcset="/img/loading.gif" lazyload alt="OCW2格式" /><br />
+<strong>Hint</strong>: L2L1L0设定优先级特殊循环方式时表示最低优先级为哪个中断源，如为011时，IR3优先级最低，因此优先级排序从高到低为: IR4 &gt; IR5 &gt; IR6 &gt; IR7 &gt; IR0 &gt; IR1 &gt; IR2 &gt; IR3</p>
+<h3 id="ocw3"><a class="markdownIt-Anchor" href="#ocw3"></a> OCW3</h3>
+<p><img src="ocw3.png" srcset="/img/loading.gif" lazyload alt="OCW3格式" /></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Hardware-Interface/">Hardware Interface</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/08/8253/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">8253</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/08/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95/">
+                        <span class="hidden-mobile">X86汇编语法</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

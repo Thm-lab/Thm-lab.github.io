@@ -1,0 +1,655 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="Chapter 1: Computer System Overview  计算机的发展历程   第一代计算机: 真空管计算机，1940中期~1950后期。ENICA是第一台计算机有18000多个真空管，十进制表示和运算。采用手动编程，通过设置开关和插拔连线实现。   第二代计算机: 晶体管计算机，1950后期~1960初期。逻辑元件采用晶体管，内存由磁芯构成，外存为磁鼓和磁带。可进行浮点运算，采">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机系统概述">
+<meta property="og:url" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="Chapter 1: Computer System Overview  计算机的发展历程   第一代计算机: 真空管计算机，1940中期~1950后期。ENICA是第一台计算机有18000多个真空管，十进制表示和运算。采用手动编程，通过设置开关和插拔连线实现。   第二代计算机: 晶体管计算机，1950后期~1960初期。逻辑元件采用晶体管，内存由磁芯构成，外存为磁鼓和磁带。可进行浮点运算，采">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/pdp-8.svg">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/von_neumann.svg">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/current_computer.svg">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/excute.svg">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/computer_system_architecture.svg">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/computer_system_architecture_detail.svg">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/language_layer.svg">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/abstract_layer.svg">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/cpi_example.svg">
+<meta property="og:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/mips_example.svg">
+<meta property="article:published_time" content="2022-06-01T09:26:59.000Z">
+<meta property="article:modified_time" content="2022-06-02T04:43:00.961Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Computer Organization and Architecture">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/pdp-8.svg">
+  
+  
+  <title>计算机系统概述 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="计算机系统概述">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-01 17:26" pubdate>
+        June 1, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      26 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">计算机系统概述</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：June 2, 2022 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="chapter-1-computer-system-overview"><a class="markdownIt-Anchor" href="#chapter-1-computer-system-overview"></a> Chapter 1: Computer System Overview</h1>
+<h2 id="计算机的发展历程"><a class="markdownIt-Anchor" href="#计算机的发展历程"></a> 计算机的发展历程</h2>
+<ol>
+<li>
+<p>第一代计算机: 真空管计算机，1940中期~1950后期。ENICA是第一台计算机有18000多个<strong>真空管</strong>，<strong>十进制</strong>表示和运算。采用手动编程，通过设置开关和插拔连线实现。</p>
+</li>
+<li>
+<p>第二代计算机: 晶体管计算机，1950后期~1960初期。逻辑元件采用<strong>晶体管</strong>，内存由磁芯构成，外存为磁鼓和磁带。可进行浮点运算，采用了中央交换结构(非总线结构)。可使用高级语言编程，提供了系统软件。代表机为IBM 7094和DEC PDP-1。</p>
+</li>
+<li>
+<p>第三代计算机: 中小规模集成电路计算机，1960中期~1970中期。逻辑元件和主存均由<strong>集成电路</strong>实现。特点为微程序控制、具有cache结构、虚拟存储器和流水线等。代表机为IBM 360和DEC PDP-8。</p>
+<ul>
+<li>
+<p>IBM 360引入了兼容机的概念:</p>
+<ul>
+<li>相同的或相似的指令集</li>
+<li>相同的或相似的操作系统</li>
+<li>原来机器上的程序可以不改动而在新机器上运行，但性能不同。</li>
+</ul>
+</li>
+<li>
+<p>DEC PDP-8采用了总线结构:</p>
+<ul>
+<li>具有高度的灵活性</li>
+<li>允许将模块化的功能部件插入总线<br />
+<img src="pdp-8.svg" srcset="/img/loading.gif" lazyload alt="PDP-8" /></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>第四代计算机: 大规模/超大规模计算机，1970初期~今天。微处理器和半导体存储器技术发展迅猛，微型计算机出现(PC)。<strong>采用半导体作为存储器</strong>。<strong>微处理器把CPU所有元件放在一块芯片</strong>。特点: 共享存储器和分布式存储器及大规模并行处理系统。代表机有争议。</p>
+</li>
+</ol>
+<h3 id="冯诺依曼机"><a class="markdownIt-Anchor" href="#冯诺依曼机"></a> 冯诺依曼机</h3>
+<p>1945年冯诺依曼提出<b>存储程序(Stored-Program)</b>思想: 将事先编好的程序和原始数据送入主存中；启动执行后，在不需操作人员干预下，自动完成逐条取出指令和执行指令的任务。<br />
+<strong>计算机应由运算器、控制器、存储器、输入设备和输出设备五个基本部件组成。</strong></p>
+<ul>
+<li>存储器: 不仅能存放数据，而且也能存放指令，形式上两者没有区别，但计算机应能区分数据还是指令。</li>
+<li>控制器: 控制器应能自动执行指令。</li>
+<li>运算器: 运算器应能进行加/减/乘/除四种基本算术运算，并且也能进行一些逻辑运算和附加运算。</li>
+<li>输入和输出设备: 操作人员可以通过输入设备和输出设备与主机进行通信。</li>
+</ul>
+<p>内部以<strong>二进制数</strong>表示指令和数据。每条指令由操作码和地址码两部分组成。操作码指出操作的类型，地址码指出操作数的地址。<br />
+采用存储程序工作方式。</p>
+<h2 id="计算机系统的基本组成"><a class="markdownIt-Anchor" href="#计算机系统的基本组成"></a> 计算机系统的基本组成</h2>
+<p>计算机的定义: 计算机是一种能对数字化信息进行自动、高速的算术和逻辑运算的处理装置。<br />
+计算机的基本部件和功能:</p>
+<ul>
+<li>运算器(数据运算): ALU、GPRs、标志寄存器等。</li>
+<li>存储器(数据存储): 存储阵列、地址译码器、读写控制电路。</li>
+<li>总线(数据传送): 数据线(MDR)、地址线(MAR)、控制线。</li>
+<li>控制器(控制): 对指令译码产生控制信号。</li>
+</ul>
+<p><img src="von_neumann.svg" srcset="/img/loading.gif" lazyload alt="冯诺依曼架构" /><br />
+<img src="current_computer.svg" srcset="/img/loading.gif" lazyload alt="现代计算机结构" /><br />
+几乎现代所有的通用计算机都采用冯诺依曼架构，因此IAS(Institue for Advance Study at Princeton,IAS普林斯顿高等研究院)计算机是现代计算机的原型机。<br />
+<b></p>
+<ul>
+<li>CPU: 中央处理器</li>
+<li>ALU: 算术逻辑部件</li>
+<li>PC: 程序计数器</li>
+<li>IR: 指令寄存器</li>
+<li>GPRs: 通用寄存器组</li>
+<li>MAR: 存储器地址寄存器</li>
+<li>MDR: 存储器数据寄存器<br />
+</b></li>
+</ul>
+<p><img src="excute.svg" srcset="/img/loading.gif" lazyload alt="执行过程" /><br />
+在程序起始地址送入PC后，计算机能<strong>自动</strong>取出一条一条指令进行执行，在执行过程中无需人的干预。</p>
+<h2 id="计算机系统的层次结构"><a class="markdownIt-Anchor" href="#计算机系统的层次结构"></a> 计算机系统的层次结构</h2>
+<p>软件和硬件都是计算机使用中不可或缺的部分，软件通过使用硬件来得到结果，硬件根据软件的使用方法来计算结果，而软件和硬件的沟通就是通过<strong>ISA(Instruction Set Architecture</strong>, 指令集体系结构)来进行的。<br />
+<img src="computer_system_architecture.svg" srcset="/img/loading.gif" lazyload alt="层次结构" /></p>
+<h3 id="软件"><a class="markdownIt-Anchor" href="#软件"></a> 软件</h3>
+<p>软件按照用途可以分为两大类型: 系统软件和应用软件。</p>
+<ul>
+<li>应用软件: 根据具体场景完成具体问题的软件。如信息管理系统、网页浏览软件等</li>
+<li>系统软件: 为应用软件的编写提供资源，使硬件资源被有效利用。
+<ol>
+<li>操作系统: 实现硬件资源管理，用户接口，系统调度等功能。</li>
+<li>语言处理系统: 翻译程序+Linker+Debug等，即高级语言的基础。
+<ul>
+<li>汇编程序: 将汇编语言编写的程序翻译为机器码。</li>
+<li>编译程序: 将高级语言程序编译为汇编语言程序或直接编译为机器码。</li>
+<li>解释程序: 将高级语言逐句翻译为机器码且立即执行，不生成目标文件。</li>
+</ul>
+</li>
+<li>实用程序: 如磁盘碎片整理程序、备份程序等。<br />
+<img src="computer_system_architecture_detail.svg" srcset="/img/loading.gif" lazyload alt="详细层次结构" /></li>
+</ol>
+</li>
+</ul>
+<h4 id="不同层级语言之间的转换"><a class="markdownIt-Anchor" href="#不同层级语言之间的转换"></a> 不同层级语言之间的转换</h4>
+<ul>
+<li>第一代程序设计语言: 程序员直接编写机器码，将程序起始地址放入PC即可直接执行。</li>
+<li>第二代程序设计语言: 使用汇编语言编写程序，经过汇编程序翻译后得到机器码，再将程序起始地址放入PC即可直接执行。</li>
+<li>第三代程序设计语言: 使用过程式高级语言(如C语言)，程序员编写高级语言代码，经过编译语言(编译器)编译后得到汇编语言程序，再通过汇编程序翻译为机器码才能执行。</li>
+<li>第四代程序设计语言: 非过程类语言(如面向对象型语言,C++)，与第三代语言类似，均需要通过编译程序和汇编程序转换为机器码才能执行。</li>
+</ul>
+<p><img src="language_layer.svg" srcset="/img/loading.gif" lazyload alt="不同层级语言之间的转换" /></p>
+<h3 id="指令系统"><a class="markdownIt-Anchor" href="#指令系统"></a> 指令系统</h3>
+<p>ISA是一种规约(Specification)，它规定了如何使用硬件。<br />
+规定包括:</p>
+<ul>
+<li>可执行的指令的集合，包括指令格式、操作种类以及每种操作对应的操作数的相应规定。</li>
+<li>指令可以接受的操作数的类型。</li>
+<li>操作数所能存放的寄存器组的结构，包括每个寄存器的名称、编号、长度和用途。</li>
+<li>操作数所能存放的存储空间的大小和编址方式。</li>
+<li>操作数在存储空间存放时按照大端还是小端方式存放。</li>
+<li>指令获取操作数的方式，即寻址方式。</li>
+<li>指令执行过程的控制方式，包括程序计数器、条件码定义等。</li>
+</ul>
+<p><strong>不同ISA规定的指令集不同</strong>，如，IA-32、MIPS、ARM、RISC-V等。计算机组成必须能够实现ISA规定的功能即<strong>硬件必须要能够满足ISA要求的功能</strong>。<strong>同一种ISA也可以有不同的计算机组成</strong>，只要硬件抽象的功能能够满足ISA的需求。</p>
+<p><img src="abstract_layer.svg" srcset="/img/loading.gif" lazyload alt="计算机的不同层级" /></p>
+<h2 id="计算机系统性能评价"><a class="markdownIt-Anchor" href="#计算机系统性能评价"></a> 计算机系统性能评价</h2>
+<p><strong>衡量计算机性能的基本指标:</strong></p>
+<ul>
+<li>响应时间(Respone Time): 指从作业提交开始到作业完成所用的时间</li>
+<li>吞吐率(Throughput): 指单位时间内所完成的工作量(在有些场合下也被称为带宽)</li>
+</ul>
+<p><strong>计算机性能测量:</strong></p>
+<ul>
+<li>
+<p>指令执行速度(MIPS、MFLOPS/TFLOPS/PFLOPS):</p>
+<ul>
+<li>MIPS指每秒执行多少百万条<strong>指令</strong>(定点数指令), MIPS= 时钟频率/ (CPI x <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn><msup><mn>0</mn><mn>6</mn></msup></mrow><annotation encoding="application/x-tex">10^6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">6</span></span></span></span></span></span></span></span></span></span></span>)。因为不同指令执行时间不同，所以MIPS总是一个平均值。</li>
+<li>MFLOPS: 每秒能执行的<strong>浮点运算</strong>有多少百万次，反映机器对浮点数处理的速度。<strong>注意: MFLOPS不是用执行浮点数指令数来描述</strong></li>
+</ul>
+</li>
+<li>
+<p>基准程序(Benchmark): 基准测试程序是专门用来进行性能评价的一组程序。不同用户使用的计算机用不同的基准程序，通过运行实际负载来反映计算机的性能，最好的基准程序是用户实际使用的程序或典型的简单程序。<strong>基准程序中最好包含编译器，避免编译器所产生的特殊作用!</strong></p>
+</li>
+</ul>
+<p>通常把用户感觉到的执行时间分成以下两个时间:</p>
+<ul>
+<li>CPU时间: 指CPU真正花在执行该程序的时间。
+<ul>
+<li>系统CPU时间: 为了执行用户程序而需要运行操作系统程序的时间</li>
+<li>用户CPU时间: 用来运行用户代码的时间</li>
+</ul>
+</li>
+<li>其他时间: 等待I/O操作完成或CPU花在其他用户程序的时间</li>
+</ul>
+<p>CPI(Cycles Per Instruction): 指每条指令所花费的时钟周期数。</p>
+<ul>
+<li>对于某一条特定的指令，其CPI是一个确定的值。</li>
+<li>对于某一个程序或一台机器，其CPI是一个平均值，表示该程序或该机器指令集中一条指令执行时平均需要多少个时钟周期。</li>
+</ul>
+<p><strong>CPI = CPU时钟周期数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>÷</mo></mrow><annotation encoding="application/x-tex">\div</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">÷</span></span></span></span> 指令条数</strong><br />
+<strong>用户CPU时间 = CPU时钟周期数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> 时钟周期 = CPU时钟周期数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>÷</mo></mrow><annotation encoding="application/x-tex">\div</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">÷</span></span></span></span> 时钟频率 = CPI <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> 指令数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> 时钟周期</strong></p>
+<p>但单靠CPI不能反映CPU性能。如单周期CPU的CPI=1，但性能差。<br />
+<img src="cpi_example.svg" srcset="/img/loading.gif" lazyload alt="example" /><br />
+<img src="mips_example.svg" srcset="/img/loading.gif" lazyload alt="example" /></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Computer-Organization-and-Architecture/">Computer Organization and Architecture</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/02/%E6%95%B0%E6%8D%AE%E7%9A%84%E6%9C%BA%E5%99%A8%E7%BA%A7%E8%A1%A8%E7%A4%BA/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">数据的机器级表示</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/29/Computer-Network-Chapter-5/">
+                        <span class="hidden-mobile">Computer Network Chapter 5</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

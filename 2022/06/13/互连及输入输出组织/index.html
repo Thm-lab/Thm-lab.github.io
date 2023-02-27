@@ -1,0 +1,852 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="Chapter 8: Interconnection and input&#x2F;output organization  I&#x2F;O设备和磁盘存储器  I&#x2F;O系统概述 I&#x2F;O系统常用的性能指标:  Throughout(吞吐率&#x2F;IO带宽): 单位时间内从系统输入&#x2F;输出数据量 Latency(响应时间): 请求任务的完成时间  I&#x2F;O系统的功能: 解决各种形式信息的输入和输出，包括从外设获取输入数据和将数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="互连及输入输出组织">
+<meta property="og:url" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="Chapter 8: Interconnection and input&#x2F;output organization  I&#x2F;O设备和磁盘存储器  I&#x2F;O系统概述 I&#x2F;O系统常用的性能指标:  Throughout(吞吐率&#x2F;IO带宽): 单位时间内从系统输入&#x2F;输出数据量 Latency(响应时间): 请求任务的完成时间  I&#x2F;O系统的功能: 解决各种形式信息的输入和输出，包括从外设获取输入数据和将数据">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/io_devices_model.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/io_disk_model.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/disk.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/disk_board.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/disk_density.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/bit_density.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/disk_driver.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/disk_track.jpg">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/system_bus.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/storage_bus.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/io_devices2PC.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/io_interface.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/interruption.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/vector_query.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/shield_word.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/multi_interrupt_process.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/dma_model.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/cycle_move_method.png">
+<meta property="og:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/dma_logic.png">
+<meta property="article:published_time" content="2022-06-13T06:19:26.000Z">
+<meta property="article:modified_time" content="2023-01-01T09:44:12.244Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Computer Organization and Architecture">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/io_devices_model.png">
+  
+  
+  <title>互连及输入输出组织 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="互连及输入输出组织">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-13 14:19" pubdate>
+        June 13, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      56 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">互连及输入输出组织</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：January 1, 2023 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="chapter-8-interconnection-and-inputoutput-organization"><a class="markdownIt-Anchor" href="#chapter-8-interconnection-and-inputoutput-organization"></a> Chapter 8: Interconnection and input/output organization</h1>
+<h2 id="io设备和磁盘存储器"><a class="markdownIt-Anchor" href="#io设备和磁盘存储器"></a> I/O设备和磁盘存储器</h2>
+<h3 id="io系统概述"><a class="markdownIt-Anchor" href="#io系统概述"></a> I/O系统概述</h3>
+<p>I/O系统常用的性能指标:</p>
+<ul>
+<li>Throughout(吞吐率/IO带宽): <strong>单位时间内从系统输入/输出数据量</strong></li>
+<li>Latency(响应时间): <strong>请求任务的完成时间</strong></li>
+</ul>
+<p>I/O系统的功能: 解决各种形式信息的输入和输出，包括从外设获取输入数据和将数据传输给输出设备。</p>
+<h3 id="io设备概述"><a class="markdownIt-Anchor" href="#io设备概述"></a> I/O设备概述</h3>
+<p>外设分类:</p>
+<ol>
+<li>按信息传输方向:
+<ul>
+<li>输入设备: 从外部向计算机输入信息，如：键盘、鼠标、扫描仪等</li>
+<li>输出设备:从计算机向外部输出信息，如：打印机、显示器等</li>
+<li>输入输出设备: 既可输入又可输出，如：带触屏的显示器、磁盘存储器等</li>
+</ul>
+</li>
+<li>按功能:
+<ul>
+<li>人-机交互设备:输入/输出的信息是人可读的，或可操作的。如: 键盘、鼠标、扫描仪、打印机、显示器等</li>
+<li>外部存储设备: 用于信息的存储(其输入/出的信息是机器可读的)。如: 磁盘、磁带、光盘等</li>
+<li>主机间通信设备: 主要用于计算机和计算机之间的通信。如: 网卡、调制解调器、A/D、D/A等</li>
+</ul>
+</li>
+</ol>
+<p><img src="io_devices_model.png" srcset="/img/loading.gif" lazyload alt="外部设备通用模型" /></p>
+<ul>
+<li>电缆: 通过电缆与计算机内部I/O接口进行数据、状态和控制信息的传送。电缆线中包括<strong>控制信号</strong>、<strong>状态信号</strong>和<strong>数据信号</strong>三种信号线</li>
+<li>控制逻辑: 根据控制信息控制设备的操作并检测设备状态</li>
+<li>缓冲器: <strong>用于保存与计算机交换的数据信息</strong></li>
+<li>变换器: 用于实现电信号形式与其他形式的设备数据之间的转换</li>
+</ul>
+<p><b>所有外部设备均可抽象为该模型，因此以磁盘为例进行说明。</b></p>
+<h3 id="磁盘存储器"><a class="markdownIt-Anchor" href="#磁盘存储器"></a> 磁盘存储器</h3>
+<h4 id="磁盘存储器组成"><a class="markdownIt-Anchor" href="#磁盘存储器组成"></a> 磁盘存储器组成</h4>
+<p><b>磁盘 = 硬盘控制器 + 硬盘驱动器 + 磁记录介质(盘片)</b></p>
+
+<pre>
+<code class="mermaid" >
+flowchart TD
+    PC["主机"]
+    CR["硬盘控制器"]
+    DR["硬盘驱动器"]
+    DK["盘片"]
+
+    PC<-->|"I/O总线"|CR
+    CR<-->|"IDE、USB、SATA···"|DR
+    DR<-->|"磁头"|DK
+</code>
+</pre>
+<ul>
+<li>盘片: 通过一些物理原理来<strong>实现信息的保存</strong></li>
+<li>磁盘驱动器: 包括读写电路、读\写转换开关、读写磁头与磁头定位伺服系统等，<strong>实现盘片的读写</strong></li>
+<li>磁盘控制器: 包括控制逻辑、时序电路、&quot;并→串&quot;转换和&quot;串→并&quot;转换电路等(用于连接主机与盘驱动器)，还包括数据缓存器、控制状态寄存器等，<strong>实现主机与磁盘存储器的数据交互和控制</strong></li>
+</ul>
+<p><img src="io_disk_model.png" srcset="/img/loading.gif" lazyload alt="磁盘存储器模型" /></p>
+<h4 id="磁盘信息存储原理"><a class="markdownIt-Anchor" href="#磁盘信息存储原理"></a> 磁盘信息存储原理</h4>
+<p><img src="disk.png" srcset="/img/loading.gif" lazyload alt="磁盘结构" /><br />
+当线圈通过不同方向的电流时，磁头磁场方向相反，在磁场的作用下盘片上会保存磁化状态从而表示0/1的信息。在读取时，磁头固定不动，载体运动，在铁芯线圈两端得到感应电压，感应电压的方向能够表示0/1.</p>
+<h4 id="盘片划分结构"><a class="markdownIt-Anchor" href="#盘片划分结构"></a> 盘片划分结构</h4>
+<p><img src="disk_board.png" srcset="/img/loading.gif" lazyload alt="磁盘" /><br />
+磁盘表面分为多个<strong>同心圆</strong>，每个同心圆即一个磁道，其中最外围同心圆为0磁道。每个磁道上被划分为多个段，每个段称为一个扇区，一个扇区固定存储容量为512B(现在扇区划分已提升到4kB)</p>
+<p>提高盘片信息记录密度方式:</p>
+<ul>
+<li>增加磁道数量: 提高道密度<br />
+<img src="disk_density.png" srcset="/img/loading.gif" lazyload alt="道密度" /></li>
+<li>增加扇区数量:<br />
+<img src="bit_density.png" srcset="/img/loading.gif" lazyload alt="位密度" /></li>
+</ul>
+<p>提高磁盘容量: 在硬盘中叠加更多片盘片。</p>
+<h4 id="磁盘驱动器"><a class="markdownIt-Anchor" href="#磁盘驱动器"></a> 磁盘驱动器</h4>
+<p><img src="disk_driver.png" srcset="/img/loading.gif" lazyload alt="磁盘驱动器逻辑结构" /><br />
+<b><br />
+定位数据流程:</p>
+<ol>
+<li>寻道: 磁头径向移动到指定的磁道</li>
+<li>旋转: 在磁头固定不动的情况下，盘片旋转直到扇区在磁头下停止</li>
+<li>读写: 通过载体运动产生感应电压从而进行读取数据或磁头加电流进行写操作<br />
+</b></li>
+</ol>
+<p><img src="disk_track.jpg" srcset="/img/loading.gif" lazyload alt="磁道格式" /></p>
+<h4 id="磁盘主要技术指标"><a class="markdownIt-Anchor" href="#磁盘主要技术指标"></a> 磁盘主要技术指标</h4>
+<ul>
+<li>磁盘容量: 磁盘容量分为未格式化容量和格式化容量
+<ul>
+<li>未格式化容量: 指按道密度和位密度计算出的容量，包括间歇、ID域、数据域等信息。<br />
+磁盘总容量=记录面数×柱面数×内圆周长×位密度</li>
+<li>格式化容量: 格式化后的磁盘容量只包含数据区，即能存储数据信息的容量。<br />
+磁盘数据容量=2×盘片数×磁道数/面×扇区数/磁道×512/扇区</li>
+</ul>
+</li>
+<li><b>平均存取时间: T = 平均寻道时间 + 平均旋转等待时间 + 数据传输时间，磁盘响应时间 = 排队延迟 + 控制器时间 + 平均存取时间</b><br />
+例: 假定每个扇区512字节，磁盘转速为5400RPM，声称寻道时间(最大寻道时间的一半)为12 ms, 数据传输率为4MB/s, 磁盘控制器开销为1ms, 不考虑排队时间，则磁盘响应时间为多少？<br />
+T = 12ms + <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mn>0.5</mn><mrow><mn>5400</mn><mo>÷</mo><mn>60</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{0.5}{5400 \div 60 }</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2484389999999999em;vertical-align:-0.403331em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">5</span><span class="mord mtight">4</span><span class="mord mtight">0</span><span class="mord mtight">0</span><span class="mbin mtight">÷</span><span class="mord mtight">6</span><span class="mord mtight">0</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mord mtight">.</span><span class="mord mtight">5</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.403331em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>ms + <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mn>512</mn><mrow><mn>4</mn><mi>M</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{512}{4M}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">4</span><span class="mord mathdefault mtight" style="margin-right:0.10903em;">M</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">5</span><span class="mord mtight">1</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>ms + 1ms + 0ms <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>≈</mo></mrow><annotation encoding="application/x-tex">\approx</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.48312em;vertical-align:0em;"></span><span class="mrel">≈</span></span></span></span> 18.6ms</li>
+</ul>
+<h3 id="raid冗余磁盘阵列"><a class="markdownIt-Anchor" href="#raid冗余磁盘阵列"></a> RAID(冗余磁盘阵列)</h3>
+<p>基本思想: 将多个独立操作的磁盘按某种方式组织成磁盘阵列(Disk Array)，以增加容量，利用类似于主存中的多体交叉技术，将数据分散在多个磁盘上，<strong>通过这些盘并行工作来提高数据传输速度</strong>。</p>
+<p>RAID特性:</p>
+<ul>
+<li>RAID是<strong>一组</strong>物理磁盘驱动器，但在操作系统下被视为一个高容量的单逻辑驱动器</li>
+<li>数据连续或交叉地分布在一组物理磁盘上，高数据传输率</li>
+<li><strong>冗余磁盘用于存储校验信息</strong>，保证磁盘万一损坏时能恢复数据(一张磁盘专门用于存放校验)</li>
+</ul>
+<h3 id="ssd固态硬盘"><a class="markdownIt-Anchor" href="#ssd固态硬盘"></a> SSD(固态硬盘)</h3>
+<p>SSD并不是一种磁表面存储器，而是一种使用NAND闪存组成的外部存储系统，与U盘并没有本质差别，只是容量更大，存取性能更好。</p>
+<p>SSD的特性:</p>
+<ul>
+<li>写操作比读操作慢得多</li>
+<li><strong>内部传输速率远远高于常规硬盘</strong></li>
+<li>闪存的擦写次数有限，所以频繁擦写会降低其写入使用寿命</li>
+</ul>
+<h2 id="总线及系统互连-io接口"><a class="markdownIt-Anchor" href="#总线及系统互连-io接口"></a> 总线及系统互连、I/O接口</h2>
+<p>总线的分类:</p>
+<ul>
+<li><strong>芯片内总线</strong>: 在芯片内部各元件之间提供连接，数据通路中的线均为芯片内总线</li>
+<li><strong>系统总线</strong>: 在系统主要功能部件间提供连接，如CPU、MM和I/O控制器之间<br />
+系统总线可以分为单总线结构和多总线结构
+<ul>
+<li>单总线将CPU、MM和I/O控制器<strong>通过一条底板总线</strong>连接在一起</li>
+<li>多总线将不同部件用不同总线进行连接，如CPU与MM单独连接的总线，CPU与I/O的高速总线，CPU与I/O的低速总线等</li>
+</ul>
+</li>
+<li><strong>通信总线</strong>: 在主机和I/O设备或主机与主机之间提供连接，<strong>如SATA、USB、SCSI等</strong></li>
+</ul>
+<h3 id="系统总线"><a class="markdownIt-Anchor" href="#系统总线"></a> 系统总线</h3>
+<p><img src="system_bus.png" srcset="/img/loading.gif" lazyload alt="系统总线" /><br />
+在Intel体系中北桥将CPU到存储器的总线分为了<strong>处理器总线</strong>和<strong>存储器总线</strong>两条总线。系统总线通常由<strong>一组控制线</strong>、<strong>一组数据线</strong>和<strong>一组地址线</strong>构成，但存在地址线和数据线合一的总线，这种情况称为<strong>数据/地址复用</strong></p>
+<p>总线宽度: 总线中数据线的条数，决定了每次能同时传输的信息位数<br />
+总线工作频率: 有些总线一个时钟周期可以传送2次或4次数据，因此，工作频率是时钟频率的2倍或4倍(与DDR技术对应)<br />
+总线带宽: 总线的最大数据传输率，B=W <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>×</mo><mfrac><mi>F</mi><mi>N</mi></mfrac></mrow><annotation encoding="application/x-tex">\times \frac{F}{N}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.217331em;vertical-align:-0.345em;"></span><span class="mord">×</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.13889em;">F</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>，W为总线宽度，F为总线时钟频率，N为完成一次数据传送所用的时钟周期数<br />
+总线传送方式:</p>
+<ul>
+<li>非突发传送: 每个总线事务都传送地址，一个地址对应一次数据传送</li>
+<li>突发传送: 即成块数据传送。突发传送总线事务中，先传送一个地址，后传送多次数据，后续数据的地址默认为前面地址自动增量</li>
+</ul>
+<h4 id="fsb处理器总线"><a class="markdownIt-Anchor" href="#fsb处理器总线"></a> FSB(处理器总线)</h4>
+<ul>
+<li>并行传输、同步定时方式</li>
+<li>是第一代CPU总线，使用quad pumped技术: 每个总线时钟周期传送4次数据</li>
+</ul>
+<h4 id="qpi快速通道互连总线"><a class="markdownIt-Anchor" href="#qpi快速通道互连总线"></a> QPI(快速通道互连总线)</h4>
+<ul>
+<li>目前在Intel架构中CPU芯片内部核之间、CPU芯片之间、CPU芯片与IOH(I/O Hub)芯片之间，都通过QPI总线互连</li>
+<li>采用QPI总线的CPU已经将主存控制器集成到芯片，因此<strong>主存不需要通过北</strong>桥，而是直接与CPU相连</li>
+<li>发送方和接收方有各自的时钟信号，总线有20条数据线，每条数据线为一个<strong>双向</strong>的串行传输通道，因<strong>此双方都有20个传输通道</strong></li>
+<li>QPI总线带宽为：时钟频率×2×2B×2(不算校验位，按有效数据位计算)</li>
+</ul>
+<h4 id="存储器总线"><a class="markdownIt-Anchor" href="#存储器总线"></a> 存储器总线</h4>
+<p><img src="storage_bus.png" srcset="/img/loading.gif" lazyload alt="存储器总线" /></p>
+<h4 id="io总线"><a class="markdownIt-Anchor" href="#io总线"></a> I/O总线</h4>
+<p><strong>I/O总线用于为系统中的各种I/O设备提供输入输出通道</strong>。<br />
+I/O总线在物理上可以是主板上的I/O扩展槽，如:</p>
+<ul>
+<li>第一代: <strong>ISA/EISA总线，VESA总线</strong></li>
+<li>第二代: <strong>PCI、AGP、PCI-X</strong></li>
+<li>第三代: <strong>PCI-Express</strong></li>
+</ul>
+<p>PCI-Express:</p>
+<ul>
+<li><strong>串行</strong>总线</li>
+<li>两个PCI-Express设备之间以一个链路(link)相连</li>
+<li>每个链路包含多条通路(lane)，可以是1,2,4,8,16或32条</li>
+<li>每条通路<strong>可同时发送和接受</strong>，<strong>每个数据字节被转换为10位信息被传输</strong></li>
+<li>PCI-Express1.0下，每条通路的发送和接受速率都是2.5Gb/s，故PCI-Express×n的带宽为：2.5Gb/s×2×n/10=0.5GB/s×n</li>
+</ul>
+<h5 id="io总线io控制器和io设备的关系"><a class="markdownIt-Anchor" href="#io总线io控制器和io设备的关系"></a> I/O总线，I/O控制器和I/O设备的关系</h5>
+<p><img src="io_devices2PC.png" srcset="/img/loading.gif" lazyload alt="图示" /><br />
+<b><br />
+I/O设备通常是物理上相互独立的设备，它们一般通过通信总线与I/O控制器连接。<br />
+I/O控制器(I/O接口)通过扩充卡或者南桥芯片与I/O总线连接<br />
+I/O总线经过北桥芯片与内存、CPU连接<br />
+</b></p>
+<h5 id="io接口"><a class="markdownIt-Anchor" href="#io接口"></a> I/O接口</h5>
+<p><strong>I/O接口：I/O设备控制器及其插座，I/O接口是I/O设备与主机接入的桥梁</strong>。<br />
+I/O接口的功能:</p>
+<ul>
+<li>数据缓冲: <strong>提供数据缓冲寄存器</strong>，以达到主机和外设工作速度的匹配</li>
+<li>错误或状态检测: <strong>提供状态寄存器，以保存各种错误或状态信息供CPU查用</strong></li>
+<li>控制和定时: 提供控制和定时逻辑，以接受从系统总线来的控制定时信号</li>
+<li>数据格式转换: 使通过外部接口得到的<strong>数据转换为内部接口需要的格式</strong>，或在相反的方向进行数据格式转换</li>
+<li>与主机和设备通信: 能够与主机和设备通信从而实现上述功能</li>
+</ul>
+<p><img src="io_interface.png" srcset="/img/loading.gif" lazyload alt="I/O接口" /></p>
+<p>CPU通过I/O接口从而实现控制I/O设备:</p>
+<ol>
+<li>通过发送命令字到控制寄存器来向设备发送命令</li>
+<li>通过从状态寄存器读取状态字来获取外设或I/O控制器的状态信息</li>
+<li>通过向数据缓冲寄存器发送或读取数据来和外设进行数据交换</li>
+</ol>
+<p><b>I/O端口: I/O控制器中CPU能够访问的各类寄存器。因此I/O端口需要编址，I/O设备的寻址方式就是I/O端口的编址方式</b></p>
+<ul>
+<li><b>统一编址方式(内存映射方式)</b>: 与主存空间统一编址，将主存空间分出一部分地址给I/O端口进行编号</li>
+<li><b>独立编址方式(专门的I/O指令方式)</b>: 不和主存单元一起编号，而是单独编号，使成为一个独立的I/O地址空间，因此需要特殊的I/O指令来支持访问I/O端口</li>
+</ul>
+<h2 id="io传输方式"><a class="markdownIt-Anchor" href="#io传输方式"></a> I/O传输方式</h2>
+<p>I/O设备与主机进行数据交换的三种基本方式:</p>
+<ul>
+<li>程序直接控制方式:
+<ul>
+<li>无条件传送: 对简单外设定时同步进行数据传送</li>
+<li><strong>条件传送</strong>: 轮询方式，OS主动查询，I/O设备将自己的状态放到一个状态寄存器中，OS阶段性的查询状态寄存器中的特定状态以决定下一步动作。</li>
+</ul>
+</li>
+<li><strong>中断方式</strong>: 几乎所有系统都支持的方式
+<ol>
+<li>当一个I/O设备需要CPU的干预时，他通过<strong>中断请求来通知CPU</strong></li>
+<li>CPU<strong>中止当前程序的执行</strong>，调出OS中断处理程序来执行</li>
+<li>处理完成后<strong>返回到中止的程序继续执行</strong></li>
+</ol>
+</li>
+<li><strong>DMA方式</strong>: 磁盘等高速外设<strong>成批的直接和主存进行数据交换</strong></li>
+</ul>
+<h3 id="轮询方式"><a class="markdownIt-Anchor" href="#轮询方式"></a> 轮询方式</h3>
+<p>轮询方式有独占查询和定时查询来进行的方式，这里以打印机为例通过流程图来表示轮询查询的过程:</p>
+<h3 id="程序中断方式"><a class="markdownIt-Anchor" href="#程序中断方式"></a> 程序中断方式</h3>
+<p>基本思想: 当外设准备好时便<strong>向CPU发中断请求</strong>，CPU响应后，中止现行程序的执行，<strong>转入一个中断服务程序</strong>，在中断服务程序中进行输入/输出操作，实现主机和外设接口之间的数据传送，并启动外设工作，中断服务程序执行完后，<strong>返回原被中止的程序断点处继续执行</strong>。<br />
+<img src="interruption.png" srcset="/img/loading.gif" lazyload alt="中断方式" /><br />
+注意: 中断隐指令是指切换程序间的工作指令，也需要消耗时间。</p>
+<p><strong>中断的实质是CPU执行程序的切换: 从当前工作切换到I/O处理程序再切换回来。</strong></p>
+<p>中断处理机制其实与异常处理机制几乎完全相同，如<a target="_blank" rel="noopener" href="https://thm-lab.github.io/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/">CPU</a>中异常处理所示: 主要由<strong>关中断、保护断点和程序状态、识别异常(中断)事件</strong>步骤组成。但异常和中断的处理还是有所不同，<strong>CPU内部产生的异常是不可屏蔽的，必须要处理异常后才能继续运行(在指令执行过程中也必须处理异常而中断可以等指令执行完后再处理)，而通过中断请求的外部中断是可以通过屏蔽字来进行屏蔽的</strong>。</p>
+<p>中断处理中十分重要的一步是<strong>识别异常(中断)事件</strong>，而在CPU章中说过，有硬件识别(向量中断方式)和软件识别两种方式，这里将详细说明两种方式识别异常和处理异常的过程。</p>
+<p>首先中断响应有一定的条件:</p>
+<ul>
+<li><strong>CPU处于开中断状态(中断允许位开启)</strong></li>
+<li><strong>在一条指令执行完</strong>，因此当中断出现在指令过程中时，必须等待当前指令执行完后才能进行响应</li>
+<li>至少有一个<strong>未被屏蔽</strong>的中断请求</li>
+</ul>
+<p>在开始中断响应后需要通过隐指令来完成中断响应，中断隐指令具体内容即为<strong>关中断、保护现场和识别中断源</strong>这三个步骤</p>
+<h4 id="软件方式识别中断类型"><a class="markdownIt-Anchor" href="#软件方式识别中断类型"></a> 软件方式识别中断类型</h4>
+<p>本质上是一种<strong>轮询方法</strong>，中断查询程序根据中断请求状态，<strong>按优先级顺序来依次查询</strong>中断请求状态，从而识别出中断源。</p>
+<h4 id="向量中断方式识别中断类型"><a class="markdownIt-Anchor" href="#向量中断方式识别中断类型"></a> 向量中断方式识别中断类型</h4>
+<p><strong>将所有中断请求状态送到一个排队电路中</strong>，根据中断优先级识别出最高优先级的中断请求。一般由中断控制器实现，如Intel8259A。<br />
+<img src="vector_query.png" srcset="/img/loading.gif" lazyload alt="硬件实现" /></p>
+<p><strong>识别中断后需要调出对应的中断服务程序</strong>。然后CPU执行该中断服务程序，当结束后需要恢复现场回到原来的程序。</p>
+
+<pre>
+<code class="mermaid" >
+flowchart TD
+    Main["原程序"]
+
+    subgraph "准备阶段"
+        Close["关中断"]
+        Protect["保护现场和旧屏蔽字"]
+        Query["查询中断原因"]
+        Set["设置新屏蔽字"]
+        Open["开中断"]
+
+        Close-->Protect-->Query-->Set-->Open
+    end
+
+    Main-->Close
+
+    subgraph "中断处理"
+        Process["执行中断服务程序"]
+    end
+
+    Open-->Process
+
+    subgraph "恢复阶段"
+        Close2["关中断"]
+        Recover["恢复现场和旧屏蔽字"]
+        Clean["清除新屏蔽字和中断请求"]
+        Return["中断返回"]
+
+        Close2-->Recover-->Clean-->Return
+    end
+
+    Process-->Close2
+
+    Return-->Main
+</code>
+</pre>
+<h4 id="多重中断处理"><a class="markdownIt-Anchor" href="#多重中断处理"></a> 多重中断处理</h4>
+<p>在一个<strong>中断处理(执行中断服务程序)过程中</strong>(因为在准备阶段和恢复阶段都会关中断)，若有新的中断请求发生，且新中断优先级高于正在执行的中断，则中止正在执行的中断服务程序，转去处理新的中断。这种情况为多重中断，也称中断嵌套。</p>
+<p>中断响应优先级: 由查询程序或硬联排队线路决定的优先权，<strong>反映多个中断同时请求时选择哪个响应</strong>。<br />
+中断处理优先级: 当某个中断正在被处理过程中，有别的中断源的请求发生了，这时就<strong>由各中断源的中断处理优先级决定如何响应</strong>。如果优先级低的中断发生了则先处理本次中断，若优先级更高的中断发生了则先处理新发生的中断。<strong>中断处理优先级由屏蔽字来体现</strong>。<br />
+<img src="shield_word.png" srcset="/img/loading.gif" lazyload alt="屏蔽字" /></p>
+<p><img src="multi_interrupt_process.png" srcset="/img/loading.gif" lazyload alt="多重中断处理" /></p>
+<h3 id="dma方式直接存储器访问"><a class="markdownIt-Anchor" href="#dma方式直接存储器访问"></a> DMA方式(直接存储器访问)</h3>
+<p><b>程序直接控制方式会产生轮询开销大的问题，而中断控制方式对I/O请求响应慢且数据传送速度慢，因此对于磁盘等高速外设一般采用DMA方式来进行主存和外设间的数据传送</b></p>
+<p>基本思想: <strong>通过专门硬件(DMA接口)来直接控制总线实现外设与主存间的数据传送</strong>。<br />
+特点:</p>
+<ul>
+<li>成批数据交换: 一旦启动数据连续读写，且数据间间隔时间短</li>
+<li>采用请求-响应方式: 当设备准备好数据后就会向DMA控制器发送DMA请求，DMA控制器收到请求后会向CPU申请总线的使用权</li>
+<li>与中断控制方式结合使用:
+<ul>
+<li>DMA传送前，外设在寻道、旋转等操作结束时会<strong>通过中断来通知CPU</strong></li>
+<li><strong>DMA控制器使用总线进行数据传送时，CPU执行其他程序</strong></li>
+<li>DMA结束后会<strong>通过DMA结束中断来通知CPU</strong></li>
+</ul>
+</li>
+</ul>
+<p><img src="dma_model.png" srcset="/img/loading.gif" lazyload alt="DMA方式" /></p>
+<p>但DMA向CPU申请总线使用权时可能会出现一些问题，这里以可能出现的情况来进行分析:</p>
+<ol>
+<li>CPU不需使用主存: 即CPU没有使用总线，因此DMA可以直接拿到总线的使用权</li>
+<li>CPU正在访问主存: <strong>必须等到CPU让出总线使用权时才能访存</strong></li>
+<li>CPU也同时将要访问主存: <strong>出现访存冲突，需要处理权限问题</strong></li>
+</ol>
+<p>处理访存冲突的方式:</p>
+<ul>
+<li>CPU停止法: DMA传输时，<strong>CPU脱离总线停止访问主存</strong>直到DMA传完一块数据。
+<ul>
+<li>优点: 控制简单，适合传输速率很高的外设成组传输数据</li>
+<li>缺点: CPU收到影响，CPU基本停止工作(没有数据可以使用除非cache命中)<br />
+在DMA接口中可<strong>设置一个缓冲器，外设先于缓冲器进行交换数据，缓冲满时再由缓冲通过总线与主存进行数据交换</strong></li>
+</ul>
+</li>
+<li>周期挪用法: 在<strong>存储器工作周期中窃取一部分时间作为DMA传输时间</strong>，从而即满足CPU使用也满足DMA使用，但会增加总线控制权等控制信号的开销<br />
+<img src="cycle_move_method.png" srcset="/img/loading.gif" lazyload alt="周期挪用法" /></li>
+<li>交替分时访问法: 将每个存储周期分成两个时间片，一个给CPU，一个给DMA，这样在每个存储周期内，CPU和DMA都可访问存储器</li>
+</ul>
+<p><img src="dma_logic.png" srcset="/img/loading.gif" lazyload alt="DMA逻辑结构" /></p>
+<h4 id="dma数据传送流程"><a class="markdownIt-Anchor" href="#dma数据传送流程"></a> DMA数据传送流程</h4>
+<ol>
+<li>DMA控制器与CPU沟通好内存地址传输方向等参数信息</li>
+<li>外设准备好数据后<strong>将数据送入数据缓冲寄存器并将DMA请求触发器置为1</strong></li>
+<li>DMA请求触发器<strong>向DMA控制器发送DMA请求同时向控制状态端口发送&quot;Ready&quot;信号</strong></li>
+<li><strong>DMA控制器向CPU请求总线</strong><br />
+5， CPU完成当前周期后返回总线响应</li>
+<li><strong>DMA控制器通知I/O接口发送DMA响应信号，DMA请求触发器置为0</strong>，此时DMA控制器拿到总线使用权</li>
+<li>DMA控制器给出内存地址，<strong>I/O接口开始通过总线批量传输数据</strong></li>
+<li>完成后I/O接口通知DMA控制器完成，<strong>DMA控制器通过中断告知CPU DMA传输完成</strong>并释放总线</li>
+</ol>
+<h4 id="dma与中断方式的区别"><a class="markdownIt-Anchor" href="#dma与中断方式的区别"></a> DMA与中断方式的区别</h4>
+<ul>
+<li>DMA<strong>通过DMA控制器完成</strong>数据传输，而<strong>中断通过中断服务程序完成</strong>数据传输</li>
+<li><strong>DMA是对总线使用权的请求</strong>，而<strong>中断是对CPU执行的请求</strong>，使用的资源类型不同</li>
+<li>DMA<strong>响应是在一个总线周期后</strong>，而中断<strong>响应是在一个指令周期后</strong></li>
+<li>DMA的数据传送效率高于中断，且DMA的并行度高于中断方式</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Computer-Organization-and-Architecture/">Computer Organization and Architecture</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">8086与IA32微处理器</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/12/%E5%AD%98%E5%82%A8%E5%99%A8%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/">
+                        <span class="hidden-mobile">存储器层次结构</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -1,0 +1,644 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="8253 8253芯片是可编程计数器&#x2F;定时器。8253内部有三个计数器，分别称为计数器0、计数器1和计数器2，他们的结构完全相同。  8253的功能与结构  功能 8253的主要功能:   计数器 定时器(计数脉冲是已知周期的时钟信号) 频率发生器 方波发生器    结构   8253结构较为简单，从编程者的角度来看是常规IO端口，由CS‾\overline{CS}CS信号控制片选，A1A0选择">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8253">
+<meta property="og:url" content="http://example.com/2022/12/08/8253/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="8253 8253芯片是可编程计数器&#x2F;定时器。8253内部有三个计数器，分别称为计数器0、计数器1和计数器2，他们的结构完全相同。  8253的功能与结构  功能 8253的主要功能:   计数器 定时器(计数脉冲是已知周期的时钟信号) 频率发生器 方波发生器    结构   8253结构较为简单，从编程者的角度来看是常规IO端口，由CS‾\overline{CS}CS信号控制片选，A1A0选择">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/8253_structure.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/inner_structure.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/way0.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/way1.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/way2.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/way3.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/way4.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/way5.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/control.png">
+<meta property="og:image" content="http://example.com/2022/12/08/8253/example1.png">
+<meta property="article:published_time" content="2022-12-08T14:00:52.000Z">
+<meta property="article:modified_time" content="2023-01-01T09:44:12.213Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Hardware Interface">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/12/08/8253/8253_structure.png">
+  
+  
+  <title>8253 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="8253">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-12-08 22:00" pubdate>
+        December 8, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">8253</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：January 1, 2023 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="8253"><a class="markdownIt-Anchor" href="#8253"></a> 8253</h1>
+<p>8253芯片是<strong>可编程计数器/定时器</strong>。8253内部有<strong>三个计数器</strong>，分别称为计数器0、计数器1和计数器2，他们的<strong>结构完全相同</strong>。</p>
+<h2 id="8253的功能与结构"><a class="markdownIt-Anchor" href="#8253的功能与结构"></a> 8253的功能与结构</h2>
+<h3 id="功能"><a class="markdownIt-Anchor" href="#功能"></a> 功能</h3>
+<p><strong>8253的主要功能</strong>:<br />
+<b></p>
+<ul>
+<li>计数器</li>
+<li>定时器(计数脉冲是已知周期的时钟信号)</li>
+<li>频率发生器</li>
+<li>方波发生器<br />
+</b></li>
+</ul>
+<h3 id="结构"><a class="markdownIt-Anchor" href="#结构"></a> 结构</h3>
+<p><img src="8253_structure.png" srcset="/img/loading.gif" lazyload alt="8253内部逻辑图" /><br />
+<img src="inner_structure.png" srcset="/img/loading.gif" lazyload alt="计数器内部结构" /><br />
+8253结构较为简单，从编程者的角度来看是常规IO端口，由<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>C</mi><mi>S</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{CS}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>信号控制片选，A1A0选择计数器即可，然后直接使用<code>in</code>或<code>out</code>指令操作。</p>
+<h2 id="8253的工作方式"><a class="markdownIt-Anchor" href="#8253的工作方式"></a> 8253的工作方式</h2>
+<p>对于8253，需要着重了解其<strong>6种工作方式</strong>，每种方式都有特殊的应用。</p>
+<h3 id="方式0-计数结束中断"><a class="markdownIt-Anchor" href="#方式0-计数结束中断"></a> 方式0: 计数结束中断</h3>
+<p><strong>功能: 经过计数初值个时钟周期后out变为高电平</strong><br />
+<img src="way0.png" srcset="/img/loading.gif" lazyload alt="工作示意图" /><br />
+工作流程:</p>
+<ol>
+<li>写入控制字后<strong>OUT变低电平</strong></li>
+<li>写入计数初值后的一个CLK的<strong>下降沿</strong>，计数初值被装入计数器，然后在每个CLK的下降沿做减1计数</li>
+<li>当计数到0时OUT输出变为<strong>高电平</strong></li>
+</ol>
+<p>注意事项:</p>
+<ul>
+<li><strong>GATE为高电平时，计数器工作，为低电平时停止计数</strong></li>
+<li>在计数过程中若重新写了新的计数初值，则<strong>按新值重新工作</strong></li>
+<li><strong>每写一次计数初值只计数一个计数周期(不会重复)</strong></li>
+</ul>
+<h3 id="方式1-可重复触发的单稳态触发器"><a class="markdownIt-Anchor" href="#方式1-可重复触发的单稳态触发器"></a> 方式1: 可重复触发的单稳态触发器</h3>
+<p><strong>功能: 作为GATE信号触发的单稳态触发器</strong><br />
+<img src="way1.png" srcset="/img/loading.gif" lazyload alt="工作示意图" /><br />
+工作流程:</p>
+<ol>
+<li>写入控制字后<strong>OUT变高电平</strong></li>
+<li>当GATE信号出现上升沿时，在CLK的下降沿装入计数初值，<strong>OUT变低电平</strong>，开始计数，在每个CLK的下降沿做减1计数</li>
+<li>当计数到0时OUT输出变为<strong>高电平</strong></li>
+</ol>
+<p>注意事项:</p>
+<ul>
+<li><strong>GATE出现上升沿时，装入计数初值</strong></li>
+<li>在计数过程中若再次出现GATE上升沿，则<strong>按计数初值重新计数</strong></li>
+<li><strong>计数完成后GATE信号再次出现上升沿则重复工作(相同计数初值无需重新写入)</strong></li>
+</ul>
+<h3 id="方式2-频率发生器"><a class="markdownIt-Anchor" href="#方式2-频率发生器"></a> 方式2: 频率发生器</h3>
+<p><strong>功能: 可输出连续负脉冲周期波形，即可做分频器</strong><br />
+<img src="way2.png" srcset="/img/loading.gif" lazyload alt="软件触发工作示意图" /><br />
+工作流程(软件触发):</p>
+<ol>
+<li>写入控制字后<strong>OUT变高电平</strong></li>
+<li>写计数初值后的一个CLK的下降沿，初值被装入计数器，然后对每个CLK的下降沿减1计数</li>
+<li><strong>计数期间OUT保持为高，当计数到1时OUT输出宽度为1个CLK周期的负脉冲</strong>，然后<strong>重新装入计数初值</strong>开始计数</li>
+</ol>
+<p>注意事项:</p>
+<ul>
+<li>计数中重写计数初值，则<strong>下次计数周期才会以新值开始计数</strong>(必须完成一次完整计数)</li>
+<li>软件触发的情况下，<strong>会自动重复工作(会自动重新装入计数初值)</strong></li>
+<li>软件触发要求GATE信号始终为高电平</li>
+<li>硬件触发流程: 写控制字和计数初值时GATE为低，当其变高后的下一个CLK下降沿计数器装入初值，后面每个CLK下降沿计数</li>
+</ul>
+<h3 id="方式3-方波发生器"><a class="markdownIt-Anchor" href="#方式3-方波发生器"></a> 方式3: 方波发生器</h3>
+<p><strong>功能: 可输出连续方波周期波形，也可做分频器</strong><br />
+<img src="way3.png" srcset="/img/loading.gif" lazyload alt="软件触发工作示意图" /><br />
+工作流程(软件触发):</p>
+<ol>
+<li>写入控制字后<strong>OUT变高电平</strong></li>
+<li>写计数初值后的一个CLK的下降沿，初值被装入计数器，然后对每个CLK的下降沿减1计数</li>
+<li><strong>计数期间占空比为1:1的方波</strong>，然后<strong>重新装入计数初值</strong>开始计数，<strong>周期为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><mi>C</mi><mi>L</mi><mi>K</mi><mi mathvariant="normal">周</mi><mi mathvariant="normal">期</mi></mrow><mrow><mi mathvariant="normal">计</mi><mi mathvariant="normal">数</mi><mi mathvariant="normal">初</mi><mi mathvariant="normal">值</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{CLK周期}{计数初值}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.217331em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">计</span><span class="mord cjk_fallback mtight">数</span><span class="mord cjk_fallback mtight">初</span><span class="mord cjk_fallback mtight">值</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">C</span><span class="mord mathdefault mtight">L</span><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span><span class="mord cjk_fallback mtight">周</span><span class="mord cjk_fallback mtight">期</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></strong></li>
+</ol>
+<p>注意事项:</p>
+<ul>
+<li>方式3与方式2基本相同，<strong>区别在于输出波形</strong></li>
+<li>若计数初值为偶数，则OUT输出是高低电平对称的方波</li>
+<li>若计数初值为奇数，则OUT输出不对称，前面的高比后面的低多1个CLK周期，即近似方波</li>
+<li>计数中重写计数初值，则<strong>下次计数周期才会以新值开始计数</strong>(必须完成一次完整计数)</li>
+<li>软件触发的情况下，<strong>会自动重复工作(会自动重新装入计数初值)</strong></li>
+<li>软件触发要求GATE信号始终为高电平</li>
+</ul>
+<h3 id="方式4-软件触发选通重写计数初值才能触发"><a class="markdownIt-Anchor" href="#方式4-软件触发选通重写计数初值才能触发"></a> 方式4: 软件触发选通(重写计数初值才能触发)</h3>
+<p><strong>功能: 可输出单个负脉冲信号</strong><br />
+<img src="way4.png" srcset="/img/loading.gif" lazyload alt="工作示意图" /><br />
+工作流程(软件触发):</p>
+<ol>
+<li>写入控制字后<strong>OUT变高电平</strong></li>
+<li>写计数初值后的一个CLK的下降沿，初值被装入计数器，然后对每个CLK的下降沿减1计数</li>
+<li><strong>计数期间OUT保持为高，当计数到0时OUT输出宽度为1个CLK周期的负脉冲</strong></li>
+</ol>
+<p>注意事项:</p>
+<ul>
+<li>类似<strong>方式2的一个周期</strong>，但负脉冲输出推迟了一个CLK周期</li>
+<li>在计数过程中若重新写了新的计数初值，则<strong>按新值重新工作</strong></li>
+<li><strong>GATE为高电平时，计数器工作，为低电平时停止计数</strong></li>
+</ul>
+<h3 id="方式5-硬件触发选通gate上升沿触发"><a class="markdownIt-Anchor" href="#方式5-硬件触发选通gate上升沿触发"></a> 方式5: 硬件触发选通(GATE上升沿触发)</h3>
+<p><strong>功能: 可输出单个负脉冲信号</strong><br />
+<img src="way5.png" srcset="/img/loading.gif" lazyload alt="工作示意图" /><br />
+工作流程(软件触发):</p>
+<ol>
+<li>写入控制字后<strong>OUT变高电平</strong></li>
+<li>GATE信号上跳的CLK的下降沿，初值被装入计数器，然后对每个CLK的下降沿减1计数</li>
+<li><strong>计数期间OUT保持为高，当计数到0时OUT输出宽度为1个CLK周期的负脉冲</strong></li>
+</ol>
+<p>注意事项:</p>
+<ul>
+<li>功能与方式4完全相同，<strong>触发方式改为了GATE信号上升沿</strong></li>
+<li>在计数过程中若出现GATE上升沿，则<strong>重新装入计数初值工作</strong></li>
+<li>一次GATE触发只计数一个周期(<strong>不自动重复</strong>)</li>
+</ul>
+<h2 id="8253的控制字"><a class="markdownIt-Anchor" href="#8253的控制字"></a> 8253的控制字</h2>
+<p><img src="control.png" srcset="/img/loading.gif" lazyload alt="控制字结构" /><br />
+8253的控制字也十分简单，只有一个，在确定工作方式和计数器初值后只需确定端口地址并将正确的控制字out出去即可。</p>
+<h2 id="8253的初始化"><a class="markdownIt-Anchor" href="#8253的初始化"></a> 8253的初始化</h2>
+<p>8253初始化方法分为2步:</p>
+<ol>
+<li><strong>向控制端口写入正确控制字(所有通道的控制字都写入同一个控制端口)</strong></li>
+<li><strong>向对应计数器端口写入计数初值</strong></li>
+</ol>
+<p><strong>注意: 计数初值写入的格式和顺序必须按控制字D5和D4规定的格式写入</strong></p>
+<p><strong>初始化示例</strong>:<br />
+设计数器1工作于方式1，BCD码计数，计数初值为十进制4000。设端口地址为0E0H~0E3H。<br />
+则控制字为:</p>
+<div class="tg-wrap"><table><thead><tr><th>0</th><th>1</th><th>1</th><th>0</th><th>0</th><th>0</th><th>1</th><th>1</th></tr></thead><tbody><tr><td colspan="2">计数器1</td><td colspan="2">只写高字节</td><td colspan="3">方式1</td><td>十进制计数</td></tr></tbody></table></div>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>, <span class="hljs-number">E3H</span><span class="hljs-comment">; 控制端口</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, <span class="hljs-number">63H</span><span class="hljs-comment">; 控制字</span><br><span class="hljs-keyword">out</span> <span class="hljs-built_in">dx</span>, <span class="hljs-built_in">al</span><span class="hljs-comment">; 输出</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>, <span class="hljs-number">E1H</span><span class="hljs-comment">; 计数器1</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, <span class="hljs-number">40H</span><span class="hljs-comment">; 只写高字节为40</span><br><span class="hljs-keyword">out</span> <span class="hljs-built_in">dx</span>, <span class="hljs-built_in">al</span><span class="hljs-comment">; 输出</span><br></code></pre></td></tr></table></figure>
+<h2 id="8253的应用示例"><a class="markdownIt-Anchor" href="#8253的应用示例"></a> 8253的应用示例</h2>
+<p><strong>多级分频器</strong>:<br />
+IBM/PC微型计算机的某扩展板上使用一片8253，其端口地址为400H～403H。要求从定时器0的输出端OUT0得到250Hz的方波信号，从定时器1的输出端OUT1得到10Hz的连续单拍负脉冲信号。已知系统提供的计数脉冲频率为125kHz，硬件连接如图所示，试编写初始化程序。<br />
+<img src="example1.png" srcset="/img/loading.gif" lazyload alt="硬件连接" /><br />
+out0要求<strong>方波</strong>因此必须<strong>工作在方式3</strong>，out1要求<strong>单拍负脉冲</strong>因此必须<strong>工作在方式2</strong>。<br />
+计数初值:</p>
+<ul>
+<li>计数器0: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><mn>125</mn><mi>k</mi></mrow><mn>250</mn></mfrac><mo>=</mo><mn>500</mn><mo>=</mo><mn>01</mn><mi>F</mi><mn>4</mn><mi>H</mi></mrow><annotation encoding="application/x-tex">\frac{125k}{250}=500=01F4H</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2251079999999999em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8801079999999999em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mtight">5</span><span class="mord mtight">0</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">2</span><span class="mord mtight">5</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">0</span><span class="mord">1</span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mord">4</span><span class="mord mathdefault" style="margin-right:0.08125em;">H</span></span></span></span></li>
+<li>计数器1: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mn>250</mn><mn>10</mn></mfrac><mo>=</mo><mn>25</mn><mo>=</mo><mn>19</mn><mi>H</mi></mrow><annotation encoding="application/x-tex">\frac{250}{10}=25=19H</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">0</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mtight">5</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">5</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">9</span><span class="mord mathdefault" style="margin-right:0.08125em;">H</span></span></span></span></li>
+</ul>
+<p>控制字0:</p>
+<div class="tg-wrap"><table><thead><tr><th>0</th><th>0</th><th>1</th><th>1</th><th>0</th><th>1</th><th>1</th><th>1</th></tr></thead><tbody><tr><td colspan="2">计数器0</td><td colspan="2">先写低位，再写高位</td><td colspan="3">方式3</td><td>二进制计数</td></tr></tbody></table></div>
+控制字1: 
+<div class="tg-wrap"><table><thead><tr><th>0</th><th>1</th><th>0</th><th>1</th><th>0</th><th>1</th><th>0</th><th>1</th></tr></thead><tbody><tr><td colspan="2">计数器1</td><td colspan="2">只写低位</td><td colspan="3">方式2</td><td>二进制计数</td></tr></tbody></table></div>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>, <span class="hljs-number">403H</span><span class="hljs-comment">; 控制端口</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, <span class="hljs-number">36H</span><span class="hljs-comment">; 计数器0控制字</span><br><span class="hljs-keyword">out</span> <span class="hljs-built_in">dx</span>, <span class="hljs-built_in">al</span><span class="hljs-comment">; 输出</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>, <span class="hljs-number">400H</span><span class="hljs-comment">; 计数器0端口</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, <span class="hljs-number">F4H</span><span class="hljs-comment">; 计数器0的计数初值</span><br><span class="hljs-keyword">out</span> <span class="hljs-built_in">dx</span>, <span class="hljs-built_in">al</span><span class="hljs-comment">; 输出</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, <span class="hljs-number">01</span><span class="hljs-comment">; 计数器0的计数初值</span><br><span class="hljs-keyword">out</span> <span class="hljs-built_in">dx</span>, <span class="hljs-built_in">al</span><span class="hljs-comment">; 输出</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>, <span class="hljs-number">403H</span><span class="hljs-comment">; 控制端口</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, <span class="hljs-number">54H</span><span class="hljs-comment">; 计数器1控制字</span><br><span class="hljs-keyword">out</span> <span class="hljs-built_in">dx</span>, <span class="hljs-built_in">al</span><span class="hljs-comment">;</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>, <span class="hljs-number">401H</span><span class="hljs-comment">; 计数器1端口</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, <span class="hljs-number">19H</span><span class="hljs-comment">; 计数器1的计数初值</span><br><span class="hljs-keyword">out</span> <span class="hljs-built_in">dx</span>, <span class="hljs-built_in">al</span><span class="hljs-comment">; 输出</span><br></code></pre></td></tr></table></figure>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Hardware-Interface/">Hardware Interface</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/01/06/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">软件工程</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/08/8259A/">
+                        <span class="hidden-mobile">8259A</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

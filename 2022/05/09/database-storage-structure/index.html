@@ -1,0 +1,560 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="Database Storage Structure 本文介绍数据库在磁盘上的存储格式与层次:Table-&gt;Block-&gt;Record  Record Structure 数据在磁盘上布局的基本单位:record;对关系型数据库而言，一条record就是对应关系中的一行，而对NoSQL数据库而言，record并不是数据存储的唯一方式。  定长record   如果一条record的长">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Database Storage Structure">
+<meta property="og:url" content="http://example.com/2022/05/09/database-storage-structure/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="Database Storage Structure 本文介绍数据库在磁盘上的存储格式与层次:Table-&gt;Block-&gt;Record  Record Structure 数据在磁盘上布局的基本单位:record;对关系型数据库而言，一条record就是对应关系中的一行，而对NoSQL数据库而言，record并不是数据存储的唯一方式。  定长record   如果一条record的长">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/fixed_length_record.png">
+<meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/non_fixed_length_record.png">
+<meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/repeated_field_record.png">
+<meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/my_record.png">
+<meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/simple_block.png">
+<meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/complex_block.png">
+<meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/my_block.png">
+<meta property="og:image" content="http://example.com/2022/05/09/database-storage-structure/block_implement.png">
+<meta property="article:published_time" content="2022-05-09T12:09:26.000Z">
+<meta property="article:modified_time" content="2022-06-02T04:04:04.369Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Database">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/05/09/database-storage-structure/fixed_length_record.png">
+  
+  
+  <title>Database Storage Structure - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Database Storage Structure">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-09 20:09" pubdate>
+        May 9, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      36 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Database Storage Structure</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：June 2, 2022 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="database-storage-structure"><a class="markdownIt-Anchor" href="#database-storage-structure"></a> Database Storage Structure</h1>
+<p>本文介绍数据库在磁盘上的存储格式与层次:Table-&gt;Block-&gt;Record</p>
+<h2 id="record-structure"><a class="markdownIt-Anchor" href="#record-structure"></a> Record Structure</h2>
+<p>数据在磁盘上布局的基本单位:record;对关系型数据库而言，一条record就是对应关系中的一行，而对NoSQL数据库而言，record并不是数据存储的唯一方式。</p>
+<h3 id="定长record"><a class="markdownIt-Anchor" href="#定长record"></a> 定长record</h3>
+<p>  如果一条record的长度是固定值时，数据库存储起来会比较容易，并且record的结构也会相对简单。如下面定长record图所示，record分为两大部分:header和data;<br />
+<img src="fixed_length_record.png" srcset="/img/loading.gif" lazyload alt="定长record" /><br />
+  如图所示:record的前端为header，后部分为data部分。其中header内包含了to schema、整条record长度、时戳等信息，其中schema可以简单理解为record的是表ID属性，但其实并不准确，后续会详细介绍schema的概念，而to schema是指向该record对应的schema的指针或者其他一些访问方式，不同数据库的实现方式具有一定不同。data部分则是直接将字段值按顺序存放，而没有其他的间隔或者区分方式，这是因为schema中保存了不同字段的长度，在需要解析的时候可以根据schema把需要的字段直接定位出来。</p>
+<h3 id="变长record"><a class="markdownIt-Anchor" href="#变长record"></a> 变长record</h3>
+<p>  但在实际使用中record为定长的可能性比较低，因为很可能会存在某字段需要使用不同长度的变量来描述，同时因为field为变长，record也必须是变长的。下面是一张关于变长record可能的结构图。<br />
+<img src="non_fixed_length_record.png" srcset="/img/loading.gif" lazyload alt="变长字段的record" /><br />
+  可以看到，与定长record相似，都是分为header和data部分。header部分与定长record相同，都是一些record的信息，如to schema整条record的长度和时戳等，但是data部分与定长record却有较大的不同，变长record在存放具体字段值时与定长record相同，并没有采用特殊的分隔符等操作，但是在存放之前有一段指针数组，其中存放的时指向不同字段起始位置的指针，值得强调的是:这里说的指针并非内存中的指针，而是相对偏移量。通过这个偏移量数组即可确定不同字段的长度和内容从而做到识别字段。</p>
+<p>  除了record中有变长字段的情况，还有一种情况也会导致record为变长record——具有重复字段，如下图所示:name、address都是定长字段，而movies也是定长字段，但特殊的是在record中可能会出现多个movies的情况，因此record也无法是一个定长的record而是一条变长record来保证上述情况的保存。<br />
+<img src="repeated_field_record.png" srcset="/img/loading.gif" lazyload alt="重复字段的record" /><br />
+解决方案与具有变长字段类型，就是在data部分增加一个指针数组，指向不同的字段起始位置来区别不同字段。如果从变长字段的角度来理解的话，则movies不再是一个定长字段而是一个变长字段，这样有重复字段的处理方式其实与有变长字段的处理方式是一模一样的。</p>
+<p>  在变长record中还有一种情况——变字段record，即是一条record对应的字段数量、字段类型和字段含义是不相同的，而是record中具有一定的自解释能力，严格来说这已经不再属于关系型数据库的范围，因此在这里不做详细展开。</p>
+<h3 id="my-record-implementation"><a class="markdownIt-Anchor" href="#my-record-implementation"></a> My Record Implementation</h3>
+<p>  该记录为数据库原理与实现课程老师给出雏形，后参照InnoDB和MySQL的实现设计而成。具体如图所示:<br />
+<img src="my_record.png" srcset="/img/loading.gif" lazyload alt="My Record" /><br />
+其中header为固定的1Byte大小，其结构为:</p>
+<center>
+<B>| T | M | x | x | x | x | x | x |</B>
+</center>  
+其中T为tombstone标志，用来说明这条record是否存活，M为最小记录，x均为保留位供其他使用。在使用过程中需要掩码参与进行操作。  
+<p><strong>特别说明:</strong></p>
+<ul>
+<li>上图虽然header放在offset数组后面，但在代码实际实现中，header仍然位于record的最前方，而其他相对位置不变。</li>
+<li>当Record删除时，其占据的空间不会立刻被回收，而是仅仅把Record的Header中tombstone标记为死亡，当空间不足时，才会被回收。</li>
+</ul>
+<h2 id="block-structure"><a class="markdownIt-Anchor" href="#block-structure"></a> Block Structure</h2>
+<p>  Block是数据库的基本IO单位，当进程需要调用数据库中的record的时，至少需要调入一整个Block而无法仅仅访问一个record。</p>
+<h3 id="简单block实现"><a class="markdownIt-Anchor" href="#简单block实现"></a> 简单Block实现</h3>
+<p><img src="simple_block.png" srcset="/img/loading.gif" lazyload alt="简单Block" /><br />
+  如图所示:Block一般由header和record构成，头部主要包含指向后继Block的指针，标记记录是否延续到下一个block，时戳，剩余空间大小，剩余空间起始位置等关键信息。而record区则是一个变长的数组，其中每一个元素都是一个完整的record。</p>
+<h3 id="相对复杂但更合理的block实现"><a class="markdownIt-Anchor" href="#相对复杂但更合理的block实现"></a> 相对复杂但更合理的Block实现</h3>
+<p><img src="complex_block.png" srcset="/img/loading.gif" lazyload alt="较复杂Block" /><br />
+  上图是Block的另一种可行的Block实现方案，前部分与简单Block相同，都是有着header和record区，但是在record区域后方，这里相比简单Block，添加了一个tail来为record的数组进行排序，具体排序实现在My Block Implementation中进行详细说明。在record数组和tail之间存在free space，当有新record插入时，record数组向后延伸，而tail则向前延伸，从而压缩free space空间。</p>
+<h3 id="my-block-implementation"><a class="markdownIt-Anchor" href="#my-block-implementation"></a> My Block Implementation</h3>
+<p><img src="my_block.png" srcset="/img/loading.gif" lazyload alt="My Block" /><br />
+  由上图可以看见，Block的结构为：Block Header + Data Header + Data + Free Space + Slots + Trailer。其中Slots和Trailer共同作为tail。</p>
+<p>  因为Block存在不同的类型，在实现时采用了基类和派生类的方法来进行不同Block的实现，uml图如下:<br />
+<img src="block_implement.png" srcset="/img/loading.gif" lazyload alt="Class Structure" /><br />
+  其中Block作为基类，派生出了SuperBlock和MetaBlock类，而DataBlock为MetaBlock的直接派生。至于为什么要设置SuperBlock和MetaBlock具体原因可以参考下面对Table的设计。而不同类型Block的主要区别在于Header部分的不同，也就是上面图My Block中Data/Index Header与Data/Index部分体现出的不同。其中Common Header实现如下所示:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">CommonHeader</span> &#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> magic;       <span class="hljs-comment">// magic number(4B)</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> spaceid;     <span class="hljs-comment">// 表空间id(4B)</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> type;      <span class="hljs-comment">// block类型(2B)</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> freespace; <span class="hljs-comment">// 空闲记录链表(2B)</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>magic为魔数，编码为小端时<code>0x31306264</code>，大端时为<code>0x64623031</code>，可用来判断Block是否损坏和防止缓冲区攻击。</li>
+<li>spaceid用以标记该Block属于的表空间。</li>
+<li>type用来说明当前Block的类型，可选项有:IdleBlock,SuperBlock,DataBlock,IndexBlock,MetaBlock以及LogBlock，其中MetaBlock与DataBlock的Header部分完全相同(DataBlock是MetaBlock的子类)。</li>
+<li>freespace是空闲链表开始位置的偏移量，当有新的Record插入时，会根据freespace当前位置到slots数组之间的空间来分配空间，如果空间足够则将Record插入到freespace下需要的空间内，freespace下移;若freespace下到slots数组之间的空间不足并且freesize大于需要的空间，Block需要去将已经被删除了的Record空间回收回来并将freespace上部空闲空间进行挤压，然后重新确定freespace的偏移量。注意:因为回收死亡Record空间是开销很大的操作，因此当freespace还没有到达slots数组或者无法为新的Record分配空间时，不会进行回收。</li>
+</ul>
+<p>  tail的实现则更为简单。每一个Block的tail由两部分组成:slots数组和Trailer，slots数组在下面会详细介绍，而Trailer中仅有checksum一个变量类型为<code>unsigned int</code>作为校验和来保证Block的安全性。</p>
+<p>  以下将仅介绍最重要和最常见的Block类型:DataBlock，其他Block暂时并不重要。其中SuperBlock作为Table管理Block的工具将会在Table的结构中介绍。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">DataHeader</span> : CommonHeader &#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> next;       <span class="hljs-comment">// 下一个数据块(4B)</span><br>    <span class="hljs-type">long</span> <span class="hljs-type">long</span> stamp;         <span class="hljs-comment">// 时戳(8B)</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> slots;    <span class="hljs-comment">// slots[]长度(2B)</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> freesize; <span class="hljs-comment">// 空闲空间大小(2B)</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> self;       <span class="hljs-comment">// 本块id(4B)</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>因为目前没有说到Table是如何组织不同Block间的关系，这里简单的提一下:在一个Table中一个是由一个单向链表来组织所有的Block，而SuperBlock则是链表的表头，每一个Block都是一个Node，Block中的next为下一个Block的id。</li>
+<li>DataHeader中的slots为当前Block中slots数组的长度而不是指向slots数组的指针，因为在Block结构图中可以看到，slots数组一定在Block的尾部，只需要根据Block的大小定位到最后一位然后向前移动一个<code>unsigned int</code>的大小即可找到slots数组，而头部只需要提供当前Block中有多少个slots也就是当前Block中有多少个Record来方便使用。<br />
+  因为上面一直在讲slots数组但没有具体说明Slot到底是个啥，接下来先将Slot的概念叙述清楚。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Slot</span> &#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> offset; <span class="hljs-comment">// 记录偏移量</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> length; <span class="hljs-comment">// 记录大小</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>  slots数组是对应Block中的每一个Record在Block中的位置。Slot为Record在Block中的一个定位信息，而slots数组则是将所有Record的Slot放在一起并根据主键的大小进行排序，当需要在Block中定位Record时，只需要通过二分查找或者遍历的方法在slots数组中寻找到对应的Slot即可定位到目标Record的位置。Slot的定位方法还是通过Record相对于Block开始位置的偏移量来实现的，不过在Slot中还包含了Record的大小，这个可以为其他很多功能提供一个快速工具。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Database/">Database</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/24/Computer-Network-Chapter-1/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Computer Network Chapter 1</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/06/%E7%AC%AC%E4%B8%80%E5%8F%B0DIY%E4%B8%BB%E6%9C%BA/">
+                        <span class="hidden-mobile">第一台DIY主机</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

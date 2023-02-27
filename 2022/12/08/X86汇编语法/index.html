@@ -1,0 +1,752 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="X86汇编语法 目前支持Intel x86系列微机常用的汇编程序有ASM、MASM、TASM、OPTASM等。本文以MASM为主要内容。 X86汇编语言语句可分为两种语句:  指令语句: 每一条指令语句在汇编时都要产生一个可供CPU执行的机器目标代码，它又叫可执行语句。 伪指令语句: 伪指令语句又叫命令语句，是指示性语句。伪指令本身不产生自己的机器目标代码。它指示汇编程序对其后面的指令语句和伪指">
+<meta property="og:type" content="article">
+<meta property="og:title" content="X86汇编语法">
+<meta property="og:url" content="http://example.com/2022/12/08/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="X86汇编语法 目前支持Intel x86系列微机常用的汇编程序有ASM、MASM、TASM、OPTASM等。本文以MASM为主要内容。 X86汇编语言语句可分为两种语句:  指令语句: 每一条指令语句在汇编时都要产生一个可供CPU执行的机器目标代码，它又叫可执行语句。 伪指令语句: 伪指令语句又叫命令语句，是指示性语句。伪指令本身不产生自己的机器目标代码。它指示汇编程序对其后面的指令语句和伪指">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/12/08/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95/keywords.png">
+<meta property="og:image" content="http://example.com/2022/12/08/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95/type.png">
+<meta property="og:image" content="http://example.com/2022/12/08/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95/type_number.png">
+<meta property="og:image" content="http://example.com/2022/12/08/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95/priority.png">
+<meta property="article:published_time" content="2022-12-08T03:18:24.000Z">
+<meta property="article:modified_time" content="2023-01-01T09:44:12.240Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Assembly Language">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/12/08/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95/keywords.png">
+  
+  
+  <title>X86汇编语法 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="X86汇编语法">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-12-08 11:18" pubdate>
+        December 8, 2022 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      63 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">X86汇编语法</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：January 1, 2023 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="x86汇编语法"><a class="markdownIt-Anchor" href="#x86汇编语法"></a> X86汇编语法</h1>
+<p>目前支持Intel x86系列微机常用的汇编程序有ASM、MASM、TASM、OPTASM等。<strong>本文以MASM为主要内容。</strong><br />
+X86汇编语言语句可分为两种语句:</p>
+<ul>
+<li>指令语句: <strong>每一条指令语句在汇编时都要产生一个可供CPU执行的机器目标代码</strong>，它又叫可执行语句。</li>
+<li>伪指令语句: 伪指令语句又叫命令语句，是指示性语句。<strong>伪指令本身不产生自己的机器目标代码</strong>。它指示汇编程序对其后面的指令语句和伪指令语句如何处理(类似C语言中的宏)。</li>
+</ul>
+<h2 id="x86指令语句语法"><a class="markdownIt-Anchor" href="#x86指令语句语法"></a> X86指令语句语法</h2>
+<p>指令语句的一般格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-symbol">label:</span> op oprd1, oprd2··· <span class="hljs-comment">;注释</span><br></code></pre></td></tr></table></figure>
+<p><strong>一条指令语句最多可以包含4个字段</strong>:<br />
+<b></p>
+<ul>
+<li>label(标号): 表明指令地址，一般用于程序跳转，由汇编器计算位移量</li>
+<li>op(指令助记符): 即指令命令本身</li>
+<li>oprd1···oprdn(操作数): 根据指令对操作数的要求，可选项</li>
+<li>;(注释开始标志): <code>;</code>后的行内字符被汇编器忽略<br />
+</b></li>
+</ul>
+<p>X86具体指令见<a target="_blank" rel="noopener" href="https://thm-lab.github.io/2022/12/06/x86%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/">x86指令系统</a></p>
+<h2 id="x86伪指令语句语法"><a class="markdownIt-Anchor" href="#x86伪指令语句语法"></a> X86伪指令语句语法</h2>
+<p>伪指令语句的一般格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-symbol">label:</span> psdop oprd1, oprd2··· <span class="hljs-comment">;注释</span><br></code></pre></td></tr></table></figure>
+<p><strong>一条伪指令语句最多可以包含4个字段</strong>:<br />
+<b></p>
+<ul>
+<li>label(标号): 表明指令地址，一般用于程序跳转，由汇编器计算位移量</li>
+<li>pseudo op(伪指令符): 伪指令命令</li>
+<li>oprd1···oprdn(操作数): 根据伪指令对操作数的要求，可选项</li>
+<li>;(注释开始标志): <code>;</code>后的行内字符被汇编器忽略<br />
+</b></li>
+</ul>
+<h2 id="x86数据类型"><a class="markdownIt-Anchor" href="#x86数据类型"></a> X86数据类型</h2>
+<p>X86汇编常用的数据形式有: <strong>常数、变量和标号</strong>，其中变量和标号均需要使用标识符进行命名。<br />
+<strong>一个数据由数值和属性(比如是字节数据还是字数据)两部分构成。</strong></p>
+<h3 id="标识符"><a class="markdownIt-Anchor" href="#标识符"></a> 标识符</h3>
+<p>标识符命名规则:</p>
+<ol>
+<li>字符的个数为1~240个</li>
+<li>可以用字母、数字、下划线及符号@、$和?</li>
+<li>第一个字符不能是数字</li>
+<li>不能使用系统专用的保留字(关键字key words)</li>
+</ol>
+<p><img src="keywords.png" srcset="/img/loading.gif" lazyload alt="常见的保留字" /></p>
+<h3 id="常数"><a class="markdownIt-Anchor" href="#常数"></a> 常数</h3>
+<p><strong>常数</strong>: 经过汇编后其值已完全确定，并且在程序运行过程中，其值不会发生变化。<br />
+<strong>常数的表达方式</strong>:</p>
+<ul>
+<li>直接通过进制数表示: 如<code>12</code>(十进制)、<code>0101B</code>(二进制)、<code>A8H</code>(十六进制)等</li>
+<li>实数: <code>2.134E +10</code>(±整数部分.小数部分E±指数部分)</li>
+<li>字符串: <code>'ABC'=&gt;41H 42H 43H</code>(用单引号或双引号括起来的一个或多个字符，其值为这些字符的ASCII码值)</li>
+</ul>
+<p><strong>常数的使用场景</strong>:</p>
+<ul>
+<li>做指令的源操作数，是立即寻址</li>
+<li>在指令语句的直接寻址、寄存器相对寻址或基址变址寻址方式中作位移量</li>
+<li>在数据定义伪指令中作为初始化值</li>
+</ul>
+<h3 id="变量"><a class="markdownIt-Anchor" href="#变量"></a> 变量</h3>
+<p><strong>变量</strong>: 用来表示存放数据的存储单元，这些数据在程序运行期间可以被改变。<br />
+<strong>程序中以变量名的形式来访问变量。变量名就是存放数据的存储单元地址。</strong><br />
+定义变量: 给变量在内存中分配一定的存储单元，也就是给<strong>这个存储单元赋与一个符号名</strong>——变量名，同时一般还要给分配的存储单元<strong>预置初值</strong>。<br />
+如C语言相同，变量被分为全局变量和局部变量。</p>
+<ul>
+<li>全局变量: 全局变量的作用域是整个程序，全局变量定义在<strong>数据段内</strong></li>
+<li>局部变量: 通过伪指令使得变量的作用域限制在子过程中</li>
+</ul>
+<h4 id="变量的定义"><a class="markdownIt-Anchor" href="#变量的定义"></a> 变量的定义</h4>
+<p><strong>全局变量:</strong><br />
+必须定义在数据段，定义格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-meta">.data</span><span class="hljs-comment">; 表明在数据段</span><br>data1 <span class="hljs-built_in">db</span> <span class="hljs-number">1</span>, <span class="hljs-number">2</span><span class="hljs-comment">; 字节类型变量，占据了2个字节</span><br>data2 <span class="hljs-built_in">dw</span> <span class="hljs-number">1</span><span class="hljs-comment">; 字类型变量，占据了2个字节</span><br>data3 <span class="hljs-built_in">dd</span> <span class="hljs-number">12</span>, <span class="hljs-number">321</span><span class="hljs-comment">; 双字类型变量，占据了8个字节</span><br>data4 <span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;ABCD&#x27;</span><span class="hljs-comment">; 字节类型变量，占据了4个字节</span><br>data5 <span class="hljs-built_in">dw</span> <span class="hljs-string">&#x27;AB&#x27;</span>, <span class="hljs-string">&#x27;CD&#x27;</span><span class="hljs-comment">; 字类型变量，占据了4个字节</span><br>data6 <span class="hljs-built_in">dd</span> <span class="hljs-string">&#x27;ABCD&#x27;</span><span class="hljs-comment">; 双字类型变量，占据4个字节</span><br><span class="hljs-meta">.data</span>?<span class="hljs-comment">; 数据段中未被初始化的变量定义在此</span><br>data <span class="hljs-built_in">db</span> <span class="hljs-number">10</span> dup(?)<span class="hljs-comment">; 字节类型变量，未特意初始化则为0</span><br></code></pre></td></tr></table></figure>
+<p>全局变量的<strong>属性</strong>:</p>
+<ul>
+<li>段属性: 表明在哪个段中，<code>.data</code>和<code>.data?</code>表明在数据段</li>
+<li>偏移量属性: 表明变量所在位置与段起始点之间的<strong>字节数</strong></li>
+<li>类型属性: 表明变量占用存储单元的<strong>字节数</strong></li>
+</ul>
+<p><img src="type.png" srcset="/img/loading.gif" lazyload alt="MASM常见可选类型属性" /><br />
+<strong>段属性和偏移量属性就构造了变量的逻辑地址。</strong></p>
+<h5 id="特殊的初始化情况"><a class="markdownIt-Anchor" href="#特殊的初始化情况"></a> 特殊的初始化情况</h5>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">string1 <span class="hljs-built_in">dw</span> <span class="hljs-string">&#x27;AB&#x27;</span>, <span class="hljs-string">&#x27;A&#x27;</span><span class="hljs-comment">; 定义并初始化变量</span><br>string2 <span class="hljs-built_in">dd</span> <span class="hljs-string">&#x27;ABCD&#x27;</span>, <span class="hljs-string">&#x27;ABC&#x27;</span><span class="hljs-comment">; 定义并初始化变量</span><br>string3 df <span class="hljs-string">&#x27;ABCD&#x27;</span>, <span class="hljs-string">&#x27;ABC&#x27;</span><span class="hljs-comment">; 定义并初始化变量</span><br>string4 <span class="hljs-built_in">dq</span> <span class="hljs-string">&#x27;ABCD&#x27;</span>, <span class="hljs-string">&#x27;ABC&#x27;</span><span class="hljs-comment">; 定义并初始化变量</span><br></code></pre></td></tr></table></figure>
+<p><strong>当使用字符串对dw、dd、df、dq类型变量赋初值时，高位字符放在高地址单元，地位字符放在低地址单元，不足时高位补零！并且对df、dq变量赋初值时，字符串不能超过4位(因为寄存器最大为32位)</strong></p>
+<h5 id="dup初始化"><a class="markdownIt-Anchor" href="#dup初始化"></a> dup初始化</h5>
+<p>dup称为重复数据操作符，一般用于变量批量初始化。<br />
+格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">variable type count dup(value)<span class="hljs-comment">; 通过dup定义变量</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>variable: 变量名</li>
+<li>type: 变量类型</li>
+<li>count: 重复的次数</li>
+<li>value: 重复的内容，为<code>?</code>时等价于0</li>
+</ul>
+<p>通过dup可以将内存连续的空间赋值为一个特殊的值，通过dup嵌套可以为连续空间赋重复序列。<br />
+dup嵌套</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">data <span class="hljs-built_in">db</span> <span class="hljs-number">10H</span> dup(<span class="hljs-number">4</span> DUP(<span class="hljs-number">2</span>),<span class="hljs-number">7</span>)<span class="hljs-comment">; 重复10H次的序列: 2, 2, 2, 2, 7</span><br></code></pre></td></tr></table></figure>
+<p><strong>局部变量:</strong><br />
+通过local伪指令定义局部变量。<br />
+格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">local 变量名<span class="hljs-number">1</span>[重复数量]:类型,变量名<span class="hljs-number">2</span>[重复数量]:类型 ···<br>local var1[<span class="hljs-number">1024</span>]:<span class="hljs-built_in">byte</span><span class="hljs-comment">; 定义了一个1024字节长的局部变量var1</span><br>local var3, var4:<span class="hljs-built_in">byte</span><span class="hljs-comment">; 定义了dword型局部变量var3，byte型局部变量var4</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><code>local</code>语句要紧跟在过程定义<code>porc</code>语句之后</li>
+<li>默认的类型是dword，因此定义dword类型的局部变量，则类型可以省略</li>
+<li>当定义数组的时候，元素个数用<code>[]</code>括号括起来</li>
+<li>局部变量不能和已定义的全局变量同名</li>
+<li>局部变量的作用域是当前的子程序，所以在不同的子程序中可以有同名的局部变量</li>
+<li>局部变量的初值是随机的，是其他子程序执行后在堆栈里留下的垃圾，所以使用时一定要对局部变量赋值</li>
+</ul>
+<h4 id="变量的使用"><a class="markdownIt-Anchor" href="#变量的使用"></a> 变量的使用</h4>
+<p>变量一般有两种方式使用:</p>
+<ol>
+<li><strong>给dd和dq类型变量做初始化值</strong>，但不能给其他类型变量做初始化值(<strong>变量本质为32位偏移地址，dq为偏移地址和段地址</strong>)</li>
+</ol>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">data <span class="hljs-built_in">db</span> <span class="hljs-number">20</span><span class="hljs-comment">;; 定义数据变量</span><br>add1 <span class="hljs-built_in">dd</span>, data<span class="hljs-comment">; data的偏移地址作为add1的初始化值</span><br>add2 <span class="hljs-built_in">dq</span>, data<span class="hljs-comment">; data的偏移地址和段地址组成64位地址作为add2的初始化值</span><br></code></pre></td></tr></table></figure>
+<ol start="2">
+<li>作为地址给指令直接使用:
+<ul>
+<li><strong>直接使用变量名: 做直接寻址的地址使用</strong></li>
+</ul>
+ <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">data <span class="hljs-built_in">db</span> <span class="hljs-number">2</span><span class="hljs-comment">; 定义数据变量</span><br><span class="hljs-keyword">add</span> <span class="hljs-built_in">al</span>, data<span class="hljs-comment">; 将data内的值与al内容相加送到al中</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>寄存器相对寻址或基址变址相对寻址时，偏移地址作为基址</strong></li>
+</ul>
+ <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">data1 <span class="hljs-built_in">db</span> <span class="hljs-number">10H</span>  DUP(?)<span class="hljs-comment">; 定义数据变量</span><br>data2 <span class="hljs-built_in">dw</span> <span class="hljs-number">10H</span>  DUP(<span class="hljs-number">1</span>)<span class="hljs-comment">; 定义数据变量</span><br><span class="hljs-keyword">mov</span> data1[<span class="hljs-built_in">esi</span>], <span class="hljs-built_in">al</span><span class="hljs-comment">; 将AL的内容送入从data1开始再偏移(ESI)的存储单元中</span><br><span class="hljs-keyword">add</span> <span class="hljs-built_in">dx</span>, data2[<span class="hljs-built_in">ebx</span>][<span class="hljs-built_in">edi</span>]<span class="hljs-comment">; 将从data2开始再偏移(EBX)+(EDI)的字存储单元的内容与DX的内容相加，结果送回DX中</span><br></code></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="标号"><a class="markdownIt-Anchor" href="#标号"></a> 标号</h3>
+<p>标号加在一条指令的前面，它就是<strong>该指令在内存的存放地址的符号表示</strong>，<strong>也就是指令地址的别名</strong>。<br />
+标号主要用在程序中需要改变程序的执行顺序时，用来标记转移的目的地。<br />
+局部标号格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">buff <span class="hljs-built_in">db</span> <span class="hljs-number">100</span> dup(<span class="hljs-number">1</span>)<span class="hljs-comment">; 100字节的buff</span><br><span class="hljs-keyword">lea</span> <span class="hljs-built_in">esi</span>, buff<span class="hljs-comment">; 取得起始地址</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dx</span>, <span class="hljs-number">24H</span><span class="hljs-comment">; 放入端口地址</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">cx</span>, <span class="hljs-number">100</span><span class="hljs-comment">; 设置循环次数</span><br><span class="hljs-symbol">next:</span> <span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, [<span class="hljs-built_in">esi</span>]<span class="hljs-comment">; 从buff中取数据到al</span><br><span class="hljs-keyword">out</span> <span class="hljs-built_in">dx</span>, <span class="hljs-built_in">al</span><span class="hljs-comment">; 输出到端口</span><br><span class="hljs-keyword">inc</span> <span class="hljs-built_in">esi</span><span class="hljs-comment">; 地址自增</span><br><span class="hljs-keyword">loop</span> next<span class="hljs-comment">; 判断是否循环，若是跳回next</span><br></code></pre></td></tr></table></figure>
+<p>全局标号格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-symbol">global_next:</span>: <span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, [<span class="hljs-built_in">esi</span>]<span class="hljs-comment">;全局标号</span><br></code></pre></td></tr></table></figure>
+<p><strong>标号属性</strong>:</p>
+<ul>
+<li>段属性: 表明在哪个段中，<code>.code</code>表明在代码段</li>
+<li>偏移量属性: 表明变量所在位置与段起始点之间的<strong>字节数</strong></li>
+<li>距离属性: 表明标号可以被段内还是段间的指令调用
+<ul>
+<li><strong>near</strong>: <strong>只能作段内转移</strong>，即只能是与该标号所指指令同在一个逻辑段的其它指令才能使用它</li>
+<li><strong>far</strong>: <strong>可以被非本段的转移和调用指令使用</strong></li>
+</ul>
+</li>
+</ul>
+<p>距离属性指定格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-symbol">label_name:</span> op ···<span class="hljs-comment">; 隐含方式，默认为near</span><br><span class="hljs-symbol">label_name label</span> type<span class="hljs-comment">; 指定标号属性</span><br>op<span class="hljs-comment">; 指令可以在全局标号下一行</span><br></code></pre></td></tr></table></figure>
+<p><strong>label伪指令还可用来定义变量的属性，即改变一个变量的属性，如把字变量的高低字节作为字节变量来处理。</strong></p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-symbol">data_byte label</span> <span class="hljs-built_in">byte</span><span class="hljs-comment">;</span><br>data_word <span class="hljs-built_in">dw</span> <span class="hljs-number">20</span> dup(<span class="hljs-number">1</span>)<span class="hljs-comment">; 字类型变量</span><br></code></pre></td></tr></table></figure>
+<p><strong>data_byte可以被用来存取一个字节数据而data_word不能</strong></p>
+<h2 id="常用伪指令格式与表达式"><a class="markdownIt-Anchor" href="#常用伪指令格式与表达式"></a> 常用伪指令格式与表达式</h2>
+<h3 id="comment"><a class="markdownIt-Anchor" href="#comment"></a> comment</h3>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">comment 自定义符号: <br>多行内容<br>多行内容<br>多行内容<br>自定义符号<br></code></pre></td></tr></table></figure>
+<p>功能: 实现块注释，<strong>块注释内部不能出现自定义的符号</strong></p>
+<h3 id="dup"><a class="markdownIt-Anchor" href="#dup"></a> dup</h3>
+<p>在<a href="#dup%E5%88%9D%E5%A7%8B%E5%8C%96">dup初始化</a>中有介绍</p>
+<h3 id="label"><a class="markdownIt-Anchor" href="#label"></a> label</h3>
+<p>在<a href="#%E6%A0%87%E5%8F%B7">标号</a>中有所应用</p>
+<h3 id="equ"><a class="markdownIt-Anchor" href="#equ"></a> equ</h3>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">name <span class="hljs-built_in">equ</span> expression<span class="hljs-comment">; 用符号名来表示EQU右边的表达式</span><br></code></pre></td></tr></table></figure>
+<p>功能: 用符号名来表示equ右边的表达式。后面的程序中一旦出现该符号名，<strong>汇编程序</strong>将把它<strong>替换成</strong>该表达式。(类似C语言中的<code>define</code>，因此<strong>符号在内存中没有保存，而是直接作为立即数出现</strong>)<br />
+例:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">count <span class="hljs-built_in">equ</span> <span class="hljs-number">5</span><span class="hljs-comment">; 后面出现的count在汇编时全部会被替换为立即数5</span><br>add1 <span class="hljs-built_in">equ</span> <span class="hljs-built_in">ds</span>:[<span class="hljs-built_in">ebp</span>+<span class="hljs-number">14</span>]<span class="hljs-comment">; add1被定义为在DS数据段中以BP作基址寻址的一个存储单元</span><br>str1 <span class="hljs-built_in">equ</span> <span class="hljs-string">&#x27;ABCD&#x27;</span><br>str2 <span class="hljs-built_in">db</span> str1<span class="hljs-comment">; str1为符号常量,str2为变量。</span><br>creg <span class="hljs-built_in">equ</span> <span class="hljs-built_in">cx</span><span class="hljs-comment">; 在后面的程序使用CREG就是使用CX</span><br>my_add <span class="hljs-built_in">equ</span> <span class="hljs-keyword">add</span><span class="hljs-comment">; 将add指令使用my_add代替</span><br></code></pre></td></tr></table></figure>
+<p><strong>符号名不能重复！</strong></p>
+<h3 id="伪指令"><a class="markdownIt-Anchor" href="#伪指令"></a> =伪指令</h3>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">name = expression<span class="hljs-comment">; 用符号名来表示=右边的表达式</span><br></code></pre></td></tr></table></figure>
+<p><strong><code>=</code>伪指令与<code>equ</code>伪指令效果相同，区别在于<code>equ</code>可以给指令取别名而<code>=</code>不可以，<code>equ</code>不可以重复赋值而<code>=</code>可以</strong></p>
+<h3 id="运算符"><a class="markdownIt-Anchor" href="#运算符"></a> 运算符</h3>
+<p>表达式是指令或伪指令语句操作数的常见形式。它由常数、变量、标号等通过操作运算符连接而成。<br />
+<strong>任何表达式的值在程序被汇编的过程中进行计算确定，而不是到程序运行时才计算。</strong></p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">num = <span class="hljs-number">15</span> * <span class="hljs-number">8</span><span class="hljs-comment">; num = 120</span><br>num = num / <span class="hljs-number">7</span><span class="hljs-comment">; nunm = 17(取整数部分)</span><br>num = num mod <span class="hljs-number">3</span><span class="hljs-comment">; num = 2</span><br>num = num + <span class="hljs-number">5</span><span class="hljs-comment">; num = 7</span><br>num = -num - <span class="hljs-number">3</span><span class="hljs-comment">; num = -10</span><br>num = -num - num<span class="hljs-comment">; num = 20</span><br>num = <span class="hljs-number">0</span><br>num = num[<span class="hljs-number">10</span>]<span class="hljs-comment">; num = 10(中括号视为加号)</span><br>num = <span class="hljs-number">11011011B</span><br>num = num <span class="hljs-keyword">shl</span> <span class="hljs-number">1</span><span class="hljs-comment">; num = 10110110B(左移伪指令)</span><br>num = num <span class="hljs-keyword">shr</span> <span class="hljs-number">1</span><span class="hljs-comment">; num = 01011011B(右移伪指令)</span><br>num = num <span class="hljs-keyword">and</span> <span class="hljs-number">00H</span><span class="hljs-comment">; num = 00H</span><br>num = num <span class="hljs-keyword">or</span> <span class="hljs-number">FFH</span><span class="hljs-comment">; num = FFH</span><br>num = num <span class="hljs-keyword">xor</span> num<span class="hljs-comment">; num = 00H</span><br>num = <span class="hljs-keyword">not</span> num<span class="hljs-comment">; num = FFH</span><br>num = <span class="hljs-number">10</span><br>result = num eq <span class="hljs-number">10</span><span class="hljs-comment">; result = 1(等于)</span><br>result = num ne <span class="hljs-number">10</span><span class="hljs-comment">; result = 0(不等)</span><br>result = num gt <span class="hljs-number">9</span><span class="hljs-comment">; result = 1(大于)</span><br>result = num lt <span class="hljs-number">11</span><span class="hljs-comment">; result = 1(小于)</span><br>result = num ge <span class="hljs-number">10</span><span class="hljs-comment">; result = 1(大于等于)</span><br>result = num le <span class="hljs-number">10</span><span class="hljs-comment">; result = 1(小于等于)</span><br></code></pre></td></tr></table></figure>
+<h3 id="offset"><a class="markdownIt-Anchor" href="#offset"></a> offset</h3>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">data <span class="hljs-built_in">db</span> <span class="hljs-number">1</span><span class="hljs-comment">; 定义变量</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">esi</span> offset data<span class="hljs-comment">; 取得data的偏移地址</span><br></code></pre></td></tr></table></figure>
+<p>功能:<br />
+<strong>取变量或标号在段内的偏移地址</strong></p>
+<h3 id="type"><a class="markdownIt-Anchor" href="#type"></a> type</h3>
+<p>格式:<br />
+data dw 1; 定义字类型数据<br />
+label1: mov al type data; al = 2<br />
+mov bl, type label1; bl = -1<br />
+功能:<br />
+<strong>取变量或标号的类型属性，并用数字形式表示。对变量来说就是取它的字节长度。</strong><br />
+<img src="type_number.png" srcset="/img/loading.gif" lazyload alt="对应关系" /></p>
+<h4 id="lengthlengthofsizesizeof"><a class="markdownIt-Anchor" href="#lengthlengthofsizesizeof"></a> length/lengthof/size/sizeof</h4>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-built_in">k1</span> <span class="hljs-built_in">dw</span> <span class="hljs-number">10H</span> dup(<span class="hljs-number">0</span>), <span class="hljs-number">20H</span><br><span class="hljs-built_in">k2</span> <span class="hljs-built_in">db</span> <span class="hljs-number">10H</span>, <span class="hljs-number">20H</span>, <span class="hljs-number">30H</span>, <span class="hljs-number">40H</span><br>   <span class="hljs-built_in">db</span> <span class="hljs-number">50H</span>, <span class="hljs-number">60H</span><br><span class="hljs-built_in">k3</span> <span class="hljs-built_in">dw</span> <span class="hljs-number">20H</span> dup(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span> dup(<span class="hljs-number">0</span>))<br><span class="hljs-built_in">k4</span> <span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;ABCDEFGH&#x27;</span><br><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, length <span class="hljs-built_in">k1</span><span class="hljs-comment">; al = 10H</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, size <span class="hljs-built_in">k1</span><span class="hljs-comment">; al = 20H</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">ah</span>, lengthof <span class="hljs-built_in">k1</span><span class="hljs-comment">; ah = 11H</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">ah</span>, sizeof <span class="hljs-built_in">k1</span><span class="hljs-comment">; ah = 22H</span><br><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">bl</span>, length <span class="hljs-built_in">k2</span><span class="hljs-comment">; bl = 1</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">bl</span>, size <span class="hljs-built_in">k2</span><span class="hljs-comment">; bl = 1</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">bh</span>, lengthof <span class="hljs-built_in">k2</span><span class="hljs-comment">; bh = 4</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">bh</span>, sizeof <span class="hljs-built_in">k2</span><span class="hljs-comment">; bh = 4</span><br><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">cl</span>, length <span class="hljs-built_in">k3</span><span class="hljs-comment">; bl = 20H</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">cl</span>, size <span class="hljs-built_in">k3</span><span class="hljs-comment">; bl = 40H</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">ch</span>, lengthof <span class="hljs-built_in">k3</span><span class="hljs-comment">; bh = 4 * 20H =80H</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">ch</span>, sizeof <span class="hljs-built_in">k3</span><span class="hljs-comment">; bh = 4 * 20H * 2 =100H</span><br><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dl</span>, length <span class="hljs-built_in">k4</span><span class="hljs-comment">; dl = 1</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">dl</span>, szie <span class="hljs-built_in">k4</span><span class="hljs-comment">; dl = 1</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">dh</span>, lengthof <span class="hljs-built_in">k4</span><span class="hljs-comment">; dh = 8</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">dh</span>, sizeof <span class="hljs-built_in">k4</span><span class="hljs-comment">; dh = 8</span><br></code></pre></td></tr></table></figure>
+<p>功能: <b></p>
+<ul>
+<li>length: 取DUP说明的重复次数，并且只取最外层DUP的重复次数。如果第一个初始值不是DUP说明，则LENGTH运算符返回值总是1。</li>
+<li>lengthof: 取变量定义行中的初始值个数</li>
+<li>size: size = length <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> type</li>
+<li>sizeof: sizeof = lengthof <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> type<br />
+</b></li>
+</ul>
+<h3 id="ptr"><a class="markdownIt-Anchor" href="#ptr"></a> ptr</h3>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">type <span class="hljs-built_in">ptr</span> address<span class="hljs-comment">; 修改地址的类型为type</span><br></code></pre></td></tr></table></figure>
+<p>功能:<br />
+<strong>用来对变量、标号或存储器操作数的类型属性进行修改或指定</strong></p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">data <span class="hljs-built_in">db</span> <span class="hljs-number">20</span> dup(<span class="hljs-number">1</span>)<span class="hljs-comment">; 定义字节类型变量</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ax</span>, <span class="hljs-built_in">word</span> <span class="hljs-built_in">ptr</span> data[<span class="hljs-number">10</span>]<span class="hljs-comment">; 按照字类型变量从data+10的偏移地址取得数据</span><br></code></pre></td></tr></table></figure>
+<h3 id="highlow"><a class="markdownIt-Anchor" href="#highlow"></a> high/low</h3>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">const <span class="hljs-built_in">equ</span> <span class="hljs-number">FF00H</span><span class="hljs-comment">; 符号名常量</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">ah</span>, high const<span class="hljs-comment">; al = FFH</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">al</span>, low const<span class="hljs-comment">; al = 00H</span><br></code></pre></td></tr></table></figure>
+<p>功能:<br />
+取常数的最低8位和其后的8位。<br />
+<strong>注意: HIGH/LOW运算符不能用来分离一个变量、寄存器或存储器单元的内容。</strong><br />
+如:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">data <span class="hljs-built_in">db</span> <span class="hljs-string">&#x27;ABCD&#x27;</span><span class="hljs-comment">; 定义字节类型变量</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">ah</span>, high data<span class="hljs-comment">; 错误</span><br><span class="hljs-keyword">mov</span> <span class="hljs-number">bh</span>, low <span class="hljs-built_in">ax</span><span class="hljs-comment">; 错误</span><br></code></pre></td></tr></table></figure>
+<h3 id="运算符的优先级"><a class="markdownIt-Anchor" href="#运算符的优先级"></a> 运算符的优先级</h3>
+<p><img src="priority.png" srcset="/img/loading.gif" lazyload alt="运算符的优先级" /></p>
+<h4 id="procendp"><a class="markdownIt-Anchor" href="#procendp"></a> proc/endp</h4>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">process_name proc [距离][语言类型][可视区域][USES 寄存器列表][参数列表]<br>local 变量名<span class="hljs-number">1</span>[重复数量]:类型,变量名<span class="hljs-number">2</span>[重复数量]:类型 ···<br>op<br>·<br>·<br><span class="hljs-keyword">ret</span><span class="hljs-comment">; 恢复现场、弹出断点偏移地址到EIP</span><br>process_name endp<span class="hljs-comment">; 结束子过程</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>process_name: 是子程序的名称，用CALL指令或INVOKE伪指令来调用该过程</li>
+<li>距离: 可以是NEAR、FAR、NEAR16、NEAR32、FAR16或FAR32</li>
+<li>语言类型: 表示参数的进栈顺序和堆栈恢复的方式，可以是StdCall，C，SysCall，BASIC、FORTRAN和PASCAL，如果忽略，则使用程序头部 .model定义的值</li>
+<li>可视区域: 可以是private、public和export，缺省时为public
+<ul>
+<li>private:表示过程只对本模块可见</li>
+<li>public: 表示对所有的模块可见</li>
+<li>export: 表示是导出的函数，当编写DLL的时候要将某个函数导出的时候可以这样使用</li>
+</ul>
+</li>
+<li>USES寄存器列表: 用于保存执行环境(自动push和pop保护现场)，寄存器间用空格分隔</li>
+<li>参数列表: 用来定义过程使用的参数名和类型(参数1:类型,参数2:类型)
+<ul>
+<li>若指定了参数，则过程要用invoke伪指令调用，否则应在CALL指令调用之前将参数按照规定的顺序压栈</li>
+<li>若过程未指定参数则可用call指令，也可以用invoke调用</li>
+<li>参数名不能与全局变量和过程中的局部变量重名</li>
+</ul>
+</li>
+</ul>
+<p>功能:<br />
+<strong>PROC和ENDP伪指令定义了过程开始和结束的位置， PROC后面跟的参数是过程的属性和输入参数。</strong></p>
+<h3 id="invoke"><a class="markdownIt-Anchor" href="#invoke"></a> invoke</h3>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">invoke function ,parm1, parm2···<span class="hljs-comment">; 调用API函数，根据API原型可带参数</span><br></code></pre></td></tr></table></figure>
+<p>功能:<br />
+调用三方库或系统API</p>
+<h3 id="伪指令与org"><a class="markdownIt-Anchor" href="#伪指令与org"></a> $伪指令与org</h3>
+<p>格式:</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">org expression<span class="hljs-comment">; $ = expression</span><br></code></pre></td></tr></table></figure>
+<p>功能:<br />
+$: 表示&quot;位置计数器&quot;的当前值，也被称为当前位置计数器，即当前偏离段基址距离(32位)<br />
+org: <strong>将数值表达式的值赋给当前位置计数器$，ORG语句为其后的变量或指令设置起始偏移量，表达式的值必须为正值</strong><br />
+若运行环境为flat模式，则该伪指令并不能把一个具体的偏移值赋值赋给位置计算器，系统会自动为每个段指定一个起始偏移地址，数值表达式的值为相对该起始偏移地址。</p>
+<h2 id="x86源程序框架"><a class="markdownIt-Anchor" href="#x86源程序框架"></a> X86源程序框架</h2>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-meta">.386</span><span class="hljs-comment">; 指定允许的指令集</span><br><span class="hljs-meta">.model</span> flat,stdcall<span class="hljs-comment">; 设置内存模式和语言模式(Win32必须为stdcall)</span><br><span class="hljs-meta">option</span> casemap:none<span class="hljs-comment">; 设定程序中的变量、符号常量和过程名对大小写敏感，即区分大小写(Win32 API硬性要求)</span><br><span class="hljs-comment">; 一些include语句</span><br>include user32<span class="hljs-number">.</span><span class="hljs-keyword">inc</span><br>include kernel32<span class="hljs-number">.</span><span class="hljs-keyword">inc</span><br>includelib user32<span class="hljs-number">.</span>lib<br>includelib kernel32<span class="hljs-number">.</span>lib<br>comment @<br>include 导入库。类似.h文件<br>includelib 导入库，类似.c/.lib/.dll<br>@<br><span class="hljs-meta">.stack</span> [堆栈段的大小]<br><span class="hljs-meta">.data</span><br><span class="hljs-comment">; 一些初始化过的变量定义</span><br><span class="hljs-meta">.data</span>?<br><span class="hljs-comment">; 一些没有初始化过的变量定义</span><br><span class="hljs-meta">.const</span><br><span class="hljs-comment">; 一些常量定义</span><br><span class="hljs-meta">.code</span><br>main proc<br><span class="hljs-comment">; 其他语句</span><br>mian endp<br>end main<span class="hljs-comment">; 指明了程序开始的地址，也是程序结束的最后一句</span><br></code></pre></td></tr></table></figure>
+<p>上述代码即Win32汇编语言源程序的<strong>一般框架</strong>，如C语言必须以main为入口函数般的模板。书写Win32汇编可按照该源程序框架进行改进。</p>
+<h2 id="x86三方库irvine进行输入输出操作"><a class="markdownIt-Anchor" href="#x86三方库irvine进行输入输出操作"></a> X86三方库Irvine进行输入输出操作</h2>
+<p>为实现各种IO设备的输入输出，Win32提供了非常丰富的API，它是Win32 Platform SDK中的一部分，覆盖了所有的输入输出功能，但使用上稍显繁琐。<br />
+CSUDH的Irvine教授在Win32 SDK的基础上，整理和编写了一个API库——Irvine32.LIB。<br />
+API详情见其<a target="_blank" rel="noopener" href="https://csc.csudh.edu/mmccullough/asm/help/">官网API手册</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Assembly-Language/">Assembly Language</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/08/8259A/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">8259A</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/06/x86%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/">
+                        <span class="hidden-mobile">X86指令系统</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -1,0 +1,853 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="8086与IA32微处理器  8086&#x2F;8088微处理器 8086微处理器是Intel公司在1978年发表的第一款16位微处理器，在随后的1979年又推出了低成本版本的8088微处理器。 其具有以下特点:  采用并行流水线工作方式 将CPU划分为两个功能部分(执行单元EU和总线接口单元BIU)并设置指令预取队列，实现流水线工作方式。 对内存空间进行分段管理 将内存分为多个段，并设置了4个段寄存器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8086与IA32微处理器">
+<meta property="og:url" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="8086与IA32微处理器  8086&#x2F;8088微处理器 8086微处理器是Intel公司在1978年发表的第一款16位微处理器，在随后的1979年又推出了低成本版本的8088微处理器。 其具有以下特点:  采用并行流水线工作方式 将CPU划分为两个功能部分(执行单元EU和总线接口单元BIU)并设置指令预取队列，实现流水线工作方式。 对内存空间进行分段管理 将内存分为多个段，并设置了4个段寄存器">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/8086.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/8088.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/8086_8088_architechture.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/min.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/max.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/addresing.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/example.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/stack.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/max_bus.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/min_bus.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/bus_example.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/bus_read.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/bus_write.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/eflags.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/segment.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/segment_selector.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/redirection.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/redirection_example1.png">
+<meta property="og:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/redirection_example2.png">
+<meta property="article:published_time" content="2022-12-05T08:03:03.000Z">
+<meta property="article:modified_time" content="2023-01-01T09:44:12.192Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Assembly Language">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/12/05/8086%E4%B8%8EIA32%E5%BE%AE%E5%A4%84%E7%90%86%E5%99%A8/8086.png">
+  
+  
+  <title>8086与IA32微处理器 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="8086与IA32微处理器">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-12-05 16:03" pubdate>
+        December 5, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      49 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">8086与IA32微处理器</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：January 1, 2023 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="8086与ia32微处理器"><a class="markdownIt-Anchor" href="#8086与ia32微处理器"></a> 8086与IA32微处理器</h1>
+<h2 id="80868088微处理器"><a class="markdownIt-Anchor" href="#80868088微处理器"></a> 8086/8088微处理器</h2>
+<p>8086微处理器是Intel公司在1978年发表的第一款<strong>16位</strong>微处理器，在随后的1979年又推出了低成本版本的8088微处理器。<br />
+其具有以下特点:</p>
+<ul>
+<li>采用<strong>并行流水线工作方式</strong><br />
+将CPU划分为两个功能部分(执行单元EU和总线接口单元BIU)并设置指令预取队列，实现流水线工作方式。</li>
+<li>对<strong>内存空间</strong>进行<strong>分段</strong>管理<br />
+将内存分为多个段，并设置了<strong>4个段寄存器</strong></li>
+<li>支持<strong>多处理器系统</strong><br />
+可以包含主处理器和协处理器</li>
+</ul>
+<h3 id="主要引线功能"><a class="markdownIt-Anchor" href="#主要引线功能"></a> 主要引线功能</h3>
+<p>8086和8088<strong>均有40个引脚</strong>，其中8086数据线为<strong>16条</strong>，而8088数据线为<strong>8条</strong>。<br />
+8086与8088<strong>共同</strong>的控制与状态信号线:</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>W</mi><mi>R</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{WR}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 写信号</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>R</mi><mi>D</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{RD}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 读信号</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>D</mi><mi>E</mi><mi>N</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{DEN}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 有效时表示数据总线是数据有效，允许读写</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>D</mi><mi>T</mi><mi mathvariant="normal">/</mi><mover accent="true"><mi>R</mi><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">DT/\overline{R}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.13333em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord">/</span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 数据收发器传送方向控制，为<strong>1</strong>时由CPU向其他部件传送，否则反之。</li>
+<li>ALE: 地址锁存信号，为<strong>1</strong>时表示地址线上地址有效。一般用它将地址锁存到一个锁存器中。</li>
+<li>READY: 外部同步控制输入信号，微处理器与内存/外设之间在一个总线周期内的时钟配合信号，当CPU给出读信号或写信号后由内存/外设返回。</li>
+<li>INTR: (interrupt request)可屏蔽的中断请求信号。</li>
+<li>NMI: (not masked interrupt)不可屏蔽的中断请求信号。</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>I</mi><mi>N</mi><mi>T</mi><mi>A</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{INTA}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8833300000000001em;vertical-align:0em;"></span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord mathdefault">A</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: (interrupt answer)中断响应信号。</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>M</mi><mi>N</mi><mi mathvariant="normal">/</mi><mover accent="true"><mrow><mi>M</mi><mi>X</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">MN/\overline{MX}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.13333em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mord">/</span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 工作模式选择信号。</li>
+<li>RESET: 复位信号，当其为高时将完成CPU内部复位。复位后CPU内部寄存器的值如下表。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">内部寄存器</th>
+<th style="text-align:center">内容</th>
+<th style="text-align:center">内部寄存器</th>
+<th style="text-align:center">内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">CS</td>
+<td style="text-align:center">FFFFH</td>
+<td style="text-align:center">IP</td>
+<td style="text-align:center">0000H</td>
+</tr>
+<tr>
+<td style="text-align:center">DS</td>
+<td style="text-align:center">0000H</td>
+<td style="text-align:center">FALGS</td>
+<td style="text-align:center">0000H</td>
+</tr>
+<tr>
+<td style="text-align:center">SS</td>
+<td style="text-align:center">0000H</td>
+<td style="text-align:center">其余寄存器</td>
+<td style="text-align:center">0000H</td>
+</tr>
+<tr>
+<td style="text-align:center">ES</td>
+<td style="text-align:center">0000H</td>
+<td style="text-align:center">指令队列</td>
+<td style="text-align:center">空</td>
+</tr>
+</tbody>
+</table>
+<p><b>Hint: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mover accent="true"><mrow><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>a</mi><mi>l</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{signal}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.08888em;vertical-align:-0.19444em;"></span><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.89444em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">s</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">n</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span></span></span><span style="top:-3.81444em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span></span></span></span>表示低有效！</b></p>
+<h4 id="8086"><a class="markdownIt-Anchor" href="#8086"></a> 8086</h4>
+<p><img src="8086.png" srcset="/img/loading.gif" lazyload alt="8086引脚图" /></p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><msub><mi>D</mi><mn>0</mn></msub><mi mathvariant="normal">至</mi><mi>A</mi><msub><mi>D</mi><mn>15</mn></msub></mrow><annotation encoding="application/x-tex">AD_0至AD_{15}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord mathdefault">A</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord cjk_fallback">至</span><span class="mord mathdefault">A</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">5</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: 供<strong>地址线</strong>与<strong>数据线</strong>复用，做地址线时为单向，做数据线时为双向。</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>A</mi><mn>16</mn></msub><mi mathvariant="normal">至</mi><msub><mi>A</mi><mn>20</mn></msub><mi mathvariant="normal">或</mi><msub><mi>S</mi><mn>3</mn></msub><mi mathvariant="normal">至</mi><msub><mi>S</mi><mn>6</mn></msub></mrow><annotation encoding="application/x-tex">A_{16}至A_{20}或S_3至S_6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">6</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord cjk_fallback">至</span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord cjk_fallback">或</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord cjk_fallback">至</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">6</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: 供<strong>地址线高4位</strong>与<strong>状态信号</strong>复用。</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>M</mi><mi mathvariant="normal">/</mi><mover accent="true"><mrow><mi>I</mi><mi>O</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">M/\overline{IO}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.13333em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord">/</span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 为<strong>1</strong>时表示访问内存，否则反之。</li>
+</ul>
+<h4 id="8088"><a class="markdownIt-Anchor" href="#8088"></a> 8088</h4>
+<p><img src="8088.png" srcset="/img/loading.gif" lazyload alt="8088引脚图" /></p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><msub><mi>D</mi><mn>0</mn></msub><mi mathvariant="normal">至</mi><mi>A</mi><msub><mi>D</mi><mn>7</mn></msub></mrow><annotation encoding="application/x-tex">AD_0至AD_7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord mathdefault">A</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord cjk_fallback">至</span><span class="mord mathdefault">A</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: 供<strong>地址线</strong>与<strong>数据线</strong>复用，做地址线时为单向，做数据线时为双向。</li>
+<li>$A_8至A_{15}: <strong>地址线</strong>中间8位。</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>A</mi><mn>16</mn></msub><mi mathvariant="normal">至</mi><msub><mi>A</mi><mn>20</mn></msub><mi mathvariant="normal">或</mi><msub><mi>S</mi><mn>3</mn></msub><mi mathvariant="normal">至</mi><msub><mi>S</mi><mn>6</mn></msub></mrow><annotation encoding="application/x-tex">A_{16}至A_{20}或S_3至S_6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">6</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord cjk_fallback">至</span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord cjk_fallback">或</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord cjk_fallback">至</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">6</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: 供<strong>地址线高4位</strong>与<strong>状态信号</strong>复用。</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>I</mi><mi>O</mi><mi mathvariant="normal">/</mi><mover accent="true"><mi>M</mi><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">IO/\overline{M}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.13333em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mord">/</span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>: 为<strong>1</strong>时表示访问IO设备，否则反之。</li>
+</ul>
+<h4 id="8086与8088的区别"><a class="markdownIt-Anchor" href="#8086与8088的区别"></a> 8086与8088的区别</h4>
+<ol>
+<li>数据总线宽度不同:
+<ul>
+<li>8086: 16位数据总线</li>
+<li>8088: 8位数据总线(8088为8086的低成本版本)</li>
+</ul>
+</li>
+<li>表示对内存和IO设备的信号不同:
+<ul>
+<li>8086: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>M</mi><mi mathvariant="normal">/</mi><mover accent="true"><mrow><mi>I</mi><mi>O</mi></mrow><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">M/\overline{IO}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.13333em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord">/</span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>，高有效时访问内存</li>
+<li>8088: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>I</mi><mi>O</mi><mi mathvariant="normal">/</mi><mover accent="true"><mi>M</mi><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">IO/\overline{M}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.13333em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mord">/</span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span></span></span></span>，高有效时访问IO设备</li>
+</ul>
+</li>
+</ol>
+<h3 id="80868088内部结构"><a class="markdownIt-Anchor" href="#80868088内部结构"></a> 8086/8088内部结构</h3>
+<p>可分为两个功能部分: 两部分功能相互独立、控制相互依赖。</p>
+<ul>
+<li><strong>执行单元EU</strong>: 完成指令的执行
+<ul>
+<li>运算器</li>
+<li>8个通用寄存器</li>
+<li>1个标志寄存器</li>
+<li>EU部分的控制电路</li>
+</ul>
+</li>
+<li><strong>总线接口单元BIU</strong>: 取指令、取数据、完成指令的调度
+<ul>
+<li>地址加法器</li>
+<li>4个段寄存器</li>
+<li>指令指针寄存器IP(计组中的PC)</li>
+<li>总线控制逻辑<br />
+<img src="8086_8088_architechture.png" srcset="/img/loading.gif" lazyload alt="8086/8088功能结构" /></li>
+</ul>
+</li>
+</ul>
+<h3 id="内部寄存器"><a class="markdownIt-Anchor" href="#内部寄存器"></a> 内部寄存器</h3>
+<p>8086/8088微处理器共有<strong>14个16位寄存器</strong>，按功能可分为3类:</p>
+<ul>
+<li>通用寄存器(<strong>8个</strong>):
+<ul>
+<li>数据寄存器:
+<ol>
+<li>AX: 累加器，所有的<strong>IO指令</strong>都通过AX与接口传送信息。相关指令: <strong>in指令和out指令</strong></li>
+<li>BX: 在<strong>间接寻址</strong>中存放<strong>基地址(数据段)</strong></li>
+<li>CX: 计数寄存器。用于在循环或串操作指令中存放计数值。相关指令: <strong>loop指令</strong></li>
+<li>DX:
+<ol>
+<li>IO端口间接寻址中<strong>存放IO端口地址</strong></li>
+<li>32位乘除法时<strong>存放高16位</strong><br />
+<b>数据寄存器均可拆分为2个8位寄存器使用，如AX可以分为AH和AL使用。</b></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>地址指针寄存器:
+<ol>
+<li>SP: 堆栈指针寄存器，其内容为<strong>栈顶的偏移地址</strong>，栈顶为栈的<strong>最小</strong>地址</li>
+<li>BP: 基址指针寄存器，常用于在访问内存时存放<strong>内存单元(堆栈段)的偏移地址</strong>。</li>
+</ol>
+</li>
+<li>变址寄存器:
+<ol>
+<li>SI: 源变址寄存器，相关指令: <strong>movsb指令默认源地址为esi寄存器(IA32下)</strong></li>
+<li>DI: 目标变址寄存器，相关指令: <strong>movsb指令默认目的地址为edi寄存器(IA32下)</strong></li>
+</ol>
+</li>
+</ul>
+</li>
+<li>段寄存器(<strong>4个</strong>):
+<ol>
+<li>CS: 代码段寄存器，存放代码段基址</li>
+<li>DS: 数据段寄存器，存放数据段基址</li>
+<li>SS: 堆栈段寄存器，存放堆栈段基址</li>
+<li>ES: 附加段寄存器，存放附加段基址，附加段一般作为数据段的补充</li>
+</ol>
+</li>
+<li>控制寄存器(<strong>2个</strong>):
+<ol>
+<li>FLAGS: 存放运算结果的状态特征和控制CPU的运行。<br />
+常用9个标志位:
+<ul>
+<li>CF: <strong>进/借位标志</strong></li>
+<li>PF: <strong>低8位奇偶校验位</strong>，<strong>1</strong>的个数为偶数时为1</li>
+<li>AF: <strong>第4位的进/借位标志</strong></li>
+<li>ZF: <strong>零标志位</strong></li>
+<li>SF: <strong>符号位标志位</strong></li>
+<li>OF: <strong>溢出标志位</strong></li>
+<li>TF: <strong>陷阱标志位</strong>，也叫<strong>跟踪标志位</strong>。TF=1时，使CPU处于单步执行指令的工作方式。</li>
+<li>IF: <strong>中断允许标志位</strong>,IF=1使CPU可以响应可屏蔽中断请求。</li>
+<li>DF: <strong>方向标志位</strong>，在数据串操作时确定操作的方向。</li>
+</ul>
+</li>
+<li>IP: <strong>指令指针寄存器</strong>，其内容为<strong>下一条要执行指令的偏移地址</strong>。(与计组中PC类似)</li>
+</ol>
+</li>
+</ul>
+<h3 id="工作模式"><a class="markdownIt-Anchor" href="#工作模式"></a> 工作模式</h3>
+<p>8086/8088共有<strong>2种工作模式</strong>:</p>
+<ul>
+<li>最小模式: 为单处理器模式，控制信号较少，CPU直接输出控制信号到总线。</li>
+</ul>
+<p><img src="min.png" srcset="/img/loading.gif" lazyload alt="最小模式" /></p>
+<ul>
+<li>最大模式: 作为主处理器，连接有其他协处理器，需要接总线控制器。</li>
+</ul>
+<p><img src="max.png" srcset="/img/loading.gif" lazyload alt="最大模式" /></p>
+<h3 id="存储器寻址"><a class="markdownIt-Anchor" href="#存储器寻址"></a> 存储器寻址</h3>
+<p>8086/8088采用<strong>字节编址</strong>的方式来管理内存空间，定义连续两个字节作为<strong>字单元</strong>，<strong>字单元的地址为较低字节的地址</strong>，其存放规则是低8位放在较低地址字节单元，高8位放在较高地址字节单元，即<strong>小端方式</strong>。</p>
+<h4 id="80868088地址重定向"><a class="markdownIt-Anchor" href="#80868088地址重定向"></a> 8086/8088地址重定向</h4>
+<p>8086/8088共有<strong>20条地址线</strong>，寻址范围为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mn>20</mn></msup><mo>=</mo><mn>1</mn><mi>M</mi></mrow><annotation encoding="application/x-tex">2^{20}=1M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mtight">0</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span></span></span></span>。如前面介绍，8086/8088采用分段的方式来进行内存空间管理，而段寄存器仅有16位，因此8086/8088并不能直接采用<strong>段基址+段内偏移地址=物理地址</strong>的方式进行寻址。<br />
+<img src="addresing.png" srcset="/img/loading.gif" lazyload alt="8086/8088寻址方式" /><br />
+如上图所示: 段寄存器内16位数据作为高16位地址，低4位补零形成段基址。其他寄存器内16位地址高4位补零形成偏移地址，再通过<strong>段基址+段内偏移地址=物理地址</strong>得到物理地址。</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">段</mi><mi mathvariant="normal">寄</mi><mi mathvariant="normal">存</mi><mi mathvariant="normal">器</mi><mo>×</mo><mn>16</mn><mo>+</mo><mi mathvariant="normal">偏</mi><mi mathvariant="normal">移</mi><mi mathvariant="normal">地</mi><mi mathvariant="normal">址</mi><mi mathvariant="normal">寄</mi><mi mathvariant="normal">存</mi><mi mathvariant="normal">器</mi></mrow><annotation encoding="application/x-tex">段寄存器\times 16 + 偏移地址寄存器
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord cjk_fallback">段</span><span class="mord cjk_fallback">寄</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">器</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0em;vertical-align:0em;"></span><span class="mord cjk_fallback">偏</span><span class="mord cjk_fallback">移</span><span class="mord cjk_fallback">地</span><span class="mord cjk_fallback">址</span><span class="mord cjk_fallback">寄</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">器</span></span></span></span></span></p>
+<p><img src="example.png" srcset="/img/loading.gif" lazyload alt="example" /><br />
+根据上述算法，段内最大偏移量为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mn>16</mn></msup><mo>=</mo><mn>64</mn><mi>k</mi></mrow><annotation encoding="application/x-tex">2^{16}=64k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">6</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord">6</span><span class="mord">4</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span>字节，每个段的段基址低4位一定为<code>0000B</code>，因此从0地址开始，<strong>每16个字节单元称为一个小节</strong>，1MB的内存空间最多可以划分为<strong>64K个小节</strong>。</p>
+<h4 id="80868088堆栈段使用"><a class="markdownIt-Anchor" href="#80868088堆栈段使用"></a> 8086/8088堆栈段使用</h4>
+<p>堆栈是一个特定的存储区，访问该存储区一般需要按照专门的规则进行操作。其主要用于<strong>暂存数据</strong>以及在过程调用或处理中断时<strong>保存断点信息</strong>。<br />
+<img src="stack.png" srcset="/img/loading.gif" lazyload alt="栈的示意图" /></p>
+<ul>
+<li>栈顶: 栈顶是最后存入信息的存储单元，为栈的所有地址中的<strong>最小值</strong>。</li>
+<li>栈底: 栈底为固定的一端，是堆栈存储区的<strong>最大地址单元</strong>。</li>
+<li><strong>SP始终指向栈顶</strong></li>
+<li>堆栈段的数据均以<strong>字(16位)<strong>为存储单元，以小端进行存放。堆栈</strong>初始化时SP指向栈底+2单元(16位)</strong>，其值就是堆栈的长度。由于SP是16位寄存器，因此堆栈长度小于等于64K字节。</li>
+</ul>
+<h3 id="系统总线"><a class="markdownIt-Anchor" href="#系统总线"></a> 系统总线</h3>
+<p>系统总线(bus): 是一组导线和相关的控制、驱动电路的集合，它是计算机系统各部件之间<strong>传输地址、数据和控制信息的通道</strong>。<br />
+BUS:</p>
+<ul>
+<li>地址总线(AB)</li>
+<li>数据总线(DB)</li>
+<li>控制总线(CB)</li>
+</ul>
+<h4 id="最大总线模式"><a class="markdownIt-Anchor" href="#最大总线模式"></a> 最大总线模式</h4>
+<p><img src="max_bus.png" srcset="/img/loading.gif" lazyload alt="最大模式总线" /><br />
+处于<strong>最大模式</strong>下的8086/8088可以接其他的协处理器，控制信号更加复杂，因此需要将控制信号位输入给<strong>总线控制器</strong>来产生控制信号。</p>
+<h4 id="最小总线模式"><a class="markdownIt-Anchor" href="#最小总线模式"></a> 最小总线模式</h4>
+<p><img src="min_bus.png" srcset="/img/loading.gif" lazyload alt="最小模式总线" /><br />
+<strong>最小模式</strong>下8086/8088直接作为单处理器，通过引脚上的端口将<strong>控制信号直接输出</strong>即可。</p>
+<h4 id="最小总线模式时序"><a class="markdownIt-Anchor" href="#最小总线模式时序"></a> 最小总线模式时序</h4>
+<p><b>总线时序是指CPU上各引脚的信号在时间上的关系。</b><br />
+总线周期: CPU完成一次访问内存(或I/O接口)操作所需要的时间。<strong>1个总线周期至少包括4个时钟周期</strong>。<br />
+<img src="bus_example.png" srcset="/img/loading.gif" lazyload alt="典型总线周期" /><br />
+如上图所示: <strong>1次访存或IO操作需要4个时钟周期</strong>，分别用来进行地址传送和数据传送。当READY信号处于低电平时，说明数据不可用，需要等待，因此插入<strong>至少1个TW时钟周期</strong>，如果READY信号一直处于低电平状态即数据一直没有准备好则会<strong>插入多个TW周期</strong>进行等待。<br />
+<img src="bus_read.png" srcset="/img/loading.gif" lazyload alt="" /><br />
+<img src="bus_write.png" srcset="/img/loading.gif" lazyload alt="" /></p>
+<h2 id="ia-32微处理器"><a class="markdownIt-Anchor" href="#ia-32微处理器"></a> IA-32微处理器</h2>
+<p>Intel公司将80286之后的80X86 <strong>32位微处理器</strong>称为IA(Intel Architecture)-32结构。80386是与8086兼容的高性能的32位微处理器。Pentium系列微处理器是与80X86系列微处理器兼容、RISC型超标量结构的32位微处理器。<br />
+<b>Hint: IA-32包括80386和奔腾系列。</b></p>
+<h3 id="ia-32微处理器结构"><a class="markdownIt-Anchor" href="#ia-32微处理器结构"></a> IA-32微处理器结构</h3>
+<p>CPU被划分为6个单元:<b>总线接口单元BIU、指令预取单元IPU、指令译码单元IDU、执行单元EU、分段单元SU、分页单元PU。</b><br />
+其主要特点有:</p>
+<ul>
+<li>具有4GB的物理地址空间和64TB的虚拟地址空间的存储器寻址能力</li>
+<li>不仅有分段存储管理方式，还增加了分页存储管理方式(段页结合式)</li>
+<li>多任务运行机制</li>
+<li>优先级保护机制</li>
+</ul>
+<h3 id="内部寄存器-2"><a class="markdownIt-Anchor" href="#内部寄存器-2"></a> 内部寄存器</h3>
+<p>IA32微处理器共有<strong>24个寄存器，其中14个32位寄存器，8个16位寄存器，2个48位寄存器</strong>，按功能可分为5类:</p>
+<ul>
+<li>通用寄存器(<strong>8个32位</strong>)<br />
+均为8086/8088的8个<strong>通用寄存器32位扩展版本</strong>，分别命名为EAX、EBX、ECX、EDX、ESP、EBP、ESI、EDI，功能也与在8086/8088中类似，并且<strong>EAX、EBX、ECX、EDX的低16位可拆分为16位和8位寄存器使用</strong>，如EAX可拆分为AX或AH与AL使用。</li>
+<li>段寄存器(<strong>6个16位</strong>)<br />
+IA-32中<strong>段基址和偏移量都是32位</strong>，段寄存器只有16位不直接作段基址，其内容称为段选择器，需间接访问才能得到段基地址。
+<ol>
+<li>CS: 代码段寄存器</li>
+<li>DS: 数据段寄存器</li>
+<li>SS: 堆栈段寄存器</li>
+<li>ES: 附加段寄存器，附加段一般作为数据段的补充</li>
+<li>FS: 动态数据结构段寄存器，也作为数据段的补充</li>
+<li>GS: 共享段寄存器，也作为数据段的补充</li>
+</ol>
+</li>
+<li>指令指针和标志寄存器(<strong>2个32位</strong>):
+<ol>
+<li>EFLAGS: <strong>其中第0⁓11位共有9个标志位，与8086一致。</strong><br />
+<img src="eflags.png" srcset="/img/loading.gif" lazyload alt="EFLAGS" /></li>
+<li>EIP: 其低16位与8086同名为IP，作用与IP相同。</li>
+</ol>
+</li>
+<li>系统地址寄存器(<strong>2个48位，2个16位</strong>)<br />
+使用方法见<a href="#%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E5%AD%98%E5%82%A8%E5%99%A8%E8%AE%BF%E9%97%AE">保护模式下的存储器访问</a>
+<ul>
+<li>48位寄存器:
+<ol>
+<li>全局描述符表寄存器GDTR:</li>
+<li>中断描述符表寄存器IDT:</li>
+</ol>
+</li>
+<li>16位寄存器:
+<ol>
+<li>局部描述符表寄存器LDTR</li>
+<li>任务状态段寄存器TR</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>控制寄存器(<strong>4个32位</strong>)<br />
+分别为CR0、CR1、CR2和CR3，其中CR1保留未使用。<strong>用来设置和保存机器的各种全局性状态</strong>，比如是否有浮点部件，是否处于保护模式，是否采用页式存储管理等等。</li>
+</ul>
+<h3 id="工作模式-2"><a class="markdownIt-Anchor" href="#工作模式-2"></a> 工作模式</h3>
+<p>IA-32有2种主要的工作方式和1种特殊模式:</p>
+<ul>
+<li>实模式: 实模式是为了与8086兼容而设置的工作方式即使<strong>IA32在16位模式下工作</strong>。IA-32的30多条<strong>地址线中只有低20条地址线起作用</strong>，可寻址1MB的物理地址空间。<strong>实模式下微处理器不能实现多任务的处理</strong>。</li>
+<li>保护模式: 保护虚地址方式是IA-32微处理器的<strong>主要工作方式即32位模式</strong>。</li>
+<li>虚拟86模式: 为了在IA-32系统上运行MS-DOS支持下的应用程序，微处理器可以工作在实地址方式<strong>即16位模式</strong>，但其功能十分有限。</li>
+</ul>
+<h3 id="保护模式下的存储器访问"><a class="markdownIt-Anchor" href="#保护模式下的存储器访问"></a> 保护模式下的存储器访问</h3>
+<p>保护模式下可访问的地址空间达4GB，但不是随意使用，而是要受到一定的限制，<strong>这种保护就是由段描述符来完成，拿到段描述符即可重定向到段的物理地址</strong>。<br />
+<b>段描述符: 段描述符指示了这个段在内存中的位置、大小以及使用限制。段描述符有64位，包括段基址32位、段界限20位、特权级等属性12位。</b><br />
+<img src="segment.png" srcset="/img/loading.gif" lazyload alt="段描述符" /></p>
+<ul>
+<li>段基址: <strong>32位</strong>段基址，表示该段在4GB线性地址空间中的<strong>起始地址</strong></li>
+<li>属性: <strong>12位</strong>，包括特权级、段类型、段存在标志、粒度标志等
+<ul>
+<li>特权级DPL: 每个段都有一个特权级，取值范围0~ 3，0级为最高级，一般用于操作系统核心代码。如果特权级数值高的程序试图访问特权级数值低的段，则发生处理器故障</li>
+<li>段类型: 指定段的访问类型(只读、可读可写、只执行等)以及段生长的方向(向上或向下)</li>
+<li>段存在标志: 指示该段当前是否在物理内存中</li>
+<li>粒度标志G: 确定对段界限字段的解释</li>
+</ul>
+</li>
+<li>段界限: <strong>20位</strong>段界限，<strong>表示段的大小</strong>，但具有两种解释: 根据粒度G的取值，1个段界限单位表示的内存大小不同，G=0时表示1字节，G=1时表示4096字节(4KB)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">G = 0</th>
+<th style="text-align:center">G = 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1B~1MB</td>
+<td style="text-align:center">4KB~4GB</td>
+</tr>
+</tbody>
+</table>
+<h4 id="获取段描述符"><a class="markdownIt-Anchor" href="#获取段描述符"></a> 获取段描述符</h4>
+<p><b>描述符表: 把多个段的段描述符顺序地存放在一起就构成描述符表。</b><br />
+描述符表分为<strong>全局描述符表GDT和局部描述符表LDT</strong>。全局只有<strong>1个GDT</strong>，其起始地址存放在<strong>48位寄存器GDTR</strong>中，其中高32位为GDT起始地址，低16位为GDT长度。<strong>LDT也是一个单独的段，其段描述符称为LDT描述符</strong>，LDT描述符放在GDT中，当前任务的LDT描述符可以通过<strong>16位LDTR间接的从GDT中得到</strong>，然后再从LDT中得到需要的段描述符。<br />
+得到段描述符还需要该描述符在描述符表中的偏移地址，而该偏移地址由段寄存器的内容段选择器来进行指示:<br />
+<img src="segment_selector.png" srcset="/img/loading.gif" lazyload alt="段选择器" /></p>
+<ul>
+<li>索引值: <strong>13位</strong>，描述段描述符在描述符表中的<strong>偏移地址</strong>，<strong>该索引值低位补零得到16位偏移地址</strong></li>
+<li>TI: <strong>1位</strong>，指示段描述符在GDT中还是LDT中，<strong>为1时在LDT</strong></li>
+<li>CPL/RPL: <strong>2位</strong>，表示<strong>该段的优先级</strong>，共4级</li>
+</ul>
+<h4 id="重定向"><a class="markdownIt-Anchor" href="#重定向"></a> 重定向</h4>
+<p><img src="redirection.png" srcset="/img/loading.gif" lazyload alt="重定向" /><br />
+重定向地址仍然由公式所示:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">物</mi><mi mathvariant="normal">理</mi><mi mathvariant="normal">地</mi><mi mathvariant="normal">址</mi><mo>=</mo><mi mathvariant="normal">段</mi><mi mathvariant="normal">基</mi><mi mathvariant="normal">址</mi><mo>+</mo><mi mathvariant="normal">段</mi><mi mathvariant="normal">内</mi><mi mathvariant="normal">偏</mi><mi mathvariant="normal">移</mi><mi mathvariant="normal">地</mi><mi mathvariant="normal">址</mi></mrow><annotation encoding="application/x-tex">物理地址=段基址+段内偏移地址
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mord cjk_fallback">物</span><span class="mord cjk_fallback">理</span><span class="mord cjk_fallback">地</span><span class="mord cjk_fallback">址</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord cjk_fallback">段</span><span class="mord cjk_fallback">基</span><span class="mord cjk_fallback">址</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0em;vertical-align:0em;"></span><span class="mord cjk_fallback">段</span><span class="mord cjk_fallback">内</span><span class="mord cjk_fallback">偏</span><span class="mord cjk_fallback">移</span><span class="mord cjk_fallback">地</span><span class="mord cjk_fallback">址</span></span></span></span></span></p>
+<p>段基址由段描述符所得到，段内偏移地址由其他32位寄存器得到。<br />
+以下是两个例子:<br />
+<img src="redirection_example1.png" srcset="/img/loading.gif" lazyload alt="example" /><br />
+<img src="redirection_example2.png" srcset="/img/loading.gif" lazyload alt="example" /></p>
+<h4 id="flat-平坦模式"><a class="markdownIt-Anchor" href="#flat-平坦模式"></a> flat: 平坦模式</h4>
+<p>在Windows 32位模式下将所有的段寄存器都设置为<strong>指向相同的线性地址0</strong>，代码段、数据段、堆栈段都重合于同一个4GB的线性地址空间。这种工作模式称为平坦存储模式(或平面存储模式)。<br />
+平坦存储模式下完全可以不管段寄存器的使用，<strong>访问存储器只使用32位的偏移地址</strong>，程序中不会出现CS、DS、SS等段寄存器。<br />
+虽然数据、堆栈和代码都共用一个4GB的线性地址空间，但在存储分配时仍然是相对集中，不是交叉随机分配。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Assembly-Language/">Assembly Language</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/06/x86%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">X86指令系统</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/">
+                        <span class="hidden-mobile">互连及输入输出组织</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

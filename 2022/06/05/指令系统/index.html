@@ -1,0 +1,856 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="Chapter 4: Instruction Set  指令系统的设计 一条指令必须明显或隐含包含以下信息:  操作码: 指明操作类型，长度可为固定也可为可变长，在MIPS中为固定长度 源操作数或其地址: 一个或多个源操作数所在的地址，可以是寄存器编址也可以是内存地址 结果的地址: 产生的结果存放何处(目的操作数) 下一条指令地址: 下条指令存放于何处  在不同机器系统中指令系统的指令内地址数量">
+<meta property="og:type" content="article">
+<meta property="og:title" content="指令系统">
+<meta property="og:url" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="Chapter 4: Instruction Set  指令系统的设计 一条指令必须明显或隐含包含以下信息:  操作码: 指明操作类型，长度可为固定也可为可变长，在MIPS中为固定长度 源操作数或其地址: 一个或多个源操作数所在的地址，可以是寄存器编址也可以是内存地址 结果的地址: 产生的结果存放何处(目的操作数) 下一条指令地址: 下条指令存放于何处  在不同机器系统中指令系统的指令内地址数量">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/ibm370.svg">
+<meta property="og:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/extend_operate_code_example.svg">
+<meta property="og:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/instruction_system_style_comparation.svg">
+<meta property="og:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/R_type_instruction.png">
+<meta property="og:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/I_type_instruction.png">
+<meta property="og:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/J_type_instruction.png">
+<meta property="og:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/MIPS_register.png">
+<meta property="og:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/reverse_example.png">
+<meta property="og:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/assembly_order.png">
+<meta property="article:published_time" content="2022-06-05T15:06:18.000Z">
+<meta property="article:modified_time" content="2022-08-27T03:07:12.916Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Computer Organization and Architecture">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/ibm370.svg">
+  
+  
+  <title>指令系统 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="指令系统">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-05 23:06" pubdate>
+        June 5, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      56 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">指令系统</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：August 27, 2022 am
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="chapter-4-instruction-set"><a class="markdownIt-Anchor" href="#chapter-4-instruction-set"></a> Chapter 4: Instruction Set</h1>
+<h2 id="指令系统的设计"><a class="markdownIt-Anchor" href="#指令系统的设计"></a> 指令系统的设计</h2>
+<p>一条指令必须明显或隐含包含以下信息:</p>
+<ul>
+<li>操作码: 指明操作类型，长度可为<strong>固定</strong>也可为<strong>可变长</strong>，在MIPS中为固定长度</li>
+<li>源操作数或其地址: 一个或多个源操作数所在的地址，可以是<strong>寄存器编址</strong>也可以是<strong>内存地址</strong></li>
+<li>结果的地址: 产生的结果存放何处(目的操作数)</li>
+<li>下一条指令地址: 下条指令存放于何处</li>
+</ul>
+<p>在不同机器系统中指令系统的<strong>指令内地址数量</strong>也可能不同。</p>
+<ul>
+<li>零地址指令:
+<ol>
+<li>无需操作数　如: 空操作／停机等</li>
+<li>所需操作数为默认位置　如: 堆栈／累加器等<br />
+<strong>形式: op</strong></li>
+</ol>
+</li>
+<li>一地址指令:<br />
+其地址既是操作数的地址，也是结果的地址
+<ol>
+<li>单目运算: 如: 取反／取负等</li>
+<li>双目运算: 另一操作数为默认的　如: 累加器等<br />
+<strong>形式: op + A</strong></li>
+</ol>
+</li>
+<li>两地址指令(CISC常见):<br />
+分别存放双目运算中两个操作数，并将其中一个地址作为结果的地址。<br />
+<strong>形式: op + A + B</strong></li>
+<li>三地址指令(RISC常见):<br />
+分别作为双目运算中两个源操作数的地址和一个结果的地址<br />
+<strong>形式: op + A + B + C</strong></li>
+<li>多地址指令:<br />
+用于成批数据处理的指令，如:向量 / 矩阵等运算的SIMD指令</li>
+</ul>
+<p><strong>指令执行的全过程如下:</strong></p>
+
+<pre>
+<code class="mermaid" >
+graph TD
+    IF("Instruction Fetch(取指)")-->ID("Instruction Decode(解码)");
+    ID-->OF("Operand Fetch(取操作数)");
+    OF-->EX("Execute(执行)");
+    EX-->RS("Result Store(写入)");
+    RS-->IF;
+</code>
+</pre>
+<h3 id="指令系统设计的基本原则"><a class="markdownIt-Anchor" href="#指令系统设计的基本原则"></a> 指令系统设计的基本原则</h3>
+<ul>
+<li>尽量短</li>
+<li>有足够的操作码位数</li>
+<li>指令编码必须有唯一的解释，否则是不合法的指令</li>
+<li>指令字长应是字节的整数倍</li>
+<li>合理地选择地址字段的个数</li>
+<li>指令尽量规整</li>
+</ul>
+<h3 id="数据的类型"><a class="markdownIt-Anchor" href="#数据的类型"></a> 数据的类型</h3>
+<p>操作数是指令处理的对象，与高级语言数据类型对应，基本类型有:</p>
+<ul>
+<li>地址(指针): 被看成无符号整数，用来参加运算以确定主(虚)存地址。</li>
+<li>数值数据:
+<ul>
+<li>定点数: 用二进制补码表示</li>
+<li>浮点数: 用IEEE754标准规定表示</li>
+</ul>
+</li>
+<li>位、位串、字符和字符串: 用来表示文本、音频和视频等.</li>
+<li>逻辑数据: 布尔变量，用单位0/1表示。</li>
+</ul>
+<h3 id="操作数的寻址方式"><a class="markdownIt-Anchor" href="#操作数的寻址方式"></a> 操作数的寻址方式</h3>
+<p><strong>寻址方式: 指令或操作数地址的指定方式。即：根据地址找到指令或操作数的方法。在一边情况下我们所讲的寻址方法大多指操作数寻址。</strong><br />
+由于操作数有不同的寻址方式，而指令中操作数地址是指令的一部分，因此<strong>指令中的地址码编码由操作数的寻址方式决定。</strong><br />
+在指令中表示寻址方式主要有两种方法:</p>
+<ul>
+<li>不设专门的寻址方式位: 例如在MIPS中，一条指令最多含有一个主存地址因此仅有一到两种寻址方式，通过确定指令操作码即可得知指令内操作数的寻址方式。</li>
+<li>在指令中设置专门的寻址方式位: 如X86指令，一条指令中有多个操作数，且寻址方式各不相同，需要各自说明寻址方式，因此每个操作数有专门的寻址方式位，需要在指令中额外说明。</li>
+</ul>
+<p>以下七种寻址方式<b>需要全面了解和掌握！</b>:<br />
+设定指令格式为: | op | R | A | ··· |<br />
+<strong>R为寄存器编号，A为地址字段值，(X)表示A中的内容。</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">寻址方式</th>
+<th style="text-align:center">算法</th>
+<th style="text-align:center">优点</th>
+<th style="text-align:center">缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">立即数寻址</td>
+<td style="text-align:center">操作数=A</td>
+<td style="text-align:center">指令执行速度快，因为数据直接存储在指令内</td>
+<td style="text-align:center">操作数的范围小(指令长度有限)</td>
+</tr>
+<tr>
+<td style="text-align:center">直接寻址</td>
+<td style="text-align:center">操作数地址=A</td>
+<td style="text-align:center">有效地址计算简单</td>
+<td style="text-align:center">地址范围小</td>
+</tr>
+<tr>
+<td style="text-align:center">间接寻址</td>
+<td style="text-align:center">操作数地址=(A)</td>
+<td style="text-align:center">有效地址范围大</td>
+<td style="text-align:center">需要进行多次存储器访问</td>
+</tr>
+<tr>
+<td style="text-align:center">寄存器寻址</td>
+<td style="text-align:center">操作数=(R)</td>
+<td style="text-align:center">指令执行快，指令短(因为寄存器数量少，需要表达位数少且访问寄存器比访问主存快)</td>
+<td style="text-align:center">寄存器数量少</td>
+</tr>
+<tr>
+<td style="text-align:center">寄存器间接寻址</td>
+<td style="text-align:center">操作数地址=(R)</td>
+<td style="text-align:center">地址范围大</td>
+<td style="text-align:center">需要访问一次寄存器和存储器</td>
+</tr>
+<tr>
+<td style="text-align:center">偏移寻址</td>
+<td style="text-align:center">操作数地址=A+(R)</td>
+<td style="text-align:center">灵活</td>
+<td style="text-align:center">复杂</td>
+</tr>
+<tr>
+<td style="text-align:center">堆栈寻址</td>
+<td style="text-align:center">操作数地址=栈顶内容</td>
+<td style="text-align:center">指令短</td>
+<td style="text-align:center">应用有限</td>
+</tr>
+</tbody>
+</table>
+<p>偏移寻址又可以因为<strong>R可以明显或者不明显</strong>给出而分为三种不同的寻址方法:</p>
+<ul>
+<li>相对寻址: 操作数地址=A+(PC)，此时R为PC(不明显给出)即操作数地址为相对当前指令偏移A的地址。</li>
+<li>基址寻址: 操作数地址=A+(B)，此时R为B(B为基址寄存器，专门用于存放基址地址的寄存器，也可不明显给出也可明显给出)即操作数地址为相对基地址的地址。</li>
+<li>变址寻址: 操作数地址=A+(I)，相对于首址A处位移量为(I)的单元，I为变址寄存器即专门存放偏移量的寄存器，可明显给出也可隐含给出。</li>
+</ul>
+<h3 id="操作码的编码方法"><a class="markdownIt-Anchor" href="#操作码的编码方法"></a> 操作码的编码方法</h3>
+<p>根据指令系统设计要求，指令的操作码可以是定长的也可以是变长的，本节会介绍这两种操作码的编码方法。</p>
+<h3 id="定长操作码"><a class="markdownIt-Anchor" href="#定长操作码"></a> 定长操作码</h3>
+<p><b>定长操作码: 指令的操作码部分采用固定长度的编码。</b>如设操作码固定为6位，则系统最多可表示64种指令。特点是译码方便，但可能会有信息冗余(操作码未全部使用)。<br />
+这里以IBM360/370为例:<br />
+提供了8位操作码，能够表示<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mn>8</mn></msup><mo>=</mo><mn>256</mn></mrow><annotation encoding="application/x-tex">2^8=256</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">8</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">5</span><span class="mord">6</span></span></span></span>条指令，但指令系统只提供了183条指令，有73种编码为冗余信息。<br />
+<img src="ibm370.svg" srcset="/img/loading.gif" lazyload alt="IBM370指令格式" /></p>
+<h3 id="变长操作码"><a class="markdownIt-Anchor" href="#变长操作码"></a> 变长操作码</h3>
+<p><b>将操作码的编码长度分成几种固定长的格式。</b>这种方式被大多数指令集采用。由于指令长度为固定值，而不同指令内的操作数数量却不尽相同，因此根据操作数的数量可以将操作码长度分为几种定长的格式，其中又可以分为等长扩展法和不等长扩展法:</p>
+<ul>
+<li>等长扩展法: 4-&gt;8-&gt;12···</li>
+<li>不等长扩展法: 4-&gt;5-&gt;9-&gt;11···</li>
+</ul>
+<p>设某指令系统指令字长16位，每个地址码为6位。若二地址指令15条，一地址指令34条，则剩下零地址指令最多有多少条？<br />
+<img src="extend_operate_code_example.svg" srcset="/img/loading.gif" lazyload alt="变长操作码example" /></p>
+<h3 id="条件码和标志寄存器"><a class="markdownIt-Anchor" href="#条件码和标志寄存器"></a> 条件码和标志寄存器</h3>
+<p>条件转移指令通常根据Condition Codes (条件码CC/状态位/标志位)转移。一般通过执行算术指令或比较指令，然后用测试指令来检测CC。如判断两个数是否相等通过将两数相减得到ZF标志位，如ZF为1则两数相等。<br />
+在ALU运算时会产生常用的四种标志位(条件码): OF、SF、ZF、CF具体含义和产生方法见<a target="_blank" rel="noopener" href="https://thm-lab.github.io/2022/06/04/%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95%E5%92%8C%E8%BF%90%E7%AE%97%E9%83%A8%E4%BB%B6/">运算方法和运算部件</a>。标志可存于标志寄存器(也叫条件码寄存器、状态寄存器、程序状态字寄存器)，也可由指定的通用寄存器来存放标志位。<br />
+例:	bgt r1, r2, label;如果r1&gt;r2，则转移到label处执行；否则顺序执行。</p>
+<p><b>例: 判断A与B的大小</p>
+<ul>
+<li>无符号数: ZF=0 &amp; CF=0则A&gt;B</li>
+<li>带符号数: ZF=0 &amp; SF=OF则A&gt;B</b></li>
+</ul>
+<h3 id="指令设计风格"><a class="markdownIt-Anchor" href="#指令设计风格"></a> 指令设计风格</h3>
+<p><strong>指令系统设计风格即指对于不同操作数地址的指定方式。</strong></p>
+<ul>
+<li>累加器型: 其中一个操作数(源操作数1)和目的操作数总在累加器中即只给出操作数的存储地址在操作数之一的地址</li>
+<li>堆栈型: 总是将栈顶两个操作数进行运算，指令无需指定操作数地址</li>
+<li>通用寄存器型: 操作数可以是寄存器或存储器数据(即A、B和C可以是寄存器或存储单元)</li>
+<li>装入/存储型: 运算指令的操作数只能是寄存器数据，只有load/store能访问存储器</li>
+</ul>
+<h4 id="各种指令系统风格的比较"><a class="markdownIt-Anchor" href="#各种指令系统风格的比较"></a> 各种指令系统风格的比较</h4>
+<p><img src="instruction_system_style_comparation.svg" srcset="/img/loading.gif" lazyload alt="指令系统风格比较" /></p>
+<h3 id="指令系统举例"><a class="markdownIt-Anchor" href="#指令系统举例"></a> 指令系统举例</h3>
+<p>这里主要介绍两种指令集:</p>
+<ul>
+<li>复杂指令集计算机CISC (Complex Instruction Set Computer)</li>
+<li>精简指令集计算机RISC (Reduce Instruction Set Computer)</li>
+</ul>
+<h4 id="cisc"><a class="markdownIt-Anchor" href="#cisc"></a> CISC</h4>
+<p>早期CISC设计风格的主要特点:</p>
+<ul>
+<li>指令系统复杂: 变长操作码 / 变长指令字 / 指令多 / 寻址方式多 / 指令格式多</li>
+<li>指令周期长: 绝大多数指令需要多个时钟周期才能完成</li>
+<li>各种指令都能访问存储器: 除了专门的存储器读写指令外，运算指令也能访问存储器</li>
+<li>采用微程序控制</li>
+<li>难以进行编译优化来生成高效目标代码</li>
+</ul>
+<p>CISC的二八定律: 在程序中各种指令出现的频率悬殊很大，常用的简单指令占程序的80%，但只占指令系统的20%。在微程序控制的计算机中，程序中只占指令总数20%的复杂指令占用了控制存储器容量的80%。</p>
+<h4 id="risc"><a class="markdownIt-Anchor" href="#risc"></a> RISC</h4>
+<ul>
+<li>简化的指令系统: 指令少 / 寻址方式少 / 指令格式少 / 指令长度一致</li>
+<li>以RR方式工作: 除Load/Store指令可访问存储器外，其余指令都只访问寄存器</li>
+<li>指令周期短: 以流水线方式工作， 因而除Load/Store指令外，其他简单指令都只需一个或一个不到的时钟周期就可完成</li>
+<li>采用大量通用寄存器，以减少访存次数</li>
+<li>采用硬连线控制器控制，不用或少用微程序控制</li>
+<li>采用优化的编译系统，力求有效地支持高级语言程序</li>
+</ul>
+<h2 id="程序的机器级表示"><a class="markdownIt-Anchor" href="#程序的机器级表示"></a> 程序的机器级表示</h2>
+<h3 id="mips的指令格式"><a class="markdownIt-Anchor" href="#mips的指令格式"></a> MIPS的指令格式</h3>
+<p><strong>所有指令都是32位宽(字长)，按字地址对齐存储，字地址为4的倍数！</strong><br />
+在MIPS中指令共有三种格式:</p>
+<ul>
+<li>R型指令</li>
+<li>I型指令</li>
+<li>J型指令</li>
+</ul>
+<h4 id="r型指令"><a class="markdownIt-Anchor" href="#r型指令"></a> R型指令</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">op</th>
+<th style="text-align:center">rs</th>
+<th style="text-align:center">rt</th>
+<th style="text-align:center">rd</th>
+<th style="text-align:center">shamt</th>
+<th style="text-align:center">func</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">6bits</td>
+<td style="text-align:center">5bits</td>
+<td style="text-align:center">5bits</td>
+<td style="text-align:center">5bits</td>
+<td style="text-align:center">5bits</td>
+<td style="text-align:center">6bits</td>
+</tr>
+</tbody>
+</table>
+<p><strong>因为操作数全部来源于寄存器(register)因此称为R型指令。</strong></p>
+<ul>
+<li>op: 操作码，在R型指令中为固定值<code>000000</code>，操作类型通过func来指定</li>
+<li>rs: 第一个源操作数</li>
+<li>rt: 第二个源操作数</li>
+<li>rd: 目的操作数</li>
+<li>shamt: 对非移位指令为<code>00000</code>。移位指令为移位次数<br />
+<img src="R_type_instruction.png" srcset="/img/loading.gif" lazyload alt="R型指令" /></li>
+</ul>
+<h4 id="i型指令"><a class="markdownIt-Anchor" href="#i型指令"></a> I型指令</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">op</th>
+<th style="text-align:center">rs</th>
+<th style="text-align:center">rt</th>
+<th style="text-align:center">imm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">6bits</td>
+<td style="text-align:center">5bits</td>
+<td style="text-align:center">5bits</td>
+<td style="text-align:center">16bits</td>
+</tr>
+</tbody>
+</table>
+<p><strong>指令中包含了一个立即数，所以称为I型指令。</strong></p>
+<ul>
+<li>op: 操作码，指明指令功能</li>
+<li>rs: 第一个源操作数</li>
+<li>rt: 目的操作数</li>
+<li><strong>imm: 16位的立即数，在执行时需要按需扩展为32位的立即数</strong>，根据指令不同有以下三种用法:
+<ol>
+<li>以立即数寻址方式提供的一个源操作数(自己本身就是参加运算的数)</li>
+<li>作为偏移量，与寄存器rs组成偏移寻址方式，提供一个存储器操作数</li>
+<li>作为偏移量，与PC寄存器组成相对寻址方式，提供一个转移目的地址</li>
+</ol>
+</li>
+</ul>
+<p><img src="I_type_instruction.png" srcset="/img/loading.gif" lazyload alt="I型指令" /></p>
+<p>addi rt, rs, imm : rt = (rs) + imm(rs内的数据与立即数imm相加将结果存入rt，在相加之前需要对16位imm进行<strong>符号扩展</strong>)<br />
+andi/ori/xori rt, rs, imm : rt = (rs) &amp;/|/<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>⊕</mo></mrow><annotation encoding="application/x-tex">\oplus</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">⊕</span></span></span></span> imm(rs内的数据与立即数imm做与/或/异或操作并将结果存入rt，在相与之前需要对16位imm进行<strong>0扩展</strong>)<br />
+lw rt, offset(rs) : rt = mem[(rs)+offset](从rs内容的offset偏移量地址取出数放入rt寄存器，offset同样取<strong>符号扩展</strong>)<br />
+sw rt, offset(rs) : mem[(rs)+offset] = rt(将rt内容存入mem[(rs)+offset]中，offset同样取<strong>符号扩展</strong>)<br />
+bne rs, rt, imm : if rs != rt then PC = PC + 4 + (imm&lt;&lt;2)(如果rs不等于rt，则PC跳转到PC+4+imm，相加前进行符号扩展，左移2位是为了保证字地址对齐，因为一条指令为4个字节长左移2位刚好放大4倍，因此imm表示转移指令条数而不是地址偏移量)<br />
+<strong>beq与bne相同，但bne为不等转移，beq为相等转移。</strong><br />
+lui rt, imm : rt = imm&lt;&lt;16(将立即数imm扩展左移16位即高位为立即数低位为0存入rt寄存器)</p>
+<h4 id="j型指令"><a class="markdownIt-Anchor" href="#j型指令"></a> J型指令</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">op</th>
+<th style="text-align:center">target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">6bits</td>
+<td style="text-align:center">26bits</td>
+</tr>
+</tbody>
+</table>
+<p><strong>指令作用主要为跳转(jump)，因此称为J型指令。</strong></p>
+<ul>
+<li>op: 操作码，指明指令功能</li>
+<li><strong>target: 跳转目的地址，需要根据指令进行按需扩展操作</strong></li>
+</ul>
+<p><img src="J_type_instruction.png" srcset="/img/loading.gif" lazyload alt="J型指令" /><br />
+J型指令数量比较少。</p>
+<p>j target : <strong>PC = target(PC高4位不变，将target左移2位送入PC的低28位，|op高4位|target|00|)</strong><br />
+jal target : <strong>ra = PC + 4, PC = target(将下一条指令地址放入ra寄存器，将转移地址按j指令方式放入PC)</strong></p>
+<h3 id="mips的寄存器"><a class="markdownIt-Anchor" href="#mips的寄存器"></a> MIPS的寄存器</h3>
+<p><strong>MIPS有32个32位的通用寄存器！</strong><br />
+<img src="MIPS_register.png" srcset="/img/loading.gif" lazyload alt="通用寄存器" /></p>
+<ul>
+<li>0号寄存器$zero为固定值零，不能改变</li>
+<li>1号寄存器$at被汇编器保留为专用</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi><mn>0</mn><mi mathvariant="normal">和</mi></mrow><annotation encoding="application/x-tex">k0和</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord">0</span><span class="mord cjk_fallback">和</span></span></span></span>k1是留给操作系统专用</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mi>p</mi><mi mathvariant="normal">是</mi><mi mathvariant="normal">用</mi><mi mathvariant="normal">于</mi><mi mathvariant="normal">过</mi><mi mathvariant="normal">程</mi><mi mathvariant="normal">调</mi><mi mathvariant="normal">用</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">，</mi><mi mathvariant="normal">访</mi><mi mathvariant="normal">问</mi><mi mathvariant="normal">保</mi><mi mathvariant="normal">存</mi><mi mathvariant="normal">在</mi><mi mathvariant="normal">栈</mi><mi mathvariant="normal">中</mi><mi mathvariant="normal">的</mi><mi mathvariant="normal">数</mi><mi mathvariant="normal">据</mi><mi mathvariant="normal">的</mi><mi mathvariant="normal">指</mi><mi mathvariant="normal">针</mi><mi mathvariant="normal">。</mi><mi mathvariant="normal">但</mi><mi mathvariant="normal">有</mi><mi mathvariant="normal">的</mi><mi mathvariant="normal">编</mi><mi mathvariant="normal">译</mi><mi mathvariant="normal">器</mi><mo stretchy="false">(</mo><mi mathvariant="normal">如</mi><mi>M</mi><mi>I</mi><mi>P</mi><mi>S</mi><mi mathvariant="normal">的</mi><mi>C</mi><mi mathvariant="normal">编</mi><mi mathvariant="normal">译</mi><mi mathvariant="normal">器</mi><mo stretchy="false">)</mo><mi mathvariant="normal">不</mi><mi mathvariant="normal">使</mi><mi mathvariant="normal">用</mi><mi mathvariant="normal">，</mi><mi mathvariant="normal">将</mi><mi mathvariant="normal">它</mi><mi mathvariant="normal">作</mi><mi mathvariant="normal">为</mi></mrow><annotation encoding="application/x-tex">fp是用于过程调用时，访问保存在栈中的数据的指针。但有的编译器(如MIPS的C编译器)不使用，将它作为</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mord mathdefault">p</span><span class="mord cjk_fallback">是</span><span class="mord cjk_fallback">用</span><span class="mord cjk_fallback">于</span><span class="mord cjk_fallback">过</span><span class="mord cjk_fallback">程</span><span class="mord cjk_fallback">调</span><span class="mord cjk_fallback">用</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">访</span><span class="mord cjk_fallback">问</span><span class="mord cjk_fallback">保</span><span class="mord cjk_fallback">存</span><span class="mord cjk_fallback">在</span><span class="mord cjk_fallback">栈</span><span class="mord cjk_fallback">中</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">数</span><span class="mord cjk_fallback">据</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">指</span><span class="mord cjk_fallback">针</span><span class="mord cjk_fallback">。</span><span class="mord cjk_fallback">但</span><span class="mord cjk_fallback">有</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">编</span><span class="mord cjk_fallback">译</span><span class="mord cjk_fallback">器</span><span class="mopen">(</span><span class="mord cjk_fallback">如</span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mord cjk_fallback">的</span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mord cjk_fallback">编</span><span class="mord cjk_fallback">译</span><span class="mord cjk_fallback">器</span><span class="mclose">)</span><span class="mord cjk_fallback">不</span><span class="mord cjk_fallback">使</span><span class="mord cjk_fallback">用</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">将</span><span class="mord cjk_fallback">它</span><span class="mord cjk_fallback">作</span><span class="mord cjk_fallback">为</span></span></span></span>s8寄存器使用</li>
+<li>在汇编语言中使用寄存器时可以用寄存器名，也可以用寄存器号，前面加上&quot;$&quot;,例如，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>8</mn><mi mathvariant="normal">或</mi></mrow><annotation encoding="application/x-tex">8或</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">8</span><span class="mord cjk_fallback">或</span></span></span></span>t0</li>
+<li>MIPS还提供了32个32位的单精度浮点寄存器<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mn>0</mn><mtext> </mtext></mrow><annotation encoding="application/x-tex">f0~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mord">0</span><span class="mspace nobreak"> </span></span></span></span>f31。它们可配对成16个64位的双精度浮点寄存器</li>
+</ul>
+<h3 id="mips的指令寻址方式"><a class="markdownIt-Anchor" href="#mips的指令寻址方式"></a> MIPS的指令寻址方式</h3>
+<p>**MIPS没有专门的寻址方法字段！**因此只能根据指令类型来判断操作数的寻址方式。</p>
+<ul>
+<li>寄存器寻址: 广泛出现在R型指令和I型指令中，因为这两种指令均至少有一个操作数是寄存器，因此寄存器寻址必然存在</li>
+<li>立即数寻址: 在I型指令中有专门的16位imm作为立即数，因此一定存在立即数寻址，比如addi、ori、xori等均为立即数寻址方式</li>
+<li>偏移寻址: 在I型指令中某些涉及读写内存的指令可能为偏移寻址，比如lw、sw等均为偏移寻址方式</li>
+<li>PC相对寻址: 在I型指令中存在地址跳转指令如bne、beq，在跳转的过程中即可能用到PC相对寻址</li>
+<li>伪直接寻址: 在J型指令中target字段就是一段目标跳转地址，但是该立即数不是直接使用，与立即数寻址有所差异，而是通过一定的运算(取PC前4位和加上target后左移2位)得到的，因此属于伪直接寻址方式</li>
+</ul>
+<h3 id="mips的汇编形式与指令的对应"><a class="markdownIt-Anchor" href="#mips的汇编形式与指令的对应"></a> MIPS的汇编形式与指令的对应</h3>
+<h4 id="反汇编"><a class="markdownIt-Anchor" href="#反汇编"></a> 反汇编</h4>
+<p>例: 32位指令为<code>0000 0000 1010 1111 1000 0000 0010 0000</code>求汇编形式:<br />
+指令的前6位为000000(操作码)，根据指令编码表知，是一条R型指令，按照R型指令的格式得到: rs=00101, rt=01111, rd=10000, shamt=00000, funct=100000<br />
+<img src="reverse_example.png" srcset="/img/loading.gif" lazyload alt="example" /><br />
+根据R型指令表，它是&quot;add&quot;操作(非移位操作)，rs、rt、rd的十进制值分别为5、15、16，从MIPS寄存器功能表知: rs、rt、rd分别为：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mn>1</mn><mi mathvariant="normal">、</mi></mrow><annotation encoding="application/x-tex">a1、</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord mathdefault">a</span><span class="mord">1</span><span class="mord cjk_fallback">、</span></span></span></span>t7、$s0，故对应的汇编形式为: <code>add $s0, $a1, $t7</code>，功能为将a1寄存器和t7寄存器相加，结果存入s0寄存器。<br />
+<strong>注意: 汇编的寄存器摆放顺序与指令的操作数顺序不尽相同，如结果寄存器在汇编中为第一个寄存器而在指令中在操作数寄存器后。</strong><br />
+<img src="assembly_order.png" srcset="/img/loading.gif" lazyload alt="汇编与指令顺序关系" /></p>
+<h4 id="高级语言语句的汇编指令表示"><a class="markdownIt-Anchor" href="#高级语言语句的汇编指令表示"></a> 高级语言语句的汇编指令表示</h4>
+<p>高级语言一般提供顺序、选择和循环结构语句，通过编译器将它们翻译成响应的机器级指令。<br />
+例: 将C语言赋值语句<code>f = (g + h) - (i + j)</code>翻译为汇编指令</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">add </span>$<span class="hljs-built_in">s5</span>, $<span class="hljs-built_in">s1</span>, $<span class="hljs-built_in">s2</span> <span class="hljs-comment"># 计算g+h  </span><br><span class="hljs-keyword">add </span>$<span class="hljs-built_in">s6</span>, $<span class="hljs-built_in">s3</span>, $<span class="hljs-built_in">s4</span> <span class="hljs-comment"># 计算i+j  </span><br><span class="hljs-keyword">sub </span>$<span class="hljs-built_in">s0</span>, $<span class="hljs-built_in">s5</span>, $<span class="hljs-built_in">s6</span> <span class="hljs-comment"># 计数(g + h) - (i + j) </span><br></code></pre></td></tr></table></figure>
+<p>例: 设A为100个<strong>字</strong>的数组，变量g和h分配寄存器s1和s2，用基址寻址从存储器取元素A[8]送s4，分配s3作基址寄存器。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">lw</span> $s4, <span class="hljs-number">32</span>($s3) # 将A[<span class="hljs-number">8</span>]的值送s4但注意偏移量为<span class="hljs-number">8</span>*<span class="hljs-number">4</span>(一个字为<span class="hljs-number">4</span>个字节)=<span class="hljs-number">32</span><br></code></pre></td></tr></table></figure>
+<p><strong>在使用I型指令时，如果立即数超过16位补码表示范围，就不能直接给出操作数或偏移量，但可以用lui指令来设置32位寄存器的高16位，可得到一个较大的值。</strong></p>
+<p>例: if-then-else语句和&quot;==&quot;判断</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-keyword">if</span> (i == j)&#123;<br>    f = g + <span class="hljs-built_in">h</span>;<br>&#125;<span class="hljs-keyword">else</span> &#123;<br>    f = g - <span class="hljs-built_in">h</span>;<br>&#125;<br>// Assuming variables i, j, f, g, <span class="hljs-built_in">h</span>, ~ <span class="hljs-variable">$s1</span>, <span class="hljs-variable">$s2</span>, <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s4</span>, <span class="hljs-variable">$s5</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk">bne <span class="hljs-variable">$s1</span>, <span class="hljs-variable">$s2</span>, <span class="hljs-keyword">else</span> <span class="hljs-comment"># 如果i!=j，跳转到else</span><br>add <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s4</span>, <span class="hljs-variable">$s5</span> <span class="hljs-comment"># 计算i+j</span><br>j <span class="hljs-keyword">exit</span> <span class="hljs-comment"># 跳转到exit</span><br><span class="hljs-keyword">else</span>: sub <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s4</span>, <span class="hljs-variable">$s5</span> <span class="hljs-comment"># 计算i-j</span><br></code></pre></td></tr></table></figure>
+<p>编译器和汇编语言程序员不必计算分支指令的地址，而只要用标号即可！汇编器完成地址计算。</p>
+<p>例: &quot;&lt;&quot;判断</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-keyword">if</span> (a &lt; b)&#123;<br>    f = g + <span class="hljs-built_in">h</span>;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>    f = g - <span class="hljs-built_in">h</span>;<br>&#125;<br>// Assuming variables a, b, f, g, <span class="hljs-built_in">h</span>, ~ <span class="hljs-variable">$s1</span>, <span class="hljs-variable">$s2</span>, <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s4</span>, <span class="hljs-variable">$s5</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk">slt <span class="hljs-variable">$s6</span>, <span class="hljs-variable">$s1</span>, <span class="hljs-variable">$s2</span> <span class="hljs-comment"># 如果a&lt;b，$s6=1，否则$s6=0(slt: set on less than在小于的时候置1)</span><br>beq <span class="hljs-variable">$s6</span>, <span class="hljs-variable">$0</span>, <span class="hljs-keyword">else</span> <span class="hljs-comment"># 如果$s6=0，跳转到else</span><br>add <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s4</span>, <span class="hljs-variable">$s5</span> <span class="hljs-comment"># 未转移则计算i + j</span><br>j <span class="hljs-keyword">exit</span> <span class="hljs-comment"># 跳转到exit</span><br><span class="hljs-keyword">else</span>: sub <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s4</span>, <span class="hljs-variable">$s5</span> <span class="hljs-comment"># 如果$s6=1，则转移到else计算i - j</span><br></code></pre></td></tr></table></figure>
+<p>例: loop循环</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs smali">Loop: g = g + A[i];<br>    i = i + j;<br>   <span class="hljs-built_in"> if </span>(i != h) &#123;<br>       <span class="hljs-built_in"> goto </span><span class="hljs-class">Loop;</span><br>    &#125;<br>// Assuming variables g, h, i, j  ~ $s1, $s2, $s3, $s4<span class="hljs-built_in"> and </span>base address<br>of<span class="hljs-built_in"> array </span>is in $s5<br></code></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Loop: <span class="hljs-built_in">add</span> <span class="hljs-variable">$s7</span>, <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s3</span> # 计算i<span class="hljs-number">*2</span><br>      <span class="hljs-built_in">add</span> <span class="hljs-variable">$s7</span>, <span class="hljs-variable">$s7</span>, <span class="hljs-variable">$s7</span> # 计算i<span class="hljs-number">*4</span><br>      <span class="hljs-built_in">add</span> <span class="hljs-variable">$s7</span>, <span class="hljs-variable">$s7</span>, <span class="hljs-variable">$s5</span><br>      lw <span class="hljs-variable">$s6</span>, 0(<span class="hljs-variable">$s7</span>) #<span class="hljs-variable">$s6</span>=A[i]<br>      <span class="hljs-built_in">add</span> <span class="hljs-variable">$s1</span>, <span class="hljs-variable">$s1</span>, <span class="hljs-variable">$s6</span>	# g = g + A[i]<br>      <span class="hljs-built_in">add</span> <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s4</span>	# i = i + j<br>      bne <span class="hljs-variable">$s3</span>, <span class="hljs-variable">$s2</span>, Loop<br></code></pre></td></tr></table></figure>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Computer-Organization-and-Architecture/">Computer Organization and Architecture</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">中央处理器</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/04/%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95%E5%92%8C%E8%BF%90%E7%AE%97%E9%83%A8%E4%BB%B6/">
+                        <span class="hidden-mobile">运算方法和运算部件</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

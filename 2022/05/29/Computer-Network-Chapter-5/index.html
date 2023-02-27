@@ -1,0 +1,736 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="Chapter 5: Link Layer 数据链路层的职责：将数据帧通过一个链路，从一个节点传输到临近的另一个节点。 节点:主机和路由器(包括网桥和交换机)。 链路: 沿着通信路径连接相邻节点的通信信道。  有线链路 无线链路 局域网  链路层的特点:  分组传输可以经过不同的链路使用不同的协议实现即链路上可以在不同段采用不同的协议 每个链路协议提供不同的服务   Service  成帧:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Computer Network Chapter 5">
+<meta property="og:url" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="Chapter 5: Link Layer 数据链路层的职责：将数据帧通过一个链路，从一个节点传输到临近的另一个节点。 节点:主机和路由器(包括网桥和交换机)。 链路: 沿着通信路径连接相邻节点的通信信道。  有线链路 无线链路 局域网  链路层的特点:  分组传输可以经过不同的链路使用不同的协议实现即链路上可以在不同段采用不同的协议 每个链路协议提供不同的服务   Service  成帧:">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/link_layer.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/two_dimension_detection.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/crc.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/crc_example.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/tdma.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/fdma.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/aloha.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/timeslots_aloha.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/csma.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/csma_cd.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/mac_summary.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/lan.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/dataframe.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/link_layer_example.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/ethernet.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/hub.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/hub_detail.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/switch_example.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/review1.svg">
+<meta property="og:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/review2.svg">
+<meta property="article:published_time" content="2022-05-29T01:06:52.000Z">
+<meta property="article:modified_time" content="2022-06-04T13:51:14.227Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Computer Network">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/05/29/Computer-Network-Chapter-5/link_layer.svg">
+  
+  
+  <title>Computer Network Chapter 5 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Computer Network Chapter 5">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-29 09:06" pubdate>
+        May 29, 2022 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      36 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Computer Network Chapter 5</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：June 4, 2022 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="chapter-5-link-layer"><a class="markdownIt-Anchor" href="#chapter-5-link-layer"></a> Chapter 5: Link Layer</h1>
+<p><strong>数据链路层的职责：将数据帧通过一个链路，从一个节点传输到临近的另一个节点。</strong><br />
+节点:主机和路由器(包括网桥和交换机)。<br />
+链路: 沿着通信路径连接相邻节点的通信信道。</p>
+<ul>
+<li>有线链路</li>
+<li>无线链路</li>
+<li>局域网</li>
+</ul>
+<p>链路层的特点:</p>
+<ul>
+<li>分组传输可以经过不同的链路使用不同的协议实现即链路上可以在不同段采用不同的协议</li>
+<li>每个链路协议提供不同的服务</li>
+</ul>
+<h2 id="service"><a class="markdownIt-Anchor" href="#service"></a> Service</h2>
+<ul>
+<li>成帧:
+<ul>
+<li>把网络层数据报加头和尾，封装成帧。</li>
+<li>帧头中包括指明目的和源的&quot;物理地址&quot;(不同于IP地址)。</li>
+</ul>
+</li>
+<li>链路访问:
+<ul>
+<li>Medium Access Control,MAC(媒体访问控制)协议。</li>
+<li>共享媒体的多路访问。</li>
+</ul>
+</li>
+<li>在邻接节点间的可靠传输</li>
+<li>差错检测:
+<ul>
+<li>差错由信号衰减和噪声引起。</li>
+<li>接收者检测错误：如果发现差错要求发送方重传或丢弃。</li>
+</ul>
+</li>
+<li>纠错: 接收者检测和纠正错误，不需发送者重传。</li>
+<li>半双工和全双工:
+<ul>
+<li>半双工，一个节点不能同时传输和接收。</li>
+<li>全双工，节点可以同时传输和接收。</li>
+</ul>
+</li>
+<li>流量控制: 在邻接的发送节点和接收节点间的同步调节</li>
+</ul>
+<p><img src="link_layer.svg" srcset="/img/loading.gif" lazyload alt="Link Layer" /></p>
+<h2 id="error-detection-and-correction-techniques错误检测和纠正技术"><a class="markdownIt-Anchor" href="#error-detection-and-correction-techniques错误检测和纠正技术"></a> Error Detection and Correction Techniques(错误检测和纠正技术)</h2>
+<p>通过EDC位(Error Detection and Correction bits)检验，UDP校验和也是同样的思想。因此错误检测并不是100%可靠，而是存在漏掉错误的可能性，大的EDC域能提供更好的检错和纠错能力。<br />
+三种常用的检测方法:</p>
+<ul>
+<li>奇偶校验:
+<ul>
+<li>单字节奇偶校验:
+<ol>
+<li>奇校验: 那么把每个位相加结果为奇数则校验位为0，否则为1。</li>
+<li>偶校验: 那么把每个位相加结果为偶数则校验位为0，否则为1<br />
+只能检测出单个位错误，没有纠错能力。</li>
+</ol>
+</li>
+<li>二维偶数奇偶校验:<br />
+<img src="two_dimension_detection.svg" srcset="/img/loading.gif" lazyload alt="二维偶数奇偶校验" /><br />
+检测和纠正单个位的错误,检测任意组合的两个错误。</li>
+</ul>
+</li>
+<li>Internet校验和: 在UDP校验和计算部分有详细说明。<a target="_blank" rel="noopener" href="https://thm-lab.github.io/2022/05/26/Computer-Network-Chapter-3/">UDP checksum</a></li>
+<li><strong>CRC(Cyclic Redundancy Check)</strong>:<br />
+<img src="crc.svg" srcset="/img/loading.gif" lazyload alt="CRC" />
+<ol>
+<li>商定多项式(r+1位)，并得到G(r+1位)。<br />
+example:<br />
+多项式: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">x^3 + 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span> =&gt; <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>G</mi><mo>=</mo><mn>1001</mn></mrow><annotation encoding="application/x-tex">G=1001</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">G</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mord">1</span></span></span></span><br />
+多项式: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>x</mi><mn>3</mn></msup><mo>+</mo><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>x</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">x^3 + x^2 + x^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span> =&gt; <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>G</mi><mo>=</mo><mn>1110</mn></mrow><annotation encoding="application/x-tex">G=1110</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">G</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">1</span><span class="mord">1</span><span class="mord">0</span></span></span></span></li>
+<li>给D补加r位0得到d+r位作为被除数</li>
+<li>计算出r位的冗余位。<br />
+<img src="crc_example.svg" srcset="/img/loading.gif" lazyload alt="example" /><br />
+从例子来看，将D以二进制数形式作为被除数，G作为除数，当被除数与除数位数相同时，结果上1，当被除数与除数位数不同时，结果上0。最后的余数即是冗余位。</li>
+</ol>
+</li>
+</ul>
+<h2 id="multiple-access-link-and-protocols多路访问链路和协议"><a class="markdownIt-Anchor" href="#multiple-access-link-and-protocols多路访问链路和协议"></a> Multiple Access Link and Protocols(多路访问链路和协议)</h2>
+<p>链路按照使用方式不同可以大致的分为2组:</p>
+<ul>
+<li>点对点: PPP （用于拨号访问）或HDLC</li>
+<li>广播: 传统以太网以及802.11无线局域网(多路访问链路即指的是该类型链路)</li>
+</ul>
+<p>对于点对点链路是单条连接使用对应的所有的链路资源，但对广播链路则是所有连接使用相同的链路资源，因此当两个或多个节点同时传输时，就会产生冲突。在某个时刻只有一个节点发送数据才可以发送成功信息。</p>
+<p>为避免冲突来保障数据的正确传输，提出了多路访问协议。<br />
+多路访问协议:</p>
+<ul>
+<li>分布式算法决定各节点如何共享信道，即决定节点什么时候可以传数据。</li>
+<li>共享信道既要负责进行数据传输，又要负责分布式算法的控制信息的传输(即控制信息没有带外信道来传输，只能在共享信道上传输)。</li>
+</ul>
+<h3 id="理想的多路访问协议"><a class="markdownIt-Anchor" href="#理想的多路访问协议"></a> 理想的多路访问协议</h3>
+<p>在速率为R bps的广播信道上:</p>
+<ul>
+<li>当一个节点有数据发送时，它能以R bps的速率发送。(独享时满载运行)</li>
+<li>当有M个节点要发送数据，每个节点的平均发送速率为R/M(公平均分信道)</li>
+<li>完全分散:
+<ol>
+<li>不需要主节点协调传输(分布式要求)</li>
+<li>不需要时钟、时隙同步(半自主)</li>
+</ol>
+</li>
+<li>简单</li>
+</ul>
+<h3 id="多路访问协议的实现"><a class="markdownIt-Anchor" href="#多路访问协议的实现"></a> 多路访问协议的实现</h3>
+<ul>
+<li>
+<p>信道划分:</p>
+<ol>
+<li>时分: Time Division Multiple Access协议。<br />
+将一个周期分为不同的时隙(时隙长度通常为数据服务单元的发送时间)，每个节点分配到一个固定的时隙，节点只能在自己的时隙上发送数据。空闲时隙则被浪费。<br />
+<img src="tdma.svg" srcset="/img/loading.gif" lazyload alt="TDMA" /></li>
+<li>频分: Frequency Division Multiple Access协议。<br />
+将信道按照频率划分，每个节点分配到一个固定的频率，节点只能在自己的频率上任何时间发送数据。<br />
+<img src="fdma.svg" srcset="/img/loading.gif" lazyload alt="FDMA" /></li>
+<li><strong>码分:</strong> Code Division Multiple Access协议。<br />
+每个节点分配一个唯一的编码，每个节点用它唯一的编码来对它发送的数据进行编码，节点可以在任何时间发送而不产生冲突。(编码通过正交等数学手段实现同时发送却仍然可以不冲突)</li>
+</ol>
+</li>
+<li>
+<p>随机访问:<br />
+当节点需要发送数据时候立马以满速率进行发送而不考虑是否会发生冲突。但要求随机访问能够<strong>检测冲突</strong>和<strong>从冲突中恢复</strong>。</p>
+<ol>
+<li>
+<p>ALOHA:</p>
+<ul>
+<li>无需时隙同步。</li>
+<li>当有数据到达即里面发送而不检测冲突。</li>
+<li>由于不检测当前信道情况因此冲突概率高。</li>
+<li>多节点时效率低。<br />
+<img src="aloha.svg" srcset="/img/loading.gif" lazyload alt="ALOHA" /></li>
+</ul>
+</li>
+<li>
+<p>时隙ALOHA:</p>
+<ul>
+<li>假设所有帧大小相同</li>
+<li>时间被划分为相同大小的时隙，一个时隙等于传送一帧的时间</li>
+<li>节点需要同步</li>
+<li>需要节点有检测冲突能力</li>
+</ul>
+<p>具体实现:</p>
+<ol>
+<li>当节点要发送新帧，它等到下一时隙开始时传送</li>
+<li>没有冲突，节点可以在下一时隙发送新帧</li>
+<li>如果有冲突，节点在随后的时隙以概率p重传该帧，直到成功为止。</li>
+</ol>
+<p>与ALOHA不同，时隙ALOHA会在发送前检测信道是否有冲突，如果无才发送，有则延迟发送来降低冲突发生的概率。但相对ALOHA来说时隙ALOHA对时隙的浪费更为严重，却优于信道划分中的时分。</p>
+<p><img src="timeslots_aloha.svg" srcset="/img/loading.gif" lazyload alt="Time-slots ALOHA" /></p>
+</li>
+<li>
+<p>CSMA-&gt;<strong>CSMA/CD</strong>: Carrier Sense Multiple Access(载波侦听多路访问)协议。</p>
+<ol>
+<li>CSMA: 在发送前侦听，如果信道闲：传送整个帧，如果信道忙：延迟传送。但冲突还是可能发生: 传播延迟可能导致两个节点没侦听到其它节点的传送。<br />
+<img src="csma.svg" srcset="/img/loading.gif" lazyload alt="CSMA" /></li>
+<li>CSMA/CD:
+<ol>
+<li>当一个节点要发送数据时，首先监听信道，看是否有载波。</li>
+<li>如果信道空闲，则发送数据；如果信道忙，则继续对信道进行监听。一旦发现空闲，便立即发送。</li>
+<li>如果在发送过程中未检测到碰撞，则传输成功；否则停止正常发送，转而发送一短暂的干扰信号jam，强化冲突，使其它站点都能知道出现了冲突。</li>
+<li>发送了干扰信号后，指数退避一随机时间,即假设该帧经过n次冲突后，适配器在{0,1,2,…,<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mi>m</mi></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^m-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.747722em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>}中随机选取一个K值，其中m=min(n,10),然后等待K*512比特时间后,回到第2步。(512bits是因为以太网的<strong>最小帧长度为64bytes</strong>)</li>
+</ol>
+</li>
+</ol>
+<p>  <b>jam拥塞信号: 48比特，确保所有传送者知道冲突发生。</br>  指数回退: 在{0,1,2,…,<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mi>m</mi></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^m-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.747722em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>}中随机选取一个K值来计算回退时间</br>  比特时间: 对于10 Mbps Ethernet为0.1微秒，当K=1023，回退时间大约50毫秒。</b><br />
+<img src="csma_cd.svg" srcset="/img/loading.gif" lazyload alt="CSMA/CD" /></p>
+</li>
+</ol>
+</li>
+<li>
+<p>轮转:<br />
+信道划分在低负载情况下只能利用少数信道，对信道的浪费很多但高负载下信道公平分配。随机访问在高负载情况下冲突开销大但低负载利用率高。轮转协议是信道划分和随机访问的折中方案。<br />
+轮转的两种实现方案:</p>
+<ul>
+<li>轮询: 主节点轮流 “邀请”从属节点传送数据。但是有一定的缺点: 轮询开销、延迟、主节点失效，整个网络失效。</li>
+<li>令牌传递: 控制令牌从一个节点顺序传到下一个节点。但也存在令牌的开销、延时和令牌失效的问题。</li>
+</ul>
+</li>
+</ul>
+<p><img src="mac_summary.svg" srcset="/img/loading.gif" lazyload alt="总结" /></p>
+<h2 id="switched-local-area-networks交换局域网"><a class="markdownIt-Anchor" href="#switched-local-area-networks交换局域网"></a> Switched Local Area Networks(交换局域网)</h2>
+<p>多址访问协议广泛应用于局域网。基于随机访问的CSMA/CD广泛应用于局域网。基于令牌传递技术的令牌环和FDDI在局域网技术中变得次要。链路层技术的发展，局域网、城域网、广域网的概念变得越来越模糊和不重要。<br />
+<img src="lan.svg" srcset="/img/loading.gif" lazyload alt="局域网" /></p>
+<h3 id="link-layer-addressing-and-arp链路层编址和地址解析协议"><a class="markdownIt-Anchor" href="#link-layer-addressing-and-arp链路层编址和地址解析协议"></a> Link Layer Addressing and ARP(链路层编址和地址解析协议)</h3>
+<h4 id="link-layer-addressing"><a class="markdownIt-Anchor" href="#link-layer-addressing"></a> Link Layer Addressing</h4>
+<p>网络层使用32位IP地址来表示一个接口。而链路层使用48位的MAC地址来表示一个接口。MAC地址由IEEE统一分配，厂商需要购买一块MAC地址空间用来给每台设备分配一个MAC地址。<br />
+但是网络层传送下来的为IP地址，无法得到目的节点的MAC地址。因此便提出了ARP协议来从IP地址转换到MAC地址从而进行链路层转发。<br />
+<img src="dataframe.svg" srcset="/img/loading.gif" lazyload alt="数据帧" /></p>
+<h4 id="address-resolution-protocol"><a class="markdownIt-Anchor" href="#address-resolution-protocol"></a> Address Resolution Protocol</h4>
+<p>每个在局域网上的IP节点(Host, Router)都有ARP表，其中ARP表中有着局域网上一些节点的IP/MAC地址映射关系，通过ARP表即可实现从IP地址到MAC地址的转换。<br />
+<strong>ARP表结构: &lt; IP address; MAC address; TTL&gt;</strong><br />
+TTL(Time To Live): 映射地址的失效时间 (典型为20分钟)。<br />
+若ARP表中不存在目的IP地址与其MAC地址的映射，则当前节点会发送ARP请求，通过向<code>FF-FF-FF-FF-FF-FF</code>广播地址发送ARP查询，在局域网上的所有机器都能收到ARP查询。当收到需要查询的IP地址为自己时，该节点会将自己的MAC地址通过包单播(unicast)的方式发送给ARP查询的节点。于是查询节点更新自己的ARP表。<br />
+<img src="link_layer_example.svg" srcset="/img/loading.gif" lazyload alt="example" /></p>
+<h3 id="ethernet以太网"><a class="markdownIt-Anchor" href="#ethernet以太网"></a> Ethernet(以太网)</h3>
+<p>以太网是主流的LAN技术，具有价格便宜、高速率的优点。</p>
+<h4 id="ethernet-frame"><a class="markdownIt-Anchor" href="#ethernet-frame"></a> Ethernet Frame</h4>
+<p><img src="ethernet.svg" srcset="/img/loading.gif" lazyload alt="以太网帧结构" /></p>
+<ul>
+<li>Preamble: 是后续加的结构，这里不做说明，计算时也不参加。</li>
+<li>目的MAC地址和源MAC地址: 是以太网帧的主要内容，每个地址都是48bits(6bytes)，用来查找传输接口。</li>
+<li>Type: 指明上层协议的类型，如IP协议等。</li>
+<li>Data: <strong>注意: Data区最小为46字节，哪怕只有1字节的数据需要传输也需要将其补全为46字节，因此以太网的最小帧为64bytes(6 + 6 + 2 + 46 + 4) = 64</strong></li>
+<li>CRC: 存放冗余校验码。</li>
+</ul>
+<p>以太网不提供可靠的数据传输服务，因为它是无连接不确认的一种协议。</p>
+<ul>
+<li>无连接：发送和接收适配器间不握手。</li>
+<li>不可靠：接收适配器不向发送适配器发送确认帧，因此没有确保数据完整传输和按序到达的服务。</li>
+</ul>
+<p>以太网使用CSMA/CD来进行发送数据，因此没有时隙，会在发送前监听冲突和在发生冲突后发出警告，监听到冲突后也会有一个避让冲突的重传机制。</p>
+<h4 id="hub集线器"><a class="markdownIt-Anchor" href="#hub集线器"></a> hub(集线器)</h4>
+<p><img src="hub.svg" srcset="/img/loading.gif" lazyload alt="集线器" /><br />
+集线器本质为物理层中继器，只有将bit信号整形放大和转换功能，没有其他更多的特性和功能。<br />
+<img src="hub_detail.svg" srcset="/img/loading.gif" lazyload alt="集线器" /><br />
+<strong>使用hub的网段仍然处于同一个冲突域内。</strong></p>
+<h4 id="switch交换机"><a class="markdownIt-Anchor" href="#switch交换机"></a> switch(交换机)</h4>
+<p>交换机的本质是多口网桥，可以将多个网络接口连接在一起，从而实现多个网络接口之间的互联。在收到以太网帧后会检查帧头,并根据目的MAC地址有选择的转发帧。当MAC帧被转发到某一共享网段时,交换机会使用CSMA/CD访问该网段。<br />
+交换机有自学习功能，会根据过往记录来自己生成和更新交换表从而知道转发方式。当目的地址不在交换表中时，交换机会将帧发给所有连接的接口(除收到该帧的接口外)。<br />
+<img src="switch_example.svg" srcset="/img/loading.gif" lazyload alt="example" /><br />
+通过交换机把子网划分为多个LAN网段后，每个LAN网段都变成一个独立的冲突域。因此在内部可以同时交换，不会发生冲突。</p>
+<h2 id="review"><a class="markdownIt-Anchor" href="#review"></a> Review</h2>
+<p><img src="review1.svg" srcset="/img/loading.gif" lazyload alt="review" /><br />
+<img src="review2.svg" srcset="/img/loading.gif" lazyload alt="review" /></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Computer-Network/">Computer Network</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">计算机系统概述</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/28/Computer-Network-Chapter-4/">
+                        <span class="hidden-mobile">Computer Network Chapter 4</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

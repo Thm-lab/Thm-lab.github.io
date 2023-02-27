@@ -1,0 +1,738 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="Chapter 2: Application Layer  Principles of Network Application  Network Application architectures(网络应用程序体系结构) 网络应用程序体系结构可以大致的分为3种结构:  C&#x2F;S架构(Client&#x2F;Server):  Client(客户端): 同服务器端通信，需要间断的同服务器连接，可以拥有动态IP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Computer Network Chapter 2">
+<meta property="og:url" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="Chapter 2: Application Layer  Principles of Network Application  Network Application architectures(网络应用程序体系结构) 网络应用程序体系结构可以大致的分为3种结构:  C&#x2F;S架构(Client&#x2F;Server):  Client(客户端): 同服务器端通信，需要间断的同服务器连接，可以拥有动态IP">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/request.svg">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/reply.jpg">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/http_connection.png">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/problem_8.svg">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/web_cache.svg">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/problem_9.svg">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/ftp.png">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/ftp_order.svg">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/smtp.svg">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/dns.svg">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/dns_architectures.svg">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/dns_recursive.png">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/dns_iteration.png">
+<meta property="og:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/review.svg">
+<meta property="article:published_time" content="2022-05-25T07:09:37.000Z">
+<meta property="article:modified_time" content="2022-06-02T04:03:41.879Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Computer Network">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/05/25/Computer-Network-Chapter-2/request.svg">
+  
+  
+  <title>Computer Network Chapter 2 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Computer Network Chapter 2">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-25 15:09" pubdate>
+        May 25, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      41 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Computer Network Chapter 2</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：June 2, 2022 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="chapter-2-application-layer"><a class="markdownIt-Anchor" href="#chapter-2-application-layer"></a> Chapter 2: Application Layer</h1>
+<h2 id="principles-of-network-application"><a class="markdownIt-Anchor" href="#principles-of-network-application"></a> Principles of Network Application</h2>
+<h3 id="network-application-architectures网络应用程序体系结构"><a class="markdownIt-Anchor" href="#network-application-architectures网络应用程序体系结构"></a> Network Application architectures(网络应用程序体系结构)</h3>
+<p>网络应用程序体系结构可以大致的分为3种结构:</p>
+<ul>
+<li>C/S架构(Client/Server):
+<ul>
+<li>Client(客户端): 同服务器端通信，需要间断的同服务器连接，可以拥有动态IP地址，客户机相互之间不直接通信。</li>
+<li>Server(服务器): 总是打开的主机，具有固定的、众所周知的IP地址，主机群集常被用于创建强大的虚拟服务器。</li>
+</ul>
+</li>
+<li>P2P架构(Peer to Peer): 没有总是打开的服务器，任意一对主机直接相互通信，对等方向其他对等方提供服务，同时接受其他对等方的服务。具有高扩展性和难以管理的特点。</li>
+<li>C/S与P2P混合架构: 既有服务器也存在不同用户的P2P直接通信。如即时讯息两个聊天用户之间是P2P，上线注册、查询通过服务器。</li>
+</ul>
+<h3 id="process进程"><a class="markdownIt-Anchor" href="#process进程"></a> Process(进程)</h3>
+<p>进程：运行在端系统中的程序，同一主机上的两个进程通过内部进程通信机制进行通信，不同主机上的进程通过交换报文相互通信。<br />
+进程寻址: 每个主机上的进程具有唯一的端口号，因此可以通过端口号来识别交换报文的进程。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">常见应用程序</th>
+<th style="text-align:center">端口号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Web服务(HTTP)</td>
+<td style="text-align:center">80</td>
+</tr>
+<tr>
+<td style="text-align:center">邮件服务(SMTP)</td>
+<td style="text-align:center">25</td>
+</tr>
+<tr>
+<td style="text-align:center">文件传输(FTP)</td>
+<td style="text-align:center">21(认证、控制)<br>20(传输)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="transport-services-provided-by-the-internetinternet提供的传输服务"><a class="markdownIt-Anchor" href="#transport-services-provided-by-the-internetinternet提供的传输服务"></a> Transport Services Provided by the Internet(Internet提供的传输服务)</h3>
+<p>Internet为应用程序提供了2个传输层协议: TCP和UDP。</p>
+<ul>
+<li>TCP:
+<ol>
+<li>面向连接的服务: 在客户机程序和服务器程序之间必须建立连接。</li>
+<li>可靠的传输服务: 通过TCP进行传输能够保障无差错、按照设当顺序交付所有发送的数据。</li>
+<li>流量控制: 发送方不会淹没接收方。</li>
+<li>拥塞控制: 当网络出现拥塞时会抑制发送。</li>
+</ol>
+</li>
+<li>UDP: 无需连接，尽力发送数据，但不保证接收到数据。也无流量控制和拥塞控制。</li>
+</ul>
+<h2 id="the-web-and-httpweb应用和http协议"><a class="markdownIt-Anchor" href="#the-web-and-httpweb应用和http协议"></a> The Web and HTTP(Web应用和HTTP协议)</h2>
+<p>网页（Web页，或称文档）由许多对象组成。 对象就是文件，可以是HTML文件, JPEG图像, Java applet, 音频文件等。<strong>每个对象被一个URL(统一资源定位符)寻址</strong>，因此在获取时一次请求只能获取一个对象。<br />
+HTTP: hypertext transfer protocol(超文本传输协议)，目前有两种协议：HTTP1.0和HTTP1.1。<br />
+HTTP共有2种报文: 请求报文和响应报文。</p>
+<ul>
+<li>请求报文<br />
+<img src="request.svg" srcset="/img/loading.gif" lazyload alt="HTTP请求报文格式" /><br />
+请求报文的第一行为请求行，请求行与请求体之间为可变长的首部行和一个空行。首部行为key:value格式并通过cr+lf进行分隔。请求体内则为表单或其他需要上传的数据。<br />
+请求行内容包括请求方法、请求资源路径(URL)、HTTP版本号: 路径和版本号由请求方情况确定，这里只介绍需要掌握的不同请求方法之间的区别:
+<ul>
+<li>HTTP/1.0
+<ul>
+<li>GET: 请求体为空，服务器的响应报文会包含请求对象(正常响应)或错误状态码。</li>
+<li>POST: 一般会将表单等需要上传数据放在请求体中，服务器会做出响应回复响应报文。</li>
+<li>HEAD: 服务器收到请求时，用HTTP报文进行响应，但不返回请求对象</li>
+</ul>
+</li>
+<li>HTTP/1.1
+<ul>
+<li>GET: 与HTTP/1.0相同</li>
+<li>POST: 与HTTP/1.0相同</li>
+<li>HEAD: 与HTTP/1.0相同</li>
+<li>PUT: 文件在实体主体中被上载到URL字段指定的路径</li>
+<li>DELETE: 删除URL字段指定的文件</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>响应报文<br />
+<img src="reply.jpg" srcset="/img/loading.gif" lazyload alt="HTTP相应报文格式" /><br />
+响应报文与请求报文几乎相同，唯一的区别只在于第一行，请求报文第一行为请求行，响应报文第一行为状态行。<br />
+状态行内容包括版本、状态编码和对状态编码的简单解释短语。常见的状态编码含义可以在这里查询: <a target="_blank" rel="noopener" href="http://tools.jb51.net/table/http_status_code">状态码查询</a></li>
+</ul>
+<h3 id="none-persistent-connection非持久连接"><a class="markdownIt-Anchor" href="#none-persistent-connection非持久连接"></a> None-Persistent Connection(非持久连接)</h3>
+<p>一次TCP连接只能传输一个对象，如果要传输多个对象，需要创建多个TCP连接。<br />
+<strong>RTT(往返时间): 1个小分组从客户主机到服务器再到客户主机所花费的时间(来回需要的传播时间)。</strong><br />
+一次HTTP请求和回复的过程: TCP三次握手，但在第三次握手的同时，客户主机就可以发送一个HTTP请求报文，服务器在收到请求报文后，会返回一个HTTP响应报文，TCP连接断开，如果需要请求其他对象则需要重新建立连接。<br />
+<img src="http_connection.png" srcset="/img/loading.gif" lazyload alt="HTTP一次请求与回复过程" /></p>
+<h3 id="persistent-connection持久连接"><a class="markdownIt-Anchor" href="#persistent-connection持久连接"></a> Persistent Connection(持久连接)</h3>
+<p>服务器发送响应消息后保持连接而不会结束TCP连接，同客户/服务器的后续HTTP消息继续在该连接上传送。<br />
+在使用同一条连接的方式上有使用流水线方法和不使用流水线方法两种。</p>
+<ul>
+<li>不使用流水线的持久HTTP连接: 不使用流水线当有多个请求需要发送时，仍然是要先建立连接，等待服务器响应，在响应完成后通过已经建立好的连接重新发送请求。</li>
+<li>使用流水线的持久HTTP连接: 而使用流水线的方式时，如果有多个请求需要发送，无需等待第一个请求响应到达才能发送下一请求，而是直接同时发送所有需要的请求，然后等待服务器的响应。</li>
+</ul>
+<p><img src="problem_8.svg" srcset="/img/loading.gif" lazyload alt="example" /></p>
+<p><b>Tip: </b><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>R</mi><mi>T</mi><msub><mi>T</mi><mn>1</mn></msub><mo>+</mo><mi>R</mi><mi>T</mi><msub><mi>T</mi><mn>2</mn></msub><mo>+</mo><mo separator="true">⋅</mo><mo separator="true">⋅</mo><mo separator="true">⋅</mo><mo>+</mo><mi>R</mi><mi>T</mi><msub><mi>T</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">RTT_1+RTT_2+···+RTT_n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">+</span><span class="mpunct">⋅</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">⋅</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">⋅</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">+</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><b>为DNS请求时间</b></p>
+<h3 id="cookie"><a class="markdownIt-Anchor" href="#cookie"></a> Cookie</h3>
+<p>HTTP协议是一种无状态协议，是没有维护客户先前的状态信息的，但在Web应用中经常会需要得知用户前段时间的状态Cookie便是一种跟踪用户的技术。<br />
+Cookie的实现实际非常简单，当用户第一次发送请求时，服务器会生成一个Cookie并保存到数据库中，在响应报文中附加上Cookie，当下次用户发送请求时，需要将Cookie附加在请求报文内，这样服务器就能够获取到用户的信息了。因此Cookie追踪的是主机而不能追踪特定的人。</p>
+<h3 id="web缓存"><a class="markdownIt-Anchor" href="#web缓存"></a> Web缓存</h3>
+<p>Web缓存为一个代理服务器，在一个局域网下或者一个机构内网中有专门的服务器来处理当前子网下的所有HTTP请求。使用Web缓存需要配置浏览器或者其他发起HTTP请求工具，将HTTP请求重定向到Web缓存服务器。<br />
+<img src="web_cache.svg" srcset="/img/loading.gif" lazyload alt="Web Cache" /><br />
+Web缓存的工作原理: 当客户需要对象时，向Web缓存发出请求报文，</p>
+<ul>
+<li>请求对象在Web缓存中存在且为最新版本: 由Web缓存直接返回对象。</li>
+<li>请求对象在Web缓存存在但不是最新版本: 由Web缓存进行代请求，得到响应后返回对象。</li>
+<li>请求对象不在Web缓存中: 由Web缓存进行代请求，得到响应后返回对象。</li>
+</ul>
+<p><strong>说明:</strong> 判断Web缓存中对象是否为最新版本采用条件GET方法，即在请求报文首部行中增加<code>If-modified-since: &lt;date&gt;</code>，如果没有修改则返回304响应码，如果有修改则返回最新对象。Web缓存会定期进行条件GET操作。<strong>特别的</strong>: 一般响应报文中的<code>Data:</code>属性并非是最后修改时间，而是响应报文的生成时间。</p>
+<p>命中率: 请求对象在Web缓存中能直接返回的概率。<br />
+Web缓存的优点: <strong>减少对客户机请求的响应时间</strong>、<strong>减少内部网络与接入链路上的通信量</strong>、<strong>能从整体上大大降低因特网上的Web流量</strong>。</p>
+<p><img src="problem_9.svg" srcset="/img/loading.gif" lazyload alt="example" /></p>
+<h2 id="file-transfer-protocol文件传输协议"><a class="markdownIt-Anchor" href="#file-transfer-protocol文件传输协议"></a> File Transfer Protocol(文件传输协议)</h2>
+<p>FTP协议的主要场景为传输文件到远程主机或从远程主机下载文件。<br />
+FTP过程:</p>
+<ol>
+<li>FTP客户首先发起建立1个与FTP服务器端口号21之间的TCP控制连接, 指定TCP作为传输层协议。</li>
+<li>客户在建立的控制连接上获得身份认证。</li>
+<li>客户在建立的控制连接上发送命令来浏览远程主机的目录。</li>
+<li>当服务器接收到1个文件传输命令时, 在服务器端口号20创建1个与客户的TCP数据连接。</li>
+<li>1个文件传输后,服务器结束这个TCP数据连接。<strong>这个TCP连接指端口20的那个传输文件TCP连接</strong>。<br />
+<img src="ftp.png" srcset="/img/loading.gif" lazyload alt="FTP" /><br />
+<img src="ftp_order.svg" srcset="/img/loading.gif" lazyload alt="FTP order" /></li>
+</ol>
+<h2 id="electronic-mail电子邮件"><a class="markdownIt-Anchor" href="#electronic-mail电子邮件"></a> Electronic mail(电子邮件)</h2>
+<p>电子邮件在Internet中的传输可以分为3个主要组成部分:</p>
+<ul>
+<li>Mail Server: 实现邮件的存储和收发功能的服务器。</li>
+<li>SMTP: 邮件服务器之间的传输协议。</li>
+<li>User Agent: 用户代理，用于用户从邮件服务器查看邮件。</li>
+</ul>
+<h3 id="simple-mail-transfer-protocol简单邮件传输协议"><a class="markdownIt-Anchor" href="#simple-mail-transfer-protocol简单邮件传输协议"></a> Simple Mail Transfer Protocol(简单邮件传输协议)</h3>
+<p><img src="smtp.svg" srcset="/img/loading.gif" lazyload alt="SMTP约定邮件格式" /><br />
+SMTP协议的传输过程:</p>
+<ol>
+<li>握手</li>
+<li>邮件消息的传输</li>
+<li>结束<br />
+SMTP的总结:</li>
+</ol>
+<ul>
+<li>SMTP使用TCP作为传输层协议，并且使用持久连接。</li>
+<li>SMTP 要求邮件消息(header &amp; body)必须是7-bit ASCII</li>
+<li>SMTP服务器使用CRLF.CRLF 来判断邮件消息的结束。<br />
+SMTP与HTTP的区别:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">HTTP</th>
+<th style="text-align:center">SMTP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">拉协议</td>
+<td style="text-align:center">推协议</td>
+</tr>
+<tr>
+<td style="text-align:center">对象在响应报文体中存放且每个报文只有一个对象</td>
+<td style="text-align:center">邮件内的多个对象在同一邮件的多目部分发送</td>
+</tr>
+<tr>
+<td style="text-align:center">命令、状态码、为ASCII码</td>
+<td style="text-align:center">邮件消息均为7-bit ASCII码</td>
+</tr>
+</tbody>
+</table>
+<h3 id="post-office-protocol邮局协议-and-internet-message-access-protocol因特网邮件访问协议"><a class="markdownIt-Anchor" href="#post-office-protocol邮局协议-and-internet-message-access-protocol因特网邮件访问协议"></a> Post Office Protocol(邮局协议) and Internet Message Access Protocol(因特网邮件访问协议)</h3>
+<p>POP3和IMAP都是用户代理与邮件服务器之间的协议，用于验证用户身份、读取邮件、管理邮件和编辑并发送邮件。大致可以分为身份认证阶段和传输阶段，实际上十分的复杂并且两者之间也有很多不同的规则。但是需要知道的是POP3和IMAP是用户通过用户代理来访问邮件服务器的协议，而不是邮件服务器之间的邮件传输协议即可。</p>
+<h2 id="domain-name-system域名系统"><a class="markdownIt-Anchor" href="#domain-name-system域名系统"></a> Domain Name System(域名系统)</h2>
+<p>通过DNS可以实现:</p>
+<ul>
+<li>主机名与IP地址的映射。</li>
+<li>主机名与别名的映射。</li>
+<li>域名与该域权威名字服务器的主机名的映射。</li>
+<li>邮件服务器主机别名与邮件服务器主机名的映射。<br />
+其中第三和第四稍微有点绕，后面将展示如何通过DNS进行域名的访问和邮件服务器的访问。</li>
+</ul>
+<h3 id="dns-rrdns资源记录"><a class="markdownIt-Anchor" href="#dns-rrdns资源记录"></a> DNS RR(DNS资源记录)</h3>
+<p>从上面DNS实现的功能可以看出至少需要能够表示4种不同的映射关系，在这里RR是通过其中的type字段来表示不同的映射关系。</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>R</mi><mi>R</mi><mo>:</mo><mo stretchy="false">(</mo><mi>n</mi><mi>a</mi><mi>m</mi><mi>e</mi><mo separator="true">,</mo><mi>v</mi><mi>a</mi><mi>l</mi><mi>u</mi><mi>e</mi><mo separator="true">,</mo><mi>t</mi><mi>y</mi><mi>p</mi><mi>e</mi><mo separator="true">,</mo><mi>t</mi><mi>t</mi><mi>l</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">RR: (name, value, type, ttl)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mord mathdefault">a</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">u</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">p</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">t</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mclose">)</span></span></span></span></span></p>
+<p>type:</p>
+<ul>
+<li>A: name = 主机名, value = IP地址</li>
+<li>CNAME: name = 别名, value = 主机名</li>
+<li>MX: name = 邮件服务器主机别名, value = 邮件服务器主机名</li>
+<li>NS: name = 域名, value = 域名服务器主机名<br />
+当已知主机名时，只需要查询type为A的记录即可得到该主机的IP地址。<br />
+当已知主机别名时，需要先查询type为CNAME的记录获取主机名，再查询type为A的记录才能得到该主机的IP地址。<br />
+当已知邮件服务器主机别名时，需要先查询type为MX的记录获取邮件服务器主机名，再通过查询type为A的记录才能得到该邮件服务器的IP地址。<br />
+当已知域名时，需要先查询type为NS的记录获取域名服务器主机名，再通过查询type为A的记录才能得到该域名服务器的IP地址。</li>
+</ul>
+<h3 id="dns-protocoldns协议"><a class="markdownIt-Anchor" href="#dns-protocoldns协议"></a> DNS Protocol(DNS协议)</h3>
+<p>DNS协议 : 查询报文与应答报文 , 但具有同样的报文格式<br />
+<img src="dns.svg" srcset="/img/loading.gif" lazyload alt="DNS Message" /></p>
+<ul>
+<li>标识符: 16位，查询和应答报文使用相同的标识符</li>
+<li>标志:有若干个标志构成，分别标识不同的功能
+<ul>
+<li>查询/应答－0/ 1</li>
+<li>查询希望是/非递归查询－1/0</li>
+<li>应答可/否获得(支持)递归查询－1/0</li>
+<li>应答是/否来自权威名字服务器－1/ 0</li>
+</ul>
+</li>
+<li>问题部分: 查询的name和type</li>
+<li>回答部分: 对于查询,应答的资源记录。可以多个资源记录，因为可以有多个IP地址</li>
+<li>权威部分: 权威名字服务器的其他资源记录</li>
+<li>附加信息部分: 其他有帮助的记录</li>
+</ul>
+<h3 id="dns-architecturesdns层次结构"><a class="markdownIt-Anchor" href="#dns-architecturesdns层次结构"></a> DNS Architectures（DNS层次结构）</h3>
+<p><img src="dns_architectures.svg" srcset="/img/loading.gif" lazyload alt="DNS Architecture" /></p>
+<ul>
+<li>根名字服务器: 负责记录顶级域名服务器的信息。</li>
+<li>顶级域服务器:负责顶级域名 com, org, net, edu, etc等, 和所有国家的顶级域名 uk, fr, ca, jp等。</li>
+<li>权威DNS服务器: 在因特网上具有公共可访问主机（如Web服务器和邮件服务器）的每个组织机构必须提供公共可访问的DNS记录，这些记录将这些主机的名字映射为IP地址。组织机构的权威DNS服务器负责保存这些DNS记录。</li>
+</ul>
+<p>还有不属于层次结构的DNS服务器: 本地DNS服务器。每个ISP（如居民区ISP、公司、大学）都有一个本地DNS，也叫默认服务器。当主机发出DNS请求时，该请求被发往本地DNS服务器。起着代理的作用，转发请求到层次结构中。</p>
+<h3 id="dns-querydns查询"><a class="markdownIt-Anchor" href="#dns-querydns查询"></a> DNS Query(DNS查询)</h3>
+<ul>
+<li>递归查询: 名字解析的负担交给被查询的名字服务器。<br />
+<img src="dns_recursive.png" srcset="/img/loading.gif" lazyload alt="DNS recursive query" /></li>
+<li>迭代查询: 被查询的名字服务器 回复可以被查询的名字服务器的IP地址，然后重新去回复的名字服务器查询。<br />
+<img src="dns_iteration.png" srcset="/img/loading.gif" lazyload alt="DNS iterative query" /></li>
+</ul>
+<h2 id="review"><a class="markdownIt-Anchor" href="#review"></a> Review</h2>
+<p><img src="review.svg" srcset="/img/loading.gif" lazyload alt="Review" /></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Computer-Network/">Computer Network</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/26/Computer-Network-Chapter-3/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Computer Network Chapter 3</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/24/Computer-Network-Chapter-1/">
+                        <span class="hidden-mobile">Computer Network Chapter 1</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

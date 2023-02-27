@@ -1,0 +1,647 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="Chapter 1: Computer Network and the Internet  Concept(概念) 首先需要介绍本章会用到的一些概念:  计算机网络: 两台以上具有独立操作系统的计算机通过某些介质连接成的相互共享软硬件资源的集合体。这很教科书，但也很精炼。 Internet: 这个概念很泛化，无法给出一个具体的定义，但我们可以通过其特征来描述。  从组成结构来看，Internet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Computer Network Chapter 1">
+<meta property="og:url" content="http://example.com/2022/05/24/Computer-Network-Chapter-1/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="Chapter 1: Computer Network and the Internet  Concept(概念) 首先需要介绍本章会用到的一些概念:  计算机网络: 两台以上具有独立操作系统的计算机通过某些介质连接成的相互共享软硬件资源的集合体。这很教科书，但也很精炼。 Internet: 这个概念很泛化，无法给出一个具体的定义，但我们可以通过其特征来描述。  从组成结构来看，Internet">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/05/24/Computer-Network-Chapter-1/division.svg">
+<meta property="og:image" content="http://example.com/2022/05/24/Computer-Network-Chapter-1/protocol_layer.svg">
+<meta property="og:image" content="http://example.com/2022/05/24/Computer-Network-Chapter-1/ISO_OSI.svg">
+<meta property="og:image" content="http://example.com/2022/05/24/Computer-Network-Chapter-1/review.svg">
+<meta property="article:published_time" content="2022-05-24T07:04:09.000Z">
+<meta property="article:modified_time" content="2022-06-02T04:03:33.871Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Computer Network">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/05/24/Computer-Network-Chapter-1/division.svg">
+  
+  
+  <title>Computer Network Chapter 1 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Computer Network Chapter 1">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-24 15:04" pubdate>
+        May 24, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Computer Network Chapter 1</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：June 2, 2022 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="chapter-1-computer-network-and-the-internet"><a class="markdownIt-Anchor" href="#chapter-1-computer-network-and-the-internet"></a> Chapter 1: Computer Network and the Internet</h1>
+<h2 id="concept概念"><a class="markdownIt-Anchor" href="#concept概念"></a> Concept(概念)</h2>
+<p>首先需要介绍本章会用到的一些概念:</p>
+<ul>
+<li>计算机网络: 两台以上具有独立操作系统的计算机通过某些介质连接成的相互共享软硬件资源的集合体。这很教科书，但也很精炼。</li>
+<li>Internet: 这个概念很泛化，无法给出一个具体的定义，但我们可以通过其特征来描述。
+<ol>
+<li>从组成结构来看，Internet可以分为网络核心和网络边缘两部分，网络边缘主要是各种主机host和端系统end-system等设备，网络核心则是大量的路由器、交换机以及通信链路。</li>
+<li>从具体构成来看，Internet是由网络构成的网络，一个个主机连接在一起形成局域网，而所有的局域网连接起来组成一个大的网络，这便是Internet。</li>
+</ol>
+</li>
+<li>协议:
+<ol>
+<li>定义了两个或多个通信实体间所交换<strong>报文的格式</strong>和<strong>次序</strong>，以及在<strong>报文发送和/或接收或者其他事件方面所采取的行动（响应）</strong>。</li>
+<li>协议的<strong>基本要素</strong>: <strong>语法</strong>、<strong>语义</strong>和<strong>同步</strong>。</li>
+</ol>
+</li>
+</ul>
+<h2 id="the-network-edge网络边缘"><a class="markdownIt-Anchor" href="#the-network-edge网络边缘"></a> The Network Edge(网络边缘)</h2>
+<p>网络边缘部分由主机/端系统组成，主机/端系统在服务角色方面分别有客户和服务器两种身份可以选择。</p>
+<h3 id="access-network接入网络"><a class="markdownIt-Anchor" href="#access-network接入网络"></a> Access Network(接入网络)</h3>
+<p>接入网络的分类:</p>
+<ul>
+<li>住宅接入网络: 拨号线路上使用modem调制解调，理论最高值为56Kbps,不能同时网上冲浪和拨打电话。(电话拨号上网)</li>
+<li>机构接入网络: 即局域网，在局域网下有自己的网络结构，但作为整个网络接入Internet。传输速率一般为10Mbps、100Mbps、1Gbps、10Gbps。</li>
+<li>无线接入网络: 通过AP(access point)和STA(station)来实现无线网络的接入。
+<ol>
+<li>无线局域网(wireless LANs): 通过无线信道来传输数据，典型为WiFi。</li>
+<li>广域无线接入网: 由ISP(Internet Service Provider)提供的无线接入网，典型为3G、4G。</li>
+</ol>
+</li>
+</ul>
+<h3 id="physical-media物理介质"><a class="markdownIt-Anchor" href="#physical-media物理介质"></a> Physical Media(物理介质)</h3>
+<p>物理介质的分类:</p>
+<ul>
+<li>双绞线(网线): 两根彼此绝缘、相互缠绕成螺旋状的铜线。缠绕的目的是减少电磁干扰，提高传输质量。</li>
+<li>同轴电缆(铜线): 两根彼此绝缘的同心导体，双向传输。</li>
+<li>光纤线缆: 光纤传导光脉冲, 每个光脉冲代表1位，高速传输:高速点对点传输 (可达数十或数百 Gbps)误码率，中继到更远传输距离;，防止电磁干扰，难以被分光窃听。</li>
+<li>无线电磁波: 以电磁频谱承载信号，没有物理连线，双向。
+<ol>
+<li>地面微波: 45 Mbps 信道。</li>
+<li>局域无线通道: WiFi 11Mbps, 54Mbps。</li>
+<li>广域无线通道: GPRS,CDMA，3G: hundreds of kbps。</li>
+<li>卫星通信: 高达数百Mbps信道。</li>
+</ol>
+</li>
+</ul>
+<h2 id="the-network-core网络核心"><a class="markdownIt-Anchor" href="#the-network-core网络核心"></a> The Network Core(网络核心)</h2>
+<h3 id="packet-switching分组交换"><a class="markdownIt-Anchor" href="#packet-switching分组交换"></a> Packet Switching(分组交换)</h3>
+<p>每个端到端的数据流被划分成分组，每个分组通过网络来离散地发送。</p>
+<p>优点:</p>
+<ul>
+<li>所有分组共享网络资源</li>
+<li>每个分组使用全部链路带宽</li>
+<li>资源按需使用</li>
+</ul>
+<h3 id="circuit-switching电路交换"><a class="markdownIt-Anchor" href="#circuit-switching电路交换"></a> Circuit Switching(电路交换)</h3>
+<p>每次会话预留沿其路径（线路）所需的独占资源－－电话网，实现方式: 将网络资源(带宽)分片。每个分片分配到会话，分片没有被会话使用的情况下，分片空载。但电路交换提供电路级性能保障，传输准确性高。建立一个专门的端到端线路即每个链路上预留一个线路。</p>
+<ol>
+<li>frequency division(频分)</li>
+<li>time division(时分)<br />
+<img src="division.svg" srcset="/img/loading.gif" lazyload alt="frequency division and time division" /></li>
+</ol>
+<h3 id="电路交换与分组交换的比较"><a class="markdownIt-Anchor" href="#电路交换与分组交换的比较"></a> 电路交换与分组交换的比较</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">电路交换</th>
+<th style="text-align:center">分组交换</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">是否需要预留线路</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">否</td>
+</tr>
+<tr>
+<td style="text-align:center">是否需要创建链路</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">否</td>
+</tr>
+<tr>
+<td style="text-align:center">是否需要分片</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">否</td>
+</tr>
+<tr>
+<td style="text-align:center">是否可以共享资源</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">是</td>
+</tr>
+<tr>
+<td style="text-align:center">是否提供可靠数据传输</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">否</td>
+</tr>
+<tr>
+<td style="text-align:center">是否提供带宽保障</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">否</td>
+</tr>
+</tbody>
+</table>
+<h2 id="delay-loss-and-troughput-in-packet-switched-networks分组交换网络中的延迟和丢失"><a class="markdownIt-Anchor" href="#delay-loss-and-troughput-in-packet-switched-networks分组交换网络中的延迟和丢失"></a> Delay, Loss and Troughput in Packet-Switched Networks(分组交换网络中的延迟和丢失)</h2>
+<h3 id="delay时延"><a class="markdownIt-Anchor" href="#delay时延"></a> Delay(时延)</h3>
+<p>分组延迟:</p>
+<ul>
+<li>nodal processing delay(节点处理延时): 节点处理到达数据的时间。量级: 微秒级。
+<ol>
+<li>检查错误位</li>
+<li>选择输出链路</li>
+</ol>
+</li>
+<li>queueing delay(排队时延): 分组处理完成后等待到输出链路上的时间。量级: 取决于当前的拥塞程度。</li>
+<li>transmission delay(传输延时): 分组在从输出链路上开始输出到输出结束的时间。量级: 取决于分组长度和当前节点传输速率。</li>
+<li>propagation delay(传播时延): 分组在物理介质上传播的时间。量级: 物理介质的类型和物理链路的长度。</li>
+</ul>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>d</mi><mrow><mi>n</mi><mi>o</mi><mi>d</mi><mi>a</mi><mi>l</mi></mrow></msub><mo>=</mo><msub><mi>d</mi><mrow><mi>p</mi><mi>r</mi><mi>o</mi><mi>c</mi><mi>e</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>n</mi><mi>g</mi></mrow></msub><mo>+</mo><msub><mi>d</mi><mrow><mi>q</mi><mi>u</mi><mi>e</mi><mi>u</mi><mi>e</mi><mi>i</mi><mi>n</mi><mi>g</mi></mrow></msub><mo>+</mo><msub><mi>d</mi><mrow><mi>t</mi><mi>r</mi><mi>a</mi><mi>n</mi><mi>s</mi><mi>m</mi><mi>i</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub><mo>+</mo><msub><mi>d</mi><mrow><mi>p</mi><mi>r</mi><mi>o</mi><mi>p</mi><mi>a</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">d_{nodal} = d_{processing} + d_{queueing} + d_{transmission} + d_{propagation}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">d</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">p</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">c</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">s</span><span class="mord mathdefault mtight">s</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">g</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">q</span><span class="mord mathdefault mtight">u</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">u</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">g</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">s</span><span class="mord mathdefault mtight">m</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">s</span><span class="mord mathdefault mtight">s</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">p</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">p</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">g</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<h4 id="detail-of-queueing-delay"><a class="markdownIt-Anchor" href="#detail-of-queueing-delay"></a> Detail of Queueing Delay</h4>
+<p>Asuming: R=链路传输速率 (bps)，L=分组长度 (bits)，a=平均分组到达率，<br />
+Then: traffic intensity(流量强度) = <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><mi mathvariant="bold">L</mi><mo>∗</mo><mi mathvariant="bold">a</mi></mrow><mi mathvariant="bold">R</mi></mfrac></mrow><annotation encoding="application/x-tex">\pmb{\frac{L*a}{R}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.239553222222222em;vertical-align:-0.345em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="rlap"><span class="strut" style="height:1.217331em;vertical-align:-0.345em;"></span><span class="inner"><span class="mord"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.00773em;">R</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">L</span><span class="mbin mtight">∗</span><span class="mord mathdefault mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span><span class="fix"></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8945532222222221em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="rlap"><span class="strut" style="height:1.217331em;vertical-align:-0.3227777777777778em;"></span><span class="inner"><span class="mord"><span class="mspace" style="margin-right:0.022222222222222223em;"></span><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8945532222222221em;"><span style="top:-3.022222222222222em;"><span class="pstrut" style="height:3em;"></span><span class="mord text"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.00773em;">R</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">L</span><span class="mbin mtight">∗</span><span class="mord mathdefault mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3227777777777778em;"><span></span></span></span></span></span></span><span class="fix"></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3227777777777778em;"><span></span></span></span></span></span><span class="mord"><span class="mspace" style="margin-right:0.044444444444444446em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.00773em;">R</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">L</span><span class="mbin mtight">∗</span><span class="mord mathdefault mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></span></span><br />
+当<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><mi>L</mi><mo>∗</mo><mi>a</mi></mrow><mi>R</mi></mfrac><mspace width="1em"/><mo>−</mo><mo>&gt;</mo><mspace width="1em"/><mn>0</mn></mrow><annotation encoding="application/x-tex">\frac{L*a}{R}\quad -&gt;\quad 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.217331em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.00773em;">R</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">L</span><span class="mbin mtight">∗</span><span class="mord mathdefault mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:1em;"></span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace" style="margin-right:1em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span>时，分组稀疏到达,无队列,平均排队延迟极小接近于0<br />
+当<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><mi>L</mi><mo>∗</mo><mi>a</mi></mrow><mi>R</mi></mfrac><mspace width="1em"/><mo>−</mo><mo>&gt;</mo><mspace width="1em"/><mn>1</mn></mrow><annotation encoding="application/x-tex">\frac{L*a}{R}\quad -&gt;\quad 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.217331em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.00773em;">R</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">L</span><span class="mbin mtight">∗</span><span class="mord mathdefault mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:1em;"></span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace" style="margin-right:1em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>时，分组猝发到达,形成队列,队列长度迅速增加,排队延迟大幅增大<br />
+当<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><mi>L</mi><mo>∗</mo><mi>a</mi></mrow><mi>R</mi></mfrac><mspace width="1em"/><mo>&gt;</mo><mspace width="1em"/><mn>1</mn></mrow><annotation encoding="application/x-tex">\frac{L*a}{R}\quad &gt;\quad 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.217331em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.00773em;">R</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">L</span><span class="mbin mtight">∗</span><span class="mord mathdefault mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace" style="margin-right:1em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace" style="margin-right:1em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>时，输出队列平均位到达速率超过送走这些位的极限速率，输出队列持续增长，排队延迟趋于无穷大。</p>
+<h3 id="loss丢包"><a class="markdownIt-Anchor" href="#loss丢包"></a> Loss(丢包)</h3>
+<p>当Queueing Delay很大时即traffic intensity大于或趋向于1时，路由器或交换机会选择丢弃一些到达的分组，这时候分组就会丢失，称为丢包。</p>
+<h3 id="throughput吞吐量"><a class="markdownIt-Anchor" href="#throughput吞吐量"></a> Throughput(吞吐量)</h3>
+<p>定义: 在发送方和接收方之间单位时间内成功地传送数据的数量。因此可以分为平均吞吐量和瞬间吞吐量。<br />
+每个端到端的连接吞吐量取决于连接上所有链路中吞吐量最小的链路吞吐量，该链路称为<strong>瓶颈链路</strong>。瓶颈链路一般出现在网络核心到网络边缘的链路上。</p>
+<h2 id="protocol-layers-and-their-service-models网络协议层和其服务模型"><a class="markdownIt-Anchor" href="#protocol-layers-and-their-service-models网络协议层和其服务模型"></a> Protocol Layers and Their Service Models(网络协议层和其服务模型)</h2>
+<h3 id="protocol-layers网络协议层"><a class="markdownIt-Anchor" href="#protocol-layers网络协议层"></a> Protocol Layers(网络协议层)</h3>
+<p><img src="protocol_layer.svg" srcset="/img/loading.gif" lazyload alt="网络协议栈模型(五层模型)" /><br />
+<strong>每层的主要任务:</strong></p>
+<ul>
+<li>应用层: 应用层负责传输端系统中应用程序的数据报文信息，并且是网络应用程序及它们的应用层协议存留的地方。典型协议: HTTP;FTP;SMTP;</li>
+<li>传输层: 传输层负责传输数据段，在应用程序端点之间传输数据段。典型协议: TCP;UDP;</li>
+<li>网络层: 网络层负责将数据报从一台主机移动到另一条主机。典型协议: IP;OSPF;BGP;</li>
+<li>链路层: 链路层负责将数据帧从一个网络节点移动到另一个网络节点。典型协议: PPPoE;Ethernet;</li>
+<li>物理层: 物理层负责将比特从一个网络元素移动到邻近的网络元素。<br />
+<img src="ISO_OSI.svg" srcset="/img/loading.gif" lazyload alt="ISO/OSI模型(七层模型)" /></li>
+</ul>
+<p>七层模型相较于五层模型增加了表示层和会话层，其他层次结构相同。</p>
+<ul>
+<li>presentation: 使通信的应用程序能够解释交换数据的含义。</li>
+<li>session: 提供数据交换定界和同步功能。</li>
+</ul>
+<h2 id="review"><a class="markdownIt-Anchor" href="#review"></a> Review</h2>
+<p><img src="review.svg" srcset="/img/loading.gif" lazyload alt="Review" /></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Computer-Network/">Computer Network</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/25/Computer-Network-Chapter-2/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Computer Network Chapter 2</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/09/database-storage-structure/">
+                        <span class="hidden-mobile">Database Storage Structure</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

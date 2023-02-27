@@ -1,0 +1,1107 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta name="description" content="Chapter 5: CPU  CPU的基本功能和基本组成 CPU执行指令的过程:    flowchart TB     subgraph &quot;Instruction Fetch(取指阶段)&quot;         IF(&quot;取指令&quot;)--&gt;PC(&quot;PC+1送PC&quot;)     end     subgraph &quot;Instruction Decode and Execute(译码和执行阶段)&quot;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中央处理器">
+<meta property="og:url" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:description" content="Chapter 5: CPU  CPU的基本功能和基本组成 CPU执行指令的过程:    flowchart TB     subgraph &quot;Instruction Fetch(取指阶段)&quot;         IF(&quot;取指令&quot;)--&gt;PC(&quot;PC+1送PC&quot;)     end     subgraph &quot;Instruction Decode and Execute(译码和执行阶段)&quot;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_architecture.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/sinple_cpu.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/adder.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/mux.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/alu.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/time_model.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/register.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/register_group.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/ideal_memory.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/clock_cycle.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/single_bus.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/multiple_bus.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/add_sub.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/ori.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/lw.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/sw.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/beq.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/next_address.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/j.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/instruction_fetch.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/mips_cpu.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/control_unit.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/control.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/aluop.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/aluctl.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/main_control_unit.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/control_pla.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/lw_time.png">
+<meta property="og:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/micro_instruction.png">
+<meta property="article:published_time" content="2022-06-09T15:38:06.000Z">
+<meta property="article:modified_time" content="2022-06-13T14:00:00.829Z">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="Computer Organization and Architecture">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/06/09/%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8/cpu_architecture.png">
+  
+  
+  <title>中央处理器 - Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="中央处理器">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      Thm
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-09 23:38" pubdate>
+        June 9, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      29 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">中央处理器</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：June 13, 2022 pm
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="chapter-5-cpu"><a class="markdownIt-Anchor" href="#chapter-5-cpu"></a> Chapter 5: CPU</h1>
+<h2 id="cpu的基本功能和基本组成"><a class="markdownIt-Anchor" href="#cpu的基本功能和基本组成"></a> CPU的基本功能和基本组成</h2>
+<p>CPU执行指令的过程:</p>
+
+<pre>
+<code class="mermaid" >
+flowchart TB
+    subgraph "Instruction Fetch(取指阶段)"
+        IF("取指令")-->PC("PC+1送PC")
+    end
+    subgraph "Instruction Decode and Execute(译码和执行阶段)"
+       PC-->ID("指令译码")
+       ID-->AC("进行主存地址运算")
+       AC-->NF("取操作数")
+       NF-->CAL("进行算术/逻辑运算")
+       CAL-->MEM("对结果进行存储操作")
+    end
+        MEM-->IF        
+</code>
+</pre>
+<p><strong>注意: 以上每步都需检测有无&quot;异常&quot;，若有则自动切换到异常处理程序。并且会检测是否有中断请求，有则转中断处理。</strong></p>
+<p><img src="cpu_architecture.png" srcset="/img/loading.gif" lazyload alt="CPU基本组成原理" /></p>
+<ul>
+<li>执行部件: 主要由ALU、通用寄存器足和状态寄存器组成</li>
+<li>控制部件: 主要由指令译码器和控制信号形成部件组成</li>
+</ul>
+<p><img src="sinple_cpu.png" srcset="/img/loading.gif" lazyload alt="简化的CPU组成" /></p>
+<p><b>数据通路: 指令执行过程中，数据所经过的路径，以及路径上的部件。</b>包括: <strong>ALU</strong>(运算)、<strong>通用寄存器</strong>(存储数据)、<strong>状态寄存器</strong>(存储标志位)、<strong>MMU</strong>(内存管理单元)、<strong>cache</strong>(缓存)、<strong>中断处理逻辑</strong>等。</p>
+<p><strong>控制器</strong>: 对指令进行<strong>译码</strong>，<strong>生成指令对应的控制信号</strong>，控制数据通路的动作。它向执行部件发出控制信号，是指令的控制部件。</p>
+<h3 id="cpu的功能及其与计算机性能的关系"><a class="markdownIt-Anchor" href="#cpu的功能及其与计算机性能的关系"></a> CPU的功能及其与计算机性能的关系</h3>
+<p>计算机性能由三个关键因素决定:</p>
+<ul>
+<li>指令数目: 由ISA和编译器共同决定</li>
+<li>CPI: 指一条指令的执行时钟周期数，由指令集决定，单周期CPU指令CPI一定为1</li>
+<li>时钟周期: 对于单周期CPU，时钟周期等于最长的指令(一般为lw指令)的执行时间</li>
+</ul>
+<h3 id="指令的四个基本功能"><a class="markdownIt-Anchor" href="#指令的四个基本功能"></a> 指令的四个基本功能</h3>
+<p>每一条指令的功能都是由以下四种基本操作的组合来实现:</p>
+<ul>
+<li>读取某一主存单元的内容，并将其装入某个寄存器(取指，取数)</li>
+<li>把一个数据从某个寄存器存入给定的主存单元中(存结果)</li>
+<li>把一个数据从某个寄存器送到另一个寄存器或者ALU(取数，存结果)</li>
+<li>执行算术或逻辑运算(PC+1，计算地址，运算)</li>
+</ul>
+<p>操作功能的形式化描述语言称为寄存器传送语言RTL(Register Transfer Language)，规定如下:</p>
+<ul>
+<li>用R[r]表示寄存器r的内容</li>
+<li>用M[addr]表示主存单元addr的内容</li>
+<li>传送方向用&quot;&lt;-&quot;表示，传送源在右，传送目的在左</li>
+<li>对于程序计数器PC，直接用PC表示其内容</li>
+</ul>
+<p>例如，R[$8] ← M[R[$9]+4]的含义是:<br />
+将寄存器$9的内容加4得到的内存地址单元的内容送寄存器$8中(偏移寻址)。</p>
+<h3 id="数据通路的基本结构"><a class="markdownIt-Anchor" href="#数据通路的基本结构"></a> 数据通路的基本结构</h3>
+<p>数据通路由两类元件组成:</p>
+<ul>
+<li>组合逻辑元件(也称操作元件)</li>
+<li>时序逻辑元件(也称状态元件，或存储元件)</li>
+</ul>
+<p>数据通路由由<strong>操作元件</strong>和<strong>存储元件</strong>通过<strong>总线方式或分散方式</strong>连接而成。</p>
+<h4 id="常用的操作元件"><a class="markdownIt-Anchor" href="#常用的操作元件"></a> 常用的操作元件</h4>
+<ul>
+<li>加法器(Adder): 只接受输入A、输入B和进位信号，输出加法结果和进位信号。<br />
+<img src="adder.png" srcset="/img/loading.gif" lazyload alt="加法器" /></li>
+<li>多路选择器(MUX): 输入n路信号和选路信号，输出选路信号对应的输入信号。<br />
+<img src="mux.png" srcset="/img/loading.gif" lazyload alt="多路选择器" /></li>
+<li>算术逻辑部件(ALU): 能进行多种不同运算，运算方式由ALUctl信号进行控制，输出计算结果和标志位。<br />
+<img src="alu.png" srcset="/img/loading.gif" lazyload alt="算术逻辑部件" /></li>
+</ul>
+<p>操作元件(组合逻辑元件)特点:</p>
+<ul>
+<li>其输出只取决于当前的输入: 若输入一样，则其输出也一样</li>
+<li>无定时: 所有输入到达后，经过一定的逻辑门延时，输出端改变，并保持到下次改变，不需要时钟信号来定时</li>
+</ul>
+<h3 id="数据通路的时序控制"><a class="markdownIt-Anchor" href="#数据通路的时序控制"></a> 数据通路的时序控制</h3>
+<p>时序控制通过存储元件来实现，存储元件的特点:</p>
+<ul>
+<li>有专门的时钟信号来控制元件的工作</li>
+<li>具有存储功能，在时钟控制下输入被写到电路中，直到下个时钟到达</li>
+<li>输入端状态由时钟决定何时被写入，输出端状态随时可以读出</li>
+</ul>
+<p><strong>定时方式: 规定信号何时写入状态元件，一般在计算机内部均采用边沿触发方式(状态单元中的值只在时钟边沿改变，每个时钟周期改变一次。可以分为上升沿触发和下降沿触发)</strong><br />
+<img src="time_model.png" srcset="/img/loading.gif" lazyload alt="存储元件定时模型" /></p>
+<ul>
+<li>Setup Time: 在触发时钟<strong>边沿之前一段时间</strong>内输入必须稳定</li>
+<li>Hold Time: 在触发时钟<strong>边沿之后一段时间</strong>内输入必须稳定</li>
+<li>Clock-to-Q Time: 锁存延时，在边沿后输出并<strong>不能立即变化</strong>而是需要经过一段时间后才能变化</li>
+</ul>
+<p><strong>只有当Clock-to-Q Time后输出才反映新的状态值。</strong></p>
+<h4 id="常见的存储元件"><a class="markdownIt-Anchor" href="#常见的存储元件"></a> 常见的存储元件</h4>
+<ul>
+<li>寄存器: 能够存储n位数据的存储元件，具有输入端口进行接收输入，输出端口接收输出，并包含输入一个写使能信号，只有<strong>当写使能为1时才允许输入</strong>，作为存储元件一定有时钟信号的输入端口。<br />
+<img src="register.png" srcset="/img/loading.gif" lazyload alt="寄存器" /></li>
+<li>寄存器组: 是多个寄存器的组合，可以<strong>同时进行两个寄存器的读取操作或一个寄存器的写入操作</strong>。当RA和RB进行寄存器选择后，经过<strong>一个取数时间</strong>后寄存器组通过busA和busB分别将RA和RB的数据进行输出，当<strong>写使能为1时将busW的输入数据写入到RW选择的寄存器中</strong>，作为存储元件一定还有一个时钟信号的输入端口。<br />
+<img src="register_group.png" srcset="/img/loading.gif" lazyload alt="寄存器组" /></li>
+<li>理想存储器: Address端口作为地址选择端口，通过写使能来判断本次操作为读/写操作，当写使能为1时为写，存储器将Data In端口数据写入到选择的地址中，当写使能为0时为读，存储器将选择的地址的数据输出到Data Out。<br />
+<img src="ideal_memory.png" srcset="/img/loading.gif" lazyload alt="理想存储器" /></li>
+</ul>
+<p><strong>注意: 寄存器的存储位数应与触发器数目相符合，寄存器组的寄存器选择位数应与寄存器数量一致。</strong></p>
+<p>在数据通路中进行时序控制则必须有专门时序信号来定时，由时序信号规定何时发出什么动作。早期计算机具有三级时序系统: 机器周期 - 节拍 - 脉冲，但现代计算机已不再采用三级时序系统，在整个数据通路中定时信号就是时钟，一个时钟周期就是一个节拍。</p>
+<p><img src="clock_cycle.png" srcset="/img/loading.gif" lazyload alt="现代计算机时钟周期" /></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">时</mi><mi mathvariant="normal">钟</mi><mi mathvariant="normal">周</mi><mi mathvariant="normal">期</mi><mo>=</mo><mi>L</mi><mi>a</mi><mi>t</mi><mi>c</mi><mi>h</mi><mi>P</mi><mi>r</mi><mi>o</mi><mi>p</mi><mo>+</mo><mi>L</mi><mi>o</mi><mi>n</mi><mi>g</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>D</mi><mi>e</mi><mi>l</mi><mi>a</mi><mi>y</mi><mi>P</mi><mi>a</mi><mi>t</mi><mi>h</mi><mo>+</mo><mi>S</mi><mi>e</mi><mi>t</mi><mi>u</mi><mi>p</mi><mo>+</mo><mi>C</mi><mi>l</mi><mi>o</mi><mi>c</mi><mi>k</mi><mi>S</mi><mi>k</mi><mi>e</mi><mi>w</mi><mo stretchy="false">(</mo><mi mathvariant="normal">时</mi><mi mathvariant="normal">钟</mi><mi mathvariant="normal">偏</mi><mi mathvariant="normal">移</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">时钟周期 = Latch Prop + Longest Delay Path + Setup + Clock Skew(时钟偏移)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">钟</span><span class="mord cjk_fallback">周</span><span class="mord cjk_fallback">期</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">L</span><span class="mord mathdefault">a</span><span class="mord mathdefault">t</span><span class="mord mathdefault">c</span><span class="mord mathdefault">h</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">o</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">L</span><span class="mord mathdefault">o</span><span class="mord mathdefault">n</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">e</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault">a</span><span class="mord mathdefault">t</span><span class="mord mathdefault">h</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mord mathdefault">e</span><span class="mord mathdefault">t</span><span class="mord mathdefault">u</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord mathdefault">c</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mopen">(</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">钟</span><span class="mord cjk_fallback">偏</span><span class="mord cjk_fallback">移</span><span class="mclose">)</span></span></span></span></span></p>
+<p><strong>操作元件输出有效信号最快出现必须在下一级状态元件的输入保持时间之后出现。</strong></p>
+<h3 id="总线结构数据通路中四种基本功能的实现"><a class="markdownIt-Anchor" href="#总线结构数据通路中四种基本功能的实现"></a> 总线结构数据通路中四种基本功能的实现</h3>
+<p>总线结构也可按总线数量而分为单总线连接和多总线连接方式，这里以单总线数据通路和三总线数据通路来演示四种基本操作(<strong>寄存器之间的取数</strong>、<strong>寄存器从主存取数取指</strong>、<strong>写数到主存</strong>、<strong>完成运算</strong>)的实现:</p>
+<ul>
+<li>
+<p>单总线:<br />
+<img src="single_bus.png" srcset="/img/loading.gif" lazyload alt="单总线" /></p>
+<ol>
+<li>寄存器之间的取数: <code>R0out, Yin</code>将寄存器数据取到ALU运算前的缓存寄存器中，仅需要1Cycle。</li>
+<li>完成运算:<br />
+<code>R1out, Yin\n R2out, Add, Zin\n Zout, R3in</code><br />
+先从R1中取数，再将R2中数据从总线直接传送到ALU输入端口中最后将ALU计算结果写入到Z中，通过总线将Z中数据传输到R3中。</li>
+<li>从主存中取数:<br />
+<code>R1out, MARin\n Read, WMFC(等待MFC返回取数成功信号)\n MDRout, R2in</code><br />
+MAR为存储器地址寄存器，MDR为存储器数据寄存器，将R1内地址取出送入MAR中，等待MFC应答后从MDR中取数到R2中。</li>
+<li>写数到主存:<br />
+<code>R1out, MARin\n R2out, MDRin\n Write, WMFC(等待MFC返回写入成功信号)</code><br />
+将R1内的地址通过总线送入MAR中，将R2内的数据通过总线送入MDR中，等待MFC应答后将数据写入完成。</li>
+</ol>
+</li>
+<li>
+<p>多总线:<br />
+<img src="multiple_bus.png" srcset="/img/loading.gif" lazyload alt="多总线" /><br />
+单总线中一个时钟内只允许传一个数据，因而指令执行效率很低，多总线方式可同时在多个总线上传输不同数据来提高效率。<br />
+实现一个时钟周期完成单条运算: <code>R1out, R2out, op, R3in</code>，通过总线同时实现R1、R2内数据的取出和传输，并通过ALU计算直接传输到R3进行存储。</p>
+</li>
+</ul>
+<h2 id="单周期mips处理器的设计"><a class="markdownIt-Anchor" href="#单周期mips处理器的设计"></a> 单周期MIPS处理器的设计</h2>
+<h3 id="mips数据通路设计"><a class="markdownIt-Anchor" href="#mips数据通路设计"></a> MIPS数据通路设计</h3>
+<p>明确只需掌握<strong>经典7条指令</strong>的数据通路设计即可。</p>
+<ul>
+<li>add: add rd, rs, rt(rd = rs + rt)</li>
+<li>sub: sub rd, rs, rt(rd = rs - rt)</li>
+<li>ori: ori rt, rs, imm16(rt = rs | imm16)</li>
+<li>lw: lw rt, imm16(rt = [rs + imm16])</li>
+<li>sw: sw rt, imm16([rs + imm16] = rt)</li>
+<li>beq: beq rs, rt, imm16(if rs == rt, PC = PC + 4 + (imm16 &lt;&lt; 2))</li>
+<li>j: j target26(PC = PC[31:28] + target26 + 00)</li>
+</ul>
+<p><b><font color='red'>在下面各指令的数据通路图中，蓝色部分部件为从上一指令数据通路增加后来完成更多指令功能的重要部件。</font></b></p>
+<h4 id="addsub的rtl描述和数据通路"><a class="markdownIt-Anchor" href="#addsub的rtl描述和数据通路"></a> add/sub的RTL描述和数据通路</h4>
+<p><strong>指令: add/sub rd, rs, rt</strong>是R型指令的代表。</p>
+
+<pre>
+<code class="mermaid" >
+graph TD
+    label1("M[PC](取指令)")-->label2("R[rd] <- R[rs] +/- R[rt](做运算)")
+    label2-->label3("PC <- PC + 4(更新PC)")
+</code>
+</pre>
+<p><img src="add_sub.png" srcset="/img/loading.gif" lazyload alt="add/sub" /><br />
+在取指令后经控制器译码产生<strong>RegWr写使能信号=1</strong>和<strong>ALUctl控制信号=add/sub</strong>，由寄存器组提供rs、rt数据作为ALU的输入，ALU计算结果作为输入输出到busW中，如果没有产生溢出(OF=0)，则与RegWr取并运算得到1激活写使能端口将结果写入到rd寄存器中。</p>
+<h4 id="ori的rtl描述和数据通路"><a class="markdownIt-Anchor" href="#ori的rtl描述和数据通路"></a> ori的RTL描述和数据通路</h4>
+<p><strong>指令: ori rt, rs, imm16</strong>是I型指令的代表。</p>
+
+<pre>
+<code class="mermaid" >
+graph TD
+    label1("M[PC](取指令)")-->label2("R[rt] <- R[rs] or ZeroExt(imm16)(做运算)")
+    label2-->label3("PC <- PC + 4(更新PC)")
+</code>
+</pre>
+<p><img src="ori.png" srcset="/img/loading.gif" lazyload alt="ori" /><br />
+ori指令为<strong>立即数0扩展后与rs做或运算</strong>，因此相比于add/sub指令，ori数据通路应该增加扩展器Ext，同时写入寄存器位rt而不是rd，因此在Rw口应该增加多路选择器Mux使rd和rt均可作为写入寄存器，同时ALU输入端也应该增加Mux使输入可选项可以为busB或imm16。<br />
+根据图中数据通路设计，RegDst信号=1(rt为写入选择器)，RegWr=1(需要写入寄存器因此写使能等于1)，ALUctr=or，ALUSrc=1(imm16作为ALU输入)。</p>
+<h4 id="lw的rtl描述和数据通路"><a class="markdownIt-Anchor" href="#lw的rtl描述和数据通路"></a> lw的RTL描述和数据通路</h4>
+<p><strong>指令: lw rt, rs, imm16</strong>是访问内存指令的代表。</p>
+
+<pre>
+<code class="mermaid" >
+graph TD
+    label1("M[PC](取指令)")-->label2("Addr <- R[rs] + SignExt(imm16)(计算存储单元地址)")
+    label2-->label3("R[rt] <- M[Addr](从地址取数据)")
+    label3-->label4("PC <- PC + 4(更新PC)")
+</code>
+</pre>
+<p><img src="lw.png" srcset="/img/loading.gif" lazyload alt="lw" /><br />
+从内存中取数或存数都是采用偏移寻址的方式，因此要先对<strong>立即数做符号扩展</strong>才能计算目的数的地址，因此需要将<strong>扩展器改为支持多种扩展方式的扩展器并增加控制信号来控制扩展器的扩展方式</strong>。同时因为寄存器组的输入由ALU计算结果改为内存取出的数，<strong>在busW前应增加一个多路选择器Mux，使其可以选择ALU计算结果或内存取出的数作为写入rt。</strong><br />
+因为需要在rt与rd中做选择，所以RegDst=1目的寄存器位rt，RegWr=1写使能端口为1，<strong>ALUctul为addu(addu表示ALU不做溢出检查，因为用add可能会产生OF=1的异常)</strong>，ExtOP=1做符号扩展，ALUSrc=1表示imm16符号扩展结果作为ALU输入，内存需要写入到寄存器则MemtoReg=1。</p>
+<h4 id="sw的rtl描述和数据通路"><a class="markdownIt-Anchor" href="#sw的rtl描述和数据通路"></a> sw的RTL描述和数据通路</h4>
+<p><strong>指令: sw rt, rs, imm16</strong>是访问内存指令的代表。</p>
+
+<pre>
+<code class="mermaid" >
+graph TD
+    label1("M[PC](取指令)")-->label2("Addr <- R[rs] + SignExt(imm16)(计算存储单元地址)")
+    label2-->label3("Mem[Addr] <- R[rt](向内存写入数据)")
+    label3-->label4("PC <- PC + 4(更新PC)")
+</code>
+</pre>
+<p><img src="sw.png" srcset="/img/loading.gif" lazyload alt="sw" /><br />
+从逻辑上说，只需要给rt的输出写到内存途径即可，因此在busB后加一个Mux可以选择ALU输入端和内存输入端即可。由于增加了内存写入功能，对内存也应有写使能信号，控制信号也应该新加一个MemWr信号，控制信号为1时内存可以写入数据。<br />
+因为没有对寄存器进行写操作因此RegDst=x，RegWr=0禁止写寄存器，<strong>ALUctul为addu(addu表示ALU不做溢出检查，因为用add可能会产生OF=1的异常)</strong>，ExtOP=1做符号扩展，MemWr=1写入内存，MemtoReg=x因为寄存器的写使能已经为0。</p>
+<h4 id="beq的rtl描述和数据通路"><a class="markdownIt-Anchor" href="#beq的rtl描述和数据通路"></a> beq的RTL描述和数据通路</h4>
+<p><strong>指令: beq rs, rt, imm16</strong>是条件跳转指令的代表。</p>
+
+<pre>
+<code class="mermaid" >
+graph TD
+    label1("M[PC](取指令)")-->label2("Cond <- R[rs] == R[rt](做减法比较rs和rt中的内容)")
+    label2-->label3("if (Cond eq 0) PC <- PC + 4 + SignExt(imm16) * 4(计算下地址并跳转)")
+    label3-->label4("else PC <- PC + 4(不跳转)")
+</code>
+</pre>
+<p><img src="beq.png" srcset="/img/loading.gif" lazyload alt="beq" /><br />
+<strong>beq指令为相等跳转，bne为不相等跳转，实现思路为rs内容与rt内相减</strong>，通过ALU的标志位ZF来判断rs内容与rt内容是否相等，将标志位传递给下址计算部件即可。因此只需**增加下址计算部件(将PC+4功能同时实现)**即可完成数据通路。<br />
+条件转移没有对寄存器和存储器进行读写操作因此RegWr=MemWr=0，因为有写使能做保护RegDst=MenmtoReg=x可以为任意值，ALUctl仍然取addu无符号加法防止溢出来实现转移地址的计算，ALUSrc=0因为无立即数参加，但为下址计算部件设定转移信号Branch=1，来激活下址计算部件。</p>
+<p>下址计算部件的设计: PC是32位地址，当</p>
+<ul>
+<li>顺序执行时: PC&lt;31:0&gt; = PC&lt;31:0&gt; + 4</li>
+<li>转移执行时: PC&lt;31:0&gt; = PC&lt;31:0&gt; + SignExt(imm16) <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> 4</li>
+</ul>
+<p>因为MIPS按字节编址，因此PC的值总是4的倍数，即后两位为00，去除这2位，PC只需要30位即可。下地址计算逻辑简化为:</p>
+<ul>
+<li>顺序执行时: PC&lt;31:2&gt; = PC&lt;31:2&gt; + 1</li>
+<li>转移执行时: PC&lt;31:2&gt; = PC&lt;31:2&gt; + 1 + SignExt(imm16)</li>
+</ul>
+<p><strong>在取指令时将PC&lt;31:2&gt;串接<code>00</code>即可得到32位PC。</strong><br />
+<img src="next_address.png" srcset="/img/loading.gif" lazyload alt="下址计算部件" /><br />
+<strong>因为下址计算只涉及到加法因此只需要使用Adder即可而不需更复杂功能更全面的ALU部件。</strong></p>
+<h4 id="j的rtl描述和数据通路"><a class="markdownIt-Anchor" href="#j的rtl描述和数据通路"></a> j的RTL描述和数据通路</h4>
+<p><strong>指令: j target26</strong>是无条件跳转指令的代表。</p>
+
+<pre>
+<code class="mermaid" >
+graph TD
+    label1("M[PC](取指令)")-->label2("PC<31:2> <- PC<31:28>串接target(计算转移地址)")
+</code>
+</pre>
+<p><img src="j.png" srcset="/img/loading.gif" lazyload alt="j" /><br />
+跳转指令的范围: 只能在j指令所在的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mn>2</mn></msup><mn>8</mn><mo>=</mo><mn>256</mn><mi>M</mi><mi>B</mi></mrow><annotation encoding="application/x-tex">2^28=256MB</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">5</span><span class="mord">6</span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>页面内，页面号与j指令相同PC&lt;31:28&gt;。</p>
+<h4 id="mips-cpu数据通路"><a class="markdownIt-Anchor" href="#mips-cpu数据通路"></a> MIPS CPU数据通路</h4>
+<p>在上面7条指令的数据通路可以看出，PC取指和下址计算与地址转移是每条指令的公共操作，因此可以把部分合成一个取指部件。<br />
+<img src="instruction_fetch.png" srcset="/img/loading.gif" lazyload alt="取指部件" /><br />
+<img src="mips_cpu.png" srcset="/img/loading.gif" lazyload alt="MIPS CPU数据通路" /><br />
+<strong>通过一条条指令的实现而推导出了能实现开始所说的7条指令的MIPS CPU的数据通路。推导过程是Computer Organization and Architecture这门课的核心。</strong></p>
+<h3 id="单周期cpu控制器设计"><a class="markdownIt-Anchor" href="#单周期cpu控制器设计"></a> 单周期CPU控制器设计</h3>
+<p>ISA确定后，控制器设计大致步骤如下:</p>
+<ol>
+<li>分析每条指令的功能并用RTL表示</li>
+<li>确定数据通路</li>
+<li>确定每个元件所需控制信号的取值</li>
+<li>生成一张指令与控制关系的表</li>
+<li>根据表得到每个控制信号的逻辑表达式</li>
+</ol>
+<p>控制信号产生的逻辑在数据通路设计与分析中已分析，这里直接给出不同指令的控制信号值，<strong>需要掌握根据数据通路计算出控制信号的能力。</strong></p>
+<h4 id="addsub控制信号"><a class="markdownIt-Anchor" href="#addsub控制信号"></a> add/sub控制信号</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">RegDst</th>
+<th style="text-align:center">ALUSrc</th>
+<th style="text-align:center">ALUctr</th>
+<th style="text-align:center">MemWr</th>
+<th style="text-align:center">ExtOP</th>
+<th style="text-align:center">RegWr</th>
+<th style="text-align:center">MemtoReg</th>
+<th style="text-align:center">Branch</th>
+<th style="text-align:center">Jump</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">add/sub</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ori控制信号"><a class="markdownIt-Anchor" href="#ori控制信号"></a> ori/控制信号</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">RegDst</th>
+<th style="text-align:center">ALUSrc</th>
+<th style="text-align:center">ALUctr</th>
+<th style="text-align:center">MemWr</th>
+<th style="text-align:center">ExtOP</th>
+<th style="text-align:center">RegWr</th>
+<th style="text-align:center">MemtoReg</th>
+<th style="text-align:center">Branch</th>
+<th style="text-align:center">Jump</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">or</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="lw控制信号"><a class="markdownIt-Anchor" href="#lw控制信号"></a> lw控制信号</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">RegDst</th>
+<th style="text-align:center">ALUSrc</th>
+<th style="text-align:center">ALUctr</th>
+<th style="text-align:center">MemWr</th>
+<th style="text-align:center">ExtOP</th>
+<th style="text-align:center">RegWr</th>
+<th style="text-align:center">MemtoReg</th>
+<th style="text-align:center">Branch</th>
+<th style="text-align:center">Jump</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">addu</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sw控制信号"><a class="markdownIt-Anchor" href="#sw控制信号"></a> sw控制信号</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">RegDst</th>
+<th style="text-align:center">ALUSrc</th>
+<th style="text-align:center">ALUctr</th>
+<th style="text-align:center">MemWr</th>
+<th style="text-align:center">ExtOP</th>
+<th style="text-align:center">RegWr</th>
+<th style="text-align:center">MemtoReg</th>
+<th style="text-align:center">Branch</th>
+<th style="text-align:center">Jump</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">x</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">addu</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="beq控制信号"><a class="markdownIt-Anchor" href="#beq控制信号"></a> beq控制信号</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">RegDst</th>
+<th style="text-align:center">ALUSrc</th>
+<th style="text-align:center">ALUctr</th>
+<th style="text-align:center">MemWr</th>
+<th style="text-align:center">ExtOP</th>
+<th style="text-align:center">RegWr</th>
+<th style="text-align:center">MemtoReg</th>
+<th style="text-align:center">Branch</th>
+<th style="text-align:center">Jump</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">x</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">sub</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="j控制信号"><a class="markdownIt-Anchor" href="#j控制信号"></a> j控制信号</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">RegDst</th>
+<th style="text-align:center">ALUSrc</th>
+<th style="text-align:center">ALUctr</th>
+<th style="text-align:center">MemWr</th>
+<th style="text-align:center">ExtOP</th>
+<th style="text-align:center">RegWr</th>
+<th style="text-align:center">MemtoReg</th>
+<th style="text-align:center">Branch</th>
+<th style="text-align:center">Jump</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+</tr>
+</tbody>
+</table>
+<h4 id="生成控制器表"><a class="markdownIt-Anchor" href="#生成控制器表"></a> 生成控制器表</h4>
+<p><img src="control_unit.png" srcset="/img/loading.gif" lazyload alt="控制器表" /></p>
+<h4 id="设计控制器部件"><a class="markdownIt-Anchor" href="#设计控制器部件"></a> 设计控制器部件</h4>
+<p><strong>控制器 = 主控制单元 + ALU局部控制单元</strong><br />
+<img src="control.png" srcset="/img/loading.gif" lazyload alt="控制器" /><br />
+ALUctr有6种操作: sdd, sub, or, and, addu, subu，因此需要3位来表示。在译码后将op传给主控制器产生ALUop信号，func传给ALU局部控制器，对于<strong>非R型指令ALUctl=ALUop</strong>，<strong>R型指令由func译码产生</strong>。</p>
+<h5 id="alu局部控制器"><a class="markdownIt-Anchor" href="#alu局部控制器"></a> ALU局部控制器</h5>
+<p><strong>非R型指令的ALUop产生方式为:</strong><br />
+<img src="aluop.png" srcset="/img/loading.gif" lazyload alt="ALUop" /></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mi>L</mi><mi>U</mi><mi>o</mi><mi>p</mi><mo>&lt;</mo><mn>2</mn><mo>&gt;</mo><mo>=</mo><mi>b</mi><mi>e</mi><mi>q</mi><mo separator="true">,</mo><mi>A</mi><mi>L</mi><mi>U</mi><mi>o</mi><mi>p</mi><mo>&lt;</mo><mn>1</mn><mo>&gt;</mo><mo>=</mo><mi>o</mi><mi>r</mi><mi>i</mi><mo separator="true">,</mo><mi>A</mi><mi>L</mi><mi>U</mi><mi>o</mi><mi>p</mi><mo>&lt;</mo><mn>0</mn><mo>&gt;</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">ALUop&lt;2&gt;=beq, ALUop&lt;1&gt;=ori, ALUop&lt;0&gt;=0
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">A</span><span class="mord mathdefault">L</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord mathdefault">o</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68354em;vertical-align:-0.0391em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">b</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">A</span><span class="mord mathdefault">L</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord mathdefault">o</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68354em;vertical-align:-0.0391em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">A</span><span class="mord mathdefault">L</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord mathdefault">o</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68354em;vertical-align:-0.0391em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span></span></p>
+<p><strong>R型指令的ALUctl的产生:</strong><br />
+<img src="aluctl.png" srcset="/img/loading.gif" lazyload alt="ALUctl" /></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mi>L</mi><mi>U</mi><mi>c</mi><mi>t</mi><mi>r</mi><mo>&lt;</mo><mn>2</mn><mo>&gt;</mo><mo>=</mo><mi>f</mi><mi>u</mi><mi>n</mi><mi>c</mi><mo>&lt;</mo><mn>1</mn><mo>&gt;</mo><mo separator="true">,</mo><mi>A</mi><mi>L</mi><mi>U</mi><mi>c</mi><mi>t</mi><mi>r</mi><mo>&lt;</mo><mn>1</mn><mo>&gt;</mo><mo>=</mo><mn>1</mn><mo separator="true">,</mo><mi>A</mi><mi>L</mi><mi>U</mi><mi>c</mi><mi>t</mi><mi>r</mi><mo>&lt;</mo><mn>0</mn><mo>&gt;</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">ALUctr&lt;2&gt;=func&lt;1&gt;, ALUctr&lt;1&gt;=1, ALUctr&lt;0&gt;=0
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">A</span><span class="mord mathdefault">L</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord mathdefault">c</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68354em;vertical-align:-0.0391em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mord mathdefault">u</span><span class="mord mathdefault">n</span><span class="mord mathdefault">c</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68354em;vertical-align:-0.0391em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">A</span><span class="mord mathdefault">L</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord mathdefault">c</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68354em;vertical-align:-0.0391em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">A</span><span class="mord mathdefault">L</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord mathdefault">c</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68354em;vertical-align:-0.0391em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span></span></p>
+<h6 id="主控制单元"><a class="markdownIt-Anchor" href="#主控制单元"></a> 主控制单元</h6>
+<p><img src="main_control_unit.png" srcset="/img/loading.gif" lazyload alt="主控制单元真值表" /><br />
+通过真值表根据卡诺图可以得到控制信号的逻辑表示式，这里控制信号产生仅用于7条指令:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>R</mi><mi>e</mi><mi>g</mi><mi>W</mi><mi>r</mi><mo>=</mo><mo stretchy="false">(</mo><mi>R</mi><mo>−</mo><mi>t</mi><mi>y</mi><mi>p</mi><mi>e</mi><mo stretchy="false">)</mo><mo>+</mo><mi>o</mi><mi>r</mi><mi>i</mi><mo>+</mo><mi>l</mi><mi>w</mi></mrow><annotation encoding="application/x-tex">RegWr=(R-type)+ori+lw
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">p</span><span class="mord mathdefault">e</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.74285em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mi>L</mi><mi>U</mi><mi>S</mi><mi>r</mi><mi>c</mi><mo>=</mo><mi>o</mi><mi>r</mi><mi>i</mi><mo>+</mo><mi>l</mi><mi>w</mi><mo>+</mo><mi>s</mi><mi>w</mi></mrow><annotation encoding="application/x-tex">ALUSrc=ori+lw+sw
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span><span class="mord mathdefault">L</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">c</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.74285em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>R</mi><mi>e</mi><mi>g</mi><mi>D</mi><mi>s</mi><mi>t</mi><mo>=</mo><mo stretchy="false">(</mo><mi>R</mi><mo>−</mo><mi>t</mi><mi>y</mi><mi>p</mi><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">RegDst=(R-type)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">p</span><span class="mord mathdefault">e</span><span class="mclose">)</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>M</mi><mi>e</mi><mi>m</mi><mi>t</mi><mi>o</mi><mi>R</mi><mi>e</mi><mi>g</mi><mo>=</mo><mi>l</mi><mi>w</mi></mrow><annotation encoding="application/x-tex">MemtoReg=lw
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault">e</span><span class="mord mathdefault">m</span><span class="mord mathdefault">t</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>M</mi><mi>e</mi><mi>m</mi><mi>W</mi><mi>r</mi><mi>i</mi><mi>t</mi><mi>e</mi><mo>=</mo><mi>s</mi><mi>w</mi></mrow><annotation encoding="application/x-tex">MemWrite=sw
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault">e</span><span class="mord mathdefault">m</span><span class="mord mathdefault" style="margin-right:0.13889em;">W</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">i</span><span class="mord mathdefault">t</span><span class="mord mathdefault">e</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mi>r</mi><mi>a</mi><mi>n</mi><mi>c</mi><mi>h</mi><mo>=</mo><mi>b</mi><mi>e</mi><mi>q</mi></mrow><annotation encoding="application/x-tex">Branch=beq
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">a</span><span class="mord mathdefault">n</span><span class="mord mathdefault">c</span><span class="mord mathdefault">h</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">b</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>J</mi><mi>u</mi><mi>m</mi><mi>p</mi><mo>=</mo><mi>j</mi></mrow><annotation encoding="application/x-tex">Jump=j
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.09618em;">J</span><span class="mord mathdefault">u</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>E</mi><mi>x</mi><mi>t</mi><mi>O</mi><mi>p</mi><mo>=</mo><mi>l</mi><mi>w</mi><mo>+</mo><mi>s</mi><mi>w</mi></mrow><annotation encoding="application/x-tex">ExtOp=lw+sw
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault">x</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span></span></span></span></span></p>
+<p><img src="control_pla.png" srcset="/img/loading.gif" lazyload alt="控制信号产生电路" /></p>
+<h4 id="控制器设计小结"><a class="markdownIt-Anchor" href="#控制器设计小结"></a> 控制器设计小结</h4>
+<ul>
+<li>控制器设计的关键是找出指令格式中规定指令功能(类型)的字段与各条指令所需要的控制信号之间的关系。<strong>MIPS指令中有op和func两个字段用来表示指令的功能。</strong>
+<ol>
+<li>R型指令: 所有指令的op字段都为000000，各指令的func字段用来产生ALU的控制信号，决定执行的操作(加、减、逻辑与<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>⋯</mo></mrow><annotation encoding="application/x-tex">\cdots</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.31em;vertical-align:0em;"></span><span class="minner">⋯</span></span></span></span>)，其它数据通路的控制信号各指令都相同(仅考虑三寄存器操作数)</li>
+<li>其他类型指令：没有func字段，各指令的op字段不同，它产生包括ALU的所有数据通路的控制信号</li>
+</ol>
+</li>
+<li>控制器结构分成主控制器和ALU局部控制器两部分
+<ol>
+<li>ALU局部控制器是为R型指令产生ALU的控制信号，其输入为func字段</li>
+<li>主控制器产生非R型指令的所有控制信号，以及R型指令的除ALU控制信号外的其他控制信号，其输入为op字段</li>
+<li>将主控制器产生的ALU控制信号与ALU局部控制器的输出信号通过一个多路选择器合并后作为最终的ALU控制信号。多路选择器的选择信号(R-Type)由主控制器产生</li>
+</ol>
+</li>
+</ul>
+<h2 id="mips单周期计算机的性能"><a class="markdownIt-Anchor" href="#mips单周期计算机的性能"></a> MIPS单周期计算机的性能</h2>
+<p>**在本章开始说过计算机性能由三个关键因素决定: 指令数目、CPI、时钟周期。**单周期CPU的CPI一定为1，MIPS单周期CPU指令数设计过程如上，因此只支持7条指令，评价其性能只需考虑时钟周期宽度的确定。</p>
+<p><strong>在MIPS中lw指令的执行时间最长</strong>，因此时钟周期宽度为lw指令执行所需时间！<br />
+<img src="lw_time.png" srcset="/img/loading.gif" lazyload alt="lw指令执行图" /></p>
+<p>例: 在单周期处理器中，各主要功能单元的操作时间为: 存储单元200ps，ALU和加法器100ps，寄存器组(读/写)50ps，MUX、控制单元、PC、扩展器和传输线路都没有延迟。程序中各类指令占比: 25%取数、10%存数、45%ALU、15%分支、5%跳转，该程序共有n条指令。</p>
+<ol>
+<li>计算各指令执行时间(以lw指令为例): 时钟周期为最长指令执行时间，一般为load类型指令。<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>l</mi><mi>w</mi><mo>=</mo><mn>50</mn><mo>+</mo><mn>100</mn><mo>+</mo><mn>50</mn><mo>+</mo><mn>50</mn><mo>+</mo><mn>100</mn><mo>+</mo><mn>200</mn><mo>+</mo><mn>50</mn><mo>=</mo><mn>600</mn></mrow><annotation encoding="application/x-tex">lw=50+100+50+50+100+200+50=600</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord">0</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">6</span><span class="mord">0</span><span class="mord">0</span></span></span></span>(PC取指–&gt;下址计算–&gt;放入PC–&gt;寄存器取数–&gt;ALU计算有效地址–&gt;存储器取数–&gt;写入寄存器)</li>
+<li>计算时钟周期: 经过第一步得到所有指令执行时间分别为: R-type=400ps, lw=600ps, sw=550ps, Branch=350ps, Jump=200ps，因此时钟周期为600ps。</li>
+<li>计算总时间: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mi>i</mi><mi>m</mi><mi>e</mi><mo>=</mo><mi>n</mi><mo>×</mo><mi>c</mi><mi>i</mi><mi>r</mi><mi>c</mi><mi>l</mi><mi>e</mi></mrow><annotation encoding="application/x-tex">time=n\times circle</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathdefault">t</span><span class="mord mathdefault">i</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">c</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">c</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">e</span></span></span></span></li>
+</ol>
+<h2 id="微程序控制原理与异常处理"><a class="markdownIt-Anchor" href="#微程序控制原理与异常处理"></a> 微程序控制原理与异常处理</h2>
+<h3 id="微程序设计"><a class="markdownIt-Anchor" href="#微程序设计"></a> 微程序设计</h3>
+<h4 id="微程序控制器和硬连线控制器的对比"><a class="markdownIt-Anchor" href="#微程序控制器和硬连线控制器的对比"></a> 微程序控制器和硬连线控制器的对比</h4>
+<ul>
+<li>硬连线控制器:
+<ul>
+<li>优点: <strong>速度快</strong>，适合于简单或规整的指令系统，如MIPS指令集</li>
+<li>缺点: 它是一个<strong>多输入/多输出</strong>的巨大逻辑网络。对于复杂指令系统来说，<strong>结构庞杂，实现困难；修改、维护不易；灵活性差</strong></li>
+</ul>
+</li>
+<li>微程序控制器:
+<ul>
+<li>仿照程序设计的方法，编制每条指令对应的微程序，每个微程序由若干条微指令构成，一条微指令包含若干个微命令，<strong>每个微命令就是一个控制信号</strong></li>
+<li><strong>所有指令对应的微程序放在只读存储器</strong>中，执行某条指令就是取出对应微程序中的各条微指令，对微指令译码产生对应的微命令(即控制信号)。<strong>这个只读存储器称为控制存储器(Control Storage)，简称控存CS</strong></li>
+<li>优点: 具有规整性、可维护性和灵活性</li>
+<li>缺点: 速度慢</li>
+</ul>
+</li>
+</ul>
+<b>
+微程序: 一条指令的执行转为其对应的微程序的执行
+微指令: 一个微程序由多个微指令组成，通过一条条微指令的执行来实现微程序的执行
+微命令: 每条微指令包含若干微命令，微命令即为控制信号
+</b>
+![微程序控制器](micro_controller.png)
+<p>微指令设计可以分为两类设计模式:</p>
+<ul>
+<li>水平型微指令:
+<ul>
+<li>基本思想: 相容微命令尽量多地安排在一条微指令中(尽量将相似的控制信号放在一起)</li>
+<li>优点: 微程序短，并行性高，适合于较高速度的场合</li>
+<li>缺点: 微指令长，编码空间利用率较低，并且编制困难</li>
+</ul>
+</li>
+<li>垂直型微指令:
+<ul>
+<li>基本思想: 一条微指令只控制一、二个微命令</li>
+<li>优点: 微指令短，编码效率高，格式与机器指令类似，故编制容易</li>
+<li>缺点: 微程序长，一条微指令只能控制一、二个操作，无并行，速度慢</li>
+</ul>
+</li>
+</ul>
+<p><img src="micro_instruction.png" srcset="/img/loading.gif" lazyload alt="微指令格式" /><br />
+可以看到微指令和指令的格式十分相似: 均有操作码、地址字段。<br />
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>μ</mi></mrow><annotation encoding="application/x-tex">\mu</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">μ</span></span></span></span>OP的编码方式有:</p>
+<ul>
+<li>不译法: 直接控制</li>
+<li>字段直接编码法: 水平型微指令风格</li>
+<li>字段间接编码法: 水平型微指令风格</li>
+<li>最小编码法: 垂直型微指令风格</li>
+</ul>
+<p>微指令下址产生:</p>
+<ul>
+<li>增量计数器法: 下条微指令地址隐含在微程序计数器<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>μ</mi></mrow><annotation encoding="application/x-tex">\mu</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">μ</span></span></span></span>PC中</li>
+<li>断定法: 在本条微指令中明显指定下条微指令地址，通过断定法可以实现顺序执行和分支执行</li>
+</ul>
+<h3 id="cpu对异常的处理"><a class="markdownIt-Anchor" href="#cpu对异常的处理"></a> CPU对异常的处理</h3>
+<p>程序执行过程中CPU会遇到一些特殊情况，使正在执行的程序被&quot;<strong>中断</strong>&quot;，然后CPU中止原来正在执行的程序，<strong>转到处理异常情况或特殊事件的程序去执行</strong>，执行后再<strong>返回到原被中止的程序处</strong>(断点)继续执行。</p>
+<p>异常和中断的区别:</p>
+<ul>
+<li>异常: <strong>在CPU内部发生的意外事件或特殊事件</strong>，按发生原因分为<strong>硬故障异常</strong>和<strong>程序性异常</strong>两类
+<ul>
+<li>硬故障异常: 如电源掉电、硬件线路故障等</li>
+<li>程序性异常: 执行某条指令时发生的&quot;例外(Exception)&quot;，如溢出、缺页、非法指令、除数为0、堆栈溢出等等</li>
+</ul>
+</li>
+<li>中断: <strong>外部请求中断</strong>，在CPU外部发生的特殊事件，发送请求和CPU需要处理中断，如打印机缺纸、外设准备好、采样计时到、DMA传输结束等。外部中断是一种I/O方式</li>
+</ul>
+<h4 id="异常的处理"><a class="markdownIt-Anchor" href="#异常的处理"></a> 异常的处理</h4>
+<p>异常按处理方式又分为故障、自陷和终止三类</p>
+<ul>
+<li><strong>故障(fault)</strong>: 执行指令引起的异常事件，如溢出、缺页、堆栈溢出、访问超时等</li>
+<li><strong>自陷(trap)</strong>: 预先安排的事件，如单步跟踪、系统调用(执行访管指令)等，自陷处理完成后 回到下条指令</li>
+<li><strong>终止(abort)</strong>: 硬故障事件，此时机器将&quot;终止&quot;，调出中断服务程序来重启操作系统</li>
+</ul>
+<p>缺页、TLB缺失等: 补救后可继续，<strong>回到发生故障的指令重新执行</strong><br />
+溢出、除数为0、非法操作、内存保护错等: <strong>终止当前进程</strong></p>
+<p>异常处理机制:</p>
+<ol>
+<li><strong>关中断</strong>: 关闭中断/异常请求允许，使处理器处于&quot;禁止中断&quot;状态，以防止新异常(或中断)破坏断点、程序状态和现场</li>
+<li><strong>保护断点和程序状态</strong>: 将断点和程序状态保存到堆栈或特殊寄存器中
+<ul>
+<li>PC -&gt; 堆栈或EPC(专门存放断点的寄存器)</li>
+<li>PSWR -&gt; 堆栈或EPSWR(专门保存程序状态的寄存器)</li>
+</ul>
+</li>
+<li><strong>识别异常事件</strong>: 有软件识别和硬件识别(向量中断方式)两种不同的方式
+<ul>
+<li>软件识别: MIPS采用，设置一个异常状态寄存器(MIPS中为Cause寄存器)，用于记录异常原因。操作系统使用一个<strong>统一的异常处理程序</strong>，该程序<strong>按优先级顺序查询异常状态寄存器</strong>的各位，识别出异常事件</li>
+<li>硬件识别(向量中断方式): 用<strong>专门的硬件查询电路按优先级顺序识别异常</strong>，得到&quot;中断类型号&quot;，根据此号，到<strong>中断向量表中读取对应的中断服务程序的入口地址</strong></li>
+</ul>
+</li>
+</ol>
+<h4 id="中断的处理"><a class="markdownIt-Anchor" href="#中断的处理"></a> 中断的处理</h4>
+<p>中断的处理在<a target="_blank" rel="noopener" href="https://thm-lab.github.io//2022/06/13/%E4%BA%92%E8%BF%9E%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%84%E7%BB%87/">互连及输入输出组织</a>中详细介绍。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Computer-Organization-and-Architecture/">Computer Organization and Architecture</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/06/11/%E6%8C%87%E4%BB%A4%E6%B5%81%E6%B0%B4%E7%BA%BF/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">指令流水线</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/05/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/">
+                        <span class="hidden-mobile">指令系统</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Thm-lab/blog_commit');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

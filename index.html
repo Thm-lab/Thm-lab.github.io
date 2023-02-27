@@ -1,0 +1,722 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Thm">
+  <meta name="keywords" content="谭泓旻">
+  
+    <meta property="og:type" content="website">
+<meta property="og:title" content="Thm&#39;s blog">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Thm&#39;s blog">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="Thm">
+<meta property="article:tag" content="谭泓旻">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>Thm&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>life and study balance</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/banner.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Record small but meaningful moments of learning and life">
+              
+            </span>
+
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div class="py-5" id="board"
+          style=margin-top:0>
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/02/14/%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/" target="_self">
+          文件管理
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/02/14/%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/" target="_self">
+          
+          文件管理  文件组织  文件目录  文件共享  记录组块  辅存管理  文件分配  空闲空间管理  Unix文件管理
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-02-14 11:25" pubdate>
+              2023-02-14
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Operating-System/">Operating System</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/02/13/I-O%E7%AE%A1%E7%90%86%E4%B8%8E%E7%A3%81%E7%9B%98%E8%B0%83%E5%BA%A6/" target="_self">
+          I/O管理与磁盘调度
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/02/13/I-O%E7%AE%A1%E7%90%86%E4%B8%8E%E7%A3%81%E7%9B%98%E8%B0%83%E5%BA%A6/" target="_self">
+          
+          I&#x2F;O管理与磁盘调度  I&#x2F;O管理  I&#x2F;O设备概述 外设分类:  按信息传输方向:  输入设备: 从外部向计算机输入信息，如：键盘、鼠标、扫描仪等 输出设备:从计算机向外部输出信息，如：打印机、显示器等 输入输出设备: 既可输入又可输出，如：带触屏的显示器、磁盘存储器等   按功能:  人-机交互设备:输入&#x2F;输出的信息是人可读的，或可操作的。如: 键盘、鼠标、扫描仪、打印机、显示器等 外部存储
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-02-13 21:26" pubdate>
+              2023-02-13
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Operating-System/">Operating System</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/02/12/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" target="_self">
+          内存管理
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/02/12/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" target="_self">
+          
+          内存管理 内存管理: 关注内存和外存之间的信息流的组织，简单来说就是关注进程在什么时候将进程放入内存和内存中如何放置  基本内存管理 基本内存管理指不使用虚存技术，也不使用高速存储技术(cache)，仅有内存和外存作为存储设备时，OS对内存的管理  程序的加载与链接 高级语言由源代码转换为进程需要3个步骤:  编译: 由编译器将源代码转为机器指令，其中源代码会被编译为多个模块(某些库文件是单独模
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-02-12 22:25" pubdate>
+              2023-02-12
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Operating-System/">Operating System</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/02/10/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" target="_self">
+          进程管理
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/02/10/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" target="_self">
+          
+          进程管理  描述与控制 进程的定义:  一个正在执行的程序 一个正在计算机上执行的程序实例 能分配给处理器并由处理器执行的实体 由一组执行的指令、一个当前状态和一组相关的系统资源表征的活动单元  进程的基本特征:  动态性(本质特性): 正在计算机上执行的程序实例，存在生命周期 并发性(重要特性): 任何进程都可以同其他进程一起向前推进 独立性: 各进程的地址空间相互独立，除非采用进程间通信手段
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-02-10 13:05" pubdate>
+              2023-02-10
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Operating-System/">Operating System</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/02/09/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%AE%BA/" target="_self">
+          操作系统概论
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/02/09/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%AE%BA/" target="_self">
+          
+          操作系统概论 操作系统是控制应用程序执行的程序，是应用程序和计算机硬件间的接口   操作系统目标与功能  目标 其3个目标为:  方便: 使计算机更易于使用 有效: 允许以更有效的方式使用计算机系统资源 扩展能力: 在不妨碍服务的前提下，有效地开发、测试和引入新的系统功能  以下介绍计算机是如何实现上述的3个目标  OS是用户／计算机接口 如果用户开发应用软件时需要完全使用机器指令来进行描述将会
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-02-09 18:08" pubdate>
+              2023-02-09
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Operating-System/">Operating System</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/01/06/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" target="_self">
+          软件工程
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/01/06/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/" target="_self">
+          
+          软件工程  概论  软件的定义 软件定义: 软件 &#x3D; 程序 + 数据 + 文档  程序: 按事先设计的功能和性能需求执行的指令序列 数据: 是程序能正常操纵信息的数据结构 文档: 与程序开发、维护和使用有关的图文材料  文档的作用  提高软件开发过程的能见度； 记录开发过程的有关信息，便于使用与维护； 提高开发效率； 作为开发人员阶段工作成果和结束标志； 提供软件运行、维护、培训有关资料； 便于
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-01-06 15:01" pubdate>
+              2023-01-06
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Software-Engineering/">Software Engineering</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/12/08/8253/" target="_self">
+          8253
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/12/08/8253/" target="_self">
+          
+          8253 8253芯片是可编程计数器&#x2F;定时器。8253内部有三个计数器，分别称为计数器0、计数器1和计数器2，他们的结构完全相同。  8253的功能与结构  功能 8253的主要功能:   计数器 定时器(计数脉冲是已知周期的时钟信号) 频率发生器 方波发生器    结构   8253结构较为简单，从编程者的角度来看是常规IO端口，由CS‾\overline{CS}CS信号控制片选，A1A0选择
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-12-08 22:00" pubdate>
+              2022-12-08
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hardware-Interface/">Hardware Interface</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/12/08/8259A/" target="_self">
+          8259A
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/12/08/8259A/" target="_self">
+          
+          8259A 8259A是专门为了对8085A和8086&#x2F;8088进行中断控制而设计的芯片，它是可以用程序控制的中断控制器。  8259A的功能与结构  功能 8259A的主要功能:   记录8个中断源的中断请求 从有请求的中断源中找出高优先级的中断源，并向CPU发出中断请求 CPU响应中断时向CPU发送中断类型号  其主要作用是控制并发的中断请求，由8259A先进行判优再代替中断源向CPU发出中
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-12-08 16:54" pubdate>
+              2022-12-08
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Hardware-Interface/">Hardware Interface</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/12/08/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95/" target="_self">
+          X86汇编语法
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/12/08/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95/" target="_self">
+          
+          X86汇编语法 目前支持Intel x86系列微机常用的汇编程序有ASM、MASM、TASM、OPTASM等。本文以MASM为主要内容。 X86汇编语言语句可分为两种语句:  指令语句: 每一条指令语句在汇编时都要产生一个可供CPU执行的机器目标代码，它又叫可执行语句。 伪指令语句: 伪指令语句又叫命令语句，是指示性语句。伪指令本身不产生自己的机器目标代码。它指示汇编程序对其后面的指令语句和伪指
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-12-08 11:18" pubdate>
+              2022-12-08
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Assembly-Language/">Assembly Language</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/12/06/x86%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/" target="_self">
+          X86指令系统
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/12/06/x86%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/" target="_self">
+          
+          X86指令系统  X86 32位寻址方式 寻址方式主要在三方面上进行运用:  操作数的寻址 转移地址的寻址 IO端口的寻址  以下分别对X86指令的三方面寻址方式进行说明  操作数寻址 由冯诺依曼架构可以得到这样的结论: 操作数的来源只有三处:  指令直接给出 存放在寄存器中 存放在内存单元中  其中最简单的方式就是由指令直接给出，最复杂的则为存放在内存单元中，以下将分别说明不同的寻址方式！
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-12-06 17:25" pubdate>
+              2022-12-06
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Assembly-Language/">Assembly Language</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
